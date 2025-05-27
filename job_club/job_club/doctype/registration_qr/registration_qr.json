@@ -1,0 +1,48 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-05-27 22:07:09.099878",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "qr_link",
+  "qr_code"
+ ],
+ "fields": [
+  {
+   "description": "Search on Google",
+   "fieldname": "qr_link",
+   "fieldtype": "Data",
+   "label": "QR Link"
+  },
+  {
+   "fieldname": "qr_code",
+   "fieldtype": "HTML",
+   "label": "QR code"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-05-27 22:16:08.005372",
+ "modified_by": "Administrator",
+ "module": "Job Club",
+ "name": "Registration QR",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
