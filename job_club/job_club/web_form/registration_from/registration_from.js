@@ -67,7 +67,7 @@ frappe.ready(() => {
       .form-card .logo {
         display: block;
         margin: 0 auto 12px auto;
-        max-width: 140px;
+        max-width: 180px;
         padding: 10px;
         background: rgba(255, 255, 255, 0.85);
         border-radius: 12px;
@@ -123,27 +123,11 @@ frappe.ready(() => {
         border: none;
         border-radius: 10px;
         cursor: pointer;
-        transition: 0.3s;
+        transition: all 0.4s ease;
       }
 
       .submit-btn:hover {
-        animation: bounce 0.8s ease-in-out;
-      }
-
-      @keyframes bounce {
-
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-
-        30% {
-          transform: translateY(-8px);
-        }
-
-        60% {
-          transform: translateY(4px);
-        }
+        transform: scale(1.06);
       }
 
       .success-msg {
@@ -225,19 +209,15 @@ frappe.ready(() => {
             },
             callback: (r) => {
                 if (r.message) {
-                    showStylishSuccess("🎉 Registered Successfully!");
-                    button.innerText = "Submitted";
-                    button.disabled = true;
+
+                    const full_name = document.getElementById("full_name").value;
+                    window.location.href = `/assets/job_club/thank_you.html?name=${encodeURIComponent(full_name)}`;
 
                     // Optional: clear form fields
                     document.getElementById("full_name").value = "";
                     document.getElementById("email_id").value = "";
                     document.getElementById("mobile_number").value = "";
 
-                    // ✅ Refresh the page after 2 seconds
-                    setTimeout(() => {
-                        location.reload();
-                    }, 3000);
                 } else {
                     frappe.msgprint("Something went wrong. Please try again.");
                     button.disabled = false;
@@ -245,41 +225,6 @@ frappe.ready(() => {
                 }
             }
         });
-    }
-
-    function showStylishSuccess(message) {
-        const overlay = document.createElement("div");
-        overlay.style.position = "fixed";
-        overlay.style.top = "0";
-        overlay.style.left = "0";
-        overlay.style.width = "100vw";
-        overlay.style.height = "100vh";
-        overlay.style.background = "rgba(0, 0, 0, 0.4)";
-        overlay.style.zIndex = "9998";
-        overlay.style.display = "flex";
-        overlay.style.alignItems = "center";
-        overlay.style.justifyContent = "center";
-        overlay.style.animation = "fadeIn 0.3s ease";
-
-        const modal = document.createElement("div");
-        modal.style.background = "linear-gradient(135deg, #1f1c2c, #928DAB)";
-        modal.style.color = "#fff";
-        modal.style.padding = "30px 35px";
-        modal.style.borderRadius = "16px";
-        modal.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.4)";
-        modal.style.textAlign = "center";
-        modal.style.maxWidth = "400px";
-        modal.style.animation = "slideUp 0.4s ease";
-
-        modal.innerHTML = `
-    <div style="font-size: 24px; font-weight: bold; margin-bottom: 12px;">${message}</div>
-    <div style="font-size: 16px; opacity: 1; margin-bottom: 20px;">Thank you for registering with us!</div>
-    <div style="font-size: 16px; opacity: 1; margin-bottom: 20px;">We’ll reach out shortly! 🚀</div>
-  `;
-
-        overlay.id = "success-overlay";
-        overlay.appendChild(modal);
-        document.body.appendChild(overlay);
     }
 
 
