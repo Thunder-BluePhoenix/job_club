@@ -19,6 +19,13 @@
    "fieldtype": "Data",
    "label": "Full Name"
   },
+      {
+      "fieldname": "applicant_name",
+      "label": "Applicant Name",
+      "fieldtype": "Data",
+      "reqd": 1,
+      "in_list_view": 1
+    },
   {
    "fieldname": "mobile_number",
    "fieldtype": "Data",

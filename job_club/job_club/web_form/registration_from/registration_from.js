@@ -1,526 +1,285 @@
-// Complete Mobile Web Form Script for Emporium
-// Save this as: your_app/public/js/registration_form.js
+frappe.ready(() => {
+    const pageStyle = `
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400&amp;display=swap" rel="stylesheet" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
 
-frappe.ready(function() {
-    // Inject CSS styles
-    const styles = `
-        <style>
-            /* Reset and hide default elements */
-            .page-header,
-            .page-header-actions-block,
-            .form-footer,
-            .page-content-wrapper,
-            .sidebar-column,
-            .form-layout,
-            .section-body,
-            .form-column,
-            .frappe-control,
-            .form-section,
-            .page-container {
-                display: none !important;
-            }
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Lato', sans-serif;
+        background: url('/assets/job_club/images/background.png') no-repeat center center fixed;
+        background-size: cover;
+        position: relative;
+      }
 
-            body {
-                margin: 0;
-                padding: 0;
-                background-color: #f5f5f7;
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-            }
+      body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 0;
+      }
 
-            /* Mobile Form Container */
-            .mobile-form-container {
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 20px;
-                background: linear-gradient(to bottom, #f5f5f7 0%, #ffffff 100%);
-            }
+      .bg-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100vw;
+        background: rgba(0, 0, 0, 0);
+        z-index: 0;
+      }
 
-            /* Form Card */
-            .mobile-form-card {
-                background: white;
-                border-radius: 20px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-                max-width: 400px;
-                width: 100%;
-                overflow: hidden;
-            }
+      .form-card {
+        position: relative;
+        z-index: 1;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(70, 70, 70, 0.2));
+        border-radius: 18px;
+        padding: 24px 24px 32px 24px;
+        width: 100%;
+        max-width: 360px;
+        margin: 8vh auto;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(14px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: white;
+        animation: fadeIn 0.6s ease-in-out;
+      }
 
-            /* Red Header Section */
-            .form-header {
-                background-color: #dc3545;
-                padding: 30px 20px;
-                text-align: center;
-                position: relative;
-            }
-
-            .form-header::after {
-                content: '';
-                position: absolute;
-                bottom: -20px;
-                left: 0;
-                right: 0;
-                height: 40px;
-                background: white;
-                border-radius: 20px 20px 0 0;
-            }
-
-            /* Logo */
-            .emporium-logo {
-                height: 50px;
-                margin-bottom: 15px;
-                position: relative;
-                z-index: 1;
-            }
-
-            /* Staff Image */
-            .staff-image {
-                width: 200px;
-                height: auto;
-                position: relative;
-                z-index: 2;
-                margin: 0 auto;
-                display: block;
-            }
-
-            /* Form Title */
-            .form-title-section {
-                background-color: #dc3545;
-                color: white;
-                text-align: center;
-                padding: 0 20px 25px;
-                margin-top: -20px;
-                position: relative;
-                z-index: 1;
-            }
-
-            .form-title {
-                font-size: 20px;
-                font-weight: 400;
-                margin: 0 0 5px 0;
-            }
-
-            .form-subtitle {
-                font-size: 24px;
-                font-weight: 600;
-                margin: 0;
-            }
-
-            /* Form Content */
-            .form-content {
-                padding: 30px 25px;
-                background: white;
-            }
-
-            /* Input Fields */
-            .form-input {
-                width: 100%;
-                padding: 16px 20px;
-                margin-bottom: 15px;
-                border: none;
-                border-radius: 12px;
-                background-color: #f5f5f7;
-                font-size: 16px;
-                transition: all 0.3s ease;
-                box-sizing: border-box;
-            }
-
-            .form-input:focus {
-                outline: none;
-                background-color: #e8e8ea;
-                transform: translateY(-1px);
-            }
-
-            .form-input::placeholder {
-                color: #8e8e93;
-            }
-
-            /* Register Button */
-            .register-button {
-                width: 100%;
-                padding: 16px;
-                background-color: #1e3a8a;
-                color: white;
-                border: none;
-                border-radius: 12px;
-                font-size: 18px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                margin-top: 20px;
-            }
-
-            .register-button:hover {
-                background-color: #1e40af;
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(30, 58, 138, 0.3);
-            }
-
-            .register-button:active {
-                transform: translateY(0);
-            }
-
-            /* Success Message Styles */
-            .success-mobile-container {
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 20px;
-                background: linear-gradient(to bottom, #f5f5f7 0%, #ffffff 100%);
-            }
-
-            .success-mobile-card {
-                background: white;
-                border-radius: 20px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-                max-width: 400px;
-                width: 100%;
-                padding: 40px 30px;
-                text-align: center;
-            }
-
-            .success-logo {
-                height: 50px;
-                margin-bottom: 30px;
-            }
-
-            .thanks-box {
-                background-color: #f5f5f7;
-                border-radius: 15px;
-                padding: 25px;
-                margin-bottom: 30px;
-            }
-
-            .thanks-title {
-                font-size: 18px;
-                color: #333;
-                margin: 0 0 10px 0;
-                font-weight: 400;
-            }
-
-            .thanks-emporium {
-                font-size: 24px;
-                color: #dc3545;
-                margin: 0;
-                font-weight: 600;
-            }
-
-            .thumbs-up-icon {
-                width: 80px;
-                height: 80px;
-                margin: 30px auto;
-                background-color: #fee2e2;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                position: relative;
-            }
-
-            .thumbs-up-icon::before {
-                content: "👍";
-                font-size: 40px;
-            }
-
-            /* Animation lines around thumbs up */
-            .thumbs-up-icon::after {
-                content: '';
-                position: absolute;
-                width: 120px;
-                height: 120px;
-                border: 2px dashed #dc3545;
-                border-radius: 50%;
-                animation: rotate 10s linear infinite;
-            }
-
-            @keyframes rotate {
-                from { transform: rotate(0deg); }
-                to { transform: rotate(360deg); }
-            }
-
-            /* Responsive */
-            @media (max-width: 480px) {
-                .mobile-form-card {
-                    margin: 10px;
-                    border-radius: 15px;
-                }
-                
-                .form-content {
-                    padding: 20px;
-                }
-                
-                .staff-image {
-                    width: 160px;
-                }
-                
-                .form-title {
-                    font-size: 18px;
-                }
-                
-                .form-subtitle {
-                    font-size: 22px;
-                }
-            }
-
-            /* Loading state */
-            .register-button:disabled {
-                background-color: #6b7280;
-                cursor: not-allowed;
-            }
-
-            .loading-spinner {
-                display: inline-block;
-                width: 16px;
-                height: 16px;
-                border: 2px solid #ffffff;
-                border-radius: 50%;
-                border-top-color: transparent;
-                animation: spin 0.8s linear infinite;
-                margin-left: 8px;
-                vertical-align: middle;
-            }
-
-            @keyframes spin {
-                to { transform: rotate(360deg); }
-            }
-        </style>
-    `;
-
-    // Inject styles
-    $('head').append(styles);
-
-    // Create custom form
-    createMobileForm();
-});
-
-function createMobileForm() {
-    // Clear the page
-    $('body').empty();
-    
-    // Create mobile form HTML
-    const formHTML = `
-        <div class="mobile-form-container">
-            <div class="mobile-form-card">
-                <!-- Red Header with Logo and Staff Image -->
-                <div class="form-header">
-                    <img src="/assets/job_club/images/logo-es.png" alt="Emporium" class="emporium-logo">
-                </div>
-                
-                <!-- Title Section -->
-                <div class="form-title-section">
-                    <h2 class="form-title">Register now for</h2>
-                    <h1 class="form-subtitle">Free Career Counselling</h1>
-                </div>
-                
-                <!-- Form Content -->
-                <div class="form-content">
-                    <form id="emporium-registration-form">
-                        <input type="text" 
-                               class="form-input" 
-                               id="full_name" 
-                               name="full_name" 
-                               placeholder="Name" 
-                               required>
-                        
-                        <input type="tel" 
-                               class="form-input" 
-                               id="mobile_number" 
-                               name="mobile_number" 
-                               placeholder="Phone no" 
-                               pattern="[0-9]{10}" 
-                               required>
-                        
-                        <input type="email" 
-                               class="form-input" 
-                               id="email_id" 
-                               name="email_id" 
-                               placeholder="email id" 
-                               required>
-                        
-                        <button type="submit" class="register-button">Register</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    $('body').html(formHTML);
-    
-    // Handle form submission
-    $('#emporium-registration-form').on('submit', function(e) {
-        e.preventDefault();
-        submitRegistration();
-    });
-}
-
-function submitRegistration() {
-    // Get form values
-    const formData = {
-        full_name: $('#full_name').val(),
-        mobile_number: $('#mobile_number').val(),
-        email_id: $('#email_id').val()
-    };
-    
-    // Show loading state
-    const $button = $('.register-button');
-    $button.prop('disabled', true).html('Registering<span class="loading-spinner"></span>');
-    
-    // Submit to Frappe Web Form
-    frappe.call({
-        method: 'frappe.website.doctype.web_form.web_form.accept',
-        args: {
-            web_form: 'registration-from', // Your web form name
-            data: JSON.stringify(formData)
-        },
-        callback: function(response) {
-            console.log('Response:', response); // Debug log
-            
-            // Check different response formats
-            if (response && (response.message || response.exc === undefined)) {
-                // Show success message regardless of response format
-                showSuccessMessage();
-            } else {
-                // Handle error
-                frappe.msgprint({
-                    title: 'Error',
-                    message: 'There was an error submitting your registration. Please try again.',
-                    indicator: 'red'
-                });
-                $button.prop('disabled', false).html('Register');
-            }
-        },
-        error: function(error) {
-            console.error('Submission error:', error);
-            
-            // Still show success if it's a redirect error (which happens on successful submission)
-            if (error && error.status === 200) {
-                showSuccessMessage();
-            } else {
-                frappe.msgprint({
-                    title: 'Error',
-                    message: 'Unable to submit registration. Please check your connection and try again.',
-                    indicator: 'red'
-                });
-                $button.prop('disabled', false).html('Register');
-            }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
         }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .form-card .logo {
+        display: block;
+        margin: 0 auto 12px auto;
+        max-width: 140px;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.85);
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      }
+
+      .form-card h2 {
+        text-align: center;
+        font-size: 24px;
+        margin: 24px 0 20px 0;
+        font-weight: 600;
+        color: #f3f3f3;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 12px 15px;
+        border-radius: 10px;
+        border: none;
+        outline: none;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        font-size: 14px;
+        transition: 0.3s ease;
+      }
+
+      .form-group input::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .form-group input:focus {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .submit-btn {
+        display: block;
+        margin: 24px auto 0 auto;
+        padding: 12px 20px;
+        background: #ffffff;
+        color: #1e88e5;
+        font-weight: bold;
+        font-size: 15px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .submit-btn:hover {
+        animation: bounce 0.8s ease-in-out;
+      }
+
+      @keyframes bounce {
+
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+
+        30% {
+          transform: translateY(-8px);
+        }
+
+        60% {
+          transform: translateY(4px);
+        }
+      }
+
+      .success-msg {
+        text-align: center;
+        font-size: 16px;
+        margin-top: 20px;
+        color: #a5ff95;
+        display: none;
+      }
+
+      @media (max-width: 500px) {
+        .form-card {
+          margin: 5vh 20px;
+        }
+
+        .form-card h2 {
+          font-size: 22px;
+        }
+      }
+    </style> `;
+
+    const formHTML = `
+    <div class="form-card">
+      <img src="/assets/job_club/images/logo-es.png" alt="Logo" class="logo">
+      <h2>Free Career Counselling</h2>
+      <div class="form-group">
+        <label for="full_name">Full Name</label>
+        <input type="text" id="full_name" placeholder="Enter your full name">
+      </div>
+      <div class="form-group">
+        <label for="email_id">Email</label>
+        <input type="email" id="email_id" placeholder="Enter your email">
+      </div>
+      <div class="form-group">
+        <label for="mobile_number">Mobile Number</label>
+        <input type="text" id="mobile_number" placeholder="Enter your mobile number">
+      </div>
+      <button class="submit-btn" onclick="submitRegistration()">Register Now</button>
+      <div class="success-msg" id="success_msg">🎉 Thank you for registering!</div>
+    </div>
+    <div class="bg-overlay"></div>
+
+  `;
+
+    // Inject CSS & HTML
+    document.head.insertAdjacentHTML("beforeend", pageStyle);
+    document.querySelector("main").innerHTML = formHTML;
     });
-}
 
-function showSuccessMessage() {
-    // Replace page content with success message
-    const successHTML = `
-        <div class="success-mobile-container">
-            <div class="success-mobile-card">
-                <!-- Logo -->
-                <img src="/assets/job_club/images/logo-es.png" alt="Emporium" class="emporium-logo">
-                
-                <!-- Thanks Box -->
-                <div class="thanks-box">
-                    <h3 class="thanks-title">Thanks for registering with</h3>
-                    <h2 class="thanks-emporium">Emporium</h2>
-                </div>
-                
-                <!-- Thumbs Up Icon -->
-                <div class="thumbs-up-icon"></div>
-            </div>
-        </div>
-    `;
-    
-    $('body').html(successHTML);
-    
-    // Optional: Redirect after 3 seconds
-    setTimeout(function() {
-        window.location.href = '/';
-    }, 3000);
-}
+    function submitRegistration() {
+        const full_name = document.getElementById("full_name").value.trim();
+        const email_id = document.getElementById("email_id").value.trim();
+        const mobile_number = document.getElementById("mobile_number").value.trim();
+        const successDiv = document.getElementById("success_msg");
+        const button = document.querySelector(".submit-btn");
 
-// Alternative: If you want to use the existing Frappe web form fields
-// Uncomment this section to modify the existing form instead of creating a new one
-/*
-frappe.ready(function() {
-    // Wait for form to load
-    setTimeout(function() {
-        // Hide all default elements
-        $('.page-header, .form-footer').hide();
-        
-        // Wrap the form
-        $('.web-form').wrap('<div class="mobile-form-container"><div class="mobile-form-card"></div></div>');
-        
-        // Add header before form
-        const header = `
-            <div class="form-header">
-                <img src="/files/emporium-logo-white.png" alt="Emporium" class="emporium-logo">
-                <img src="/files/emporium-staff.png" alt="Staff" class="staff-image">
-            </div>
-            <div class="form-title-section">
-                <h2 class="form-title">Register now for</h2>
-                <h1 class="form-subtitle">Free Career Counselling</h1>
-            </div>
-        `;
-        $('.mobile-form-card').prepend(header);
-        
-        // Style existing inputs
-        $('.frappe-control input').addClass('form-input');
-        $('.btn-primary').addClass('register-button').text('Register');
-    }, 100);
-});
-*/
+        if (!full_name || !email_id || !mobile_number) {
+            frappe.msgprint("Please fill in all fields.");
+            return;
+        }
 
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email_id)) {
+            frappe.msgprint("Please enter a valid email address.");
+            return;
+        }
 
+        button.disabled = true;
+        button.innerText = "Submitting...";
 
+        frappe.call({
+            method: 'frappe.website.doctype.web_form.web_form.accept',
+            args: {
+                web_form: 'registration-from',
+                data: JSON.stringify({
+                    full_name,
+                    email_id,
+                    mobile_number
+                })
+            },
+            callback: (r) => {
+                if (r.message) {
+                    showStylishSuccess("🎉 Registered Successfully!");
+                    button.innerText = "Submitted";
+                    button.disabled = true;
 
+                    // Optional: clear form fields
+                    document.getElementById("full_name").value = "";
+                    document.getElementById("email_id").value = "";
+                    document.getElementById("mobile_number").value = "";
 
+                    // ✅ Refresh the page after 2 seconds
+                    setTimeout(() => {
+                        location.reload();
+                    }, 3000);
+                } else {
+                    frappe.msgprint("Something went wrong. Please try again.");
+                    button.disabled = false;
+                    button.innerText = "Submit";
+                }
+            }
+        });
+    }
 
-/*<img src="/assets/job_club/images/logo-es.png" alt="Emporium" class="emporium-logo">
-<div class="success-mobile-container">
-            <div class="success-mobile-card">
-                <!-- Logo -->
-                <img src="/files/emporium-logo.png" alt="Emporium" class="success-logo">
-                
-                <!-- Thanks Box -->
-                <div class="thanks-box">
-                    <h3 class="thanks-title">Thanks for registering with</h3>
-                    <h2 class="thanks-emporium">Emporium</h2>
-                </div>
-                
-                <!-- Thumbs Up Icon -->
-                <div class="thumbs-up-icon"></div>
-            </div>
-        </div>
-*/
+    function showStylishSuccess(message) {
+        const overlay = document.createElement("div");
+        overlay.style.position = "fixed";
+        overlay.style.top = "0";
+        overlay.style.left = "0";
+        overlay.style.width = "100vw";
+        overlay.style.height = "100vh";
+        overlay.style.background = "rgba(0, 0, 0, 0.4)";
+        overlay.style.zIndex = "9998";
+        overlay.style.display = "flex";
+        overlay.style.alignItems = "center";
+        overlay.style.justifyContent = "center";
+        overlay.style.animation = "fadeIn 0.3s ease";
 
-// Alternative: If you want to use the existing Frappe web form fields
-// Uncomment this section to modify the existing form instead of creating a new one
-/*
-frappe.ready(function() {
-    // Wait for form to load
-    setTimeout(function() {
-        // Hide all default elements
-        $('.page-header, .form-footer').hide();
-        
-        // Wrap the form
-        $('.web-form').wrap('<div class="mobile-form-container"><div class="mobile-form-card"></div></div>');
-        
-        // Add header before form
-        const header = `
-            <div class="form-header">
-                <img src="/files/emporium-logo-white.png" alt="Emporium" class="emporium-logo">
-                <img src="/files/emporium-staff.png" alt="Staff" class="staff-image">
-            </div>
-            <div class="form-title-section">
-                <h2 class="form-title">Register now for</h2>
-                <h1 class="form-subtitle">Free Career Counselling</h1>
-            </div>
-        `;
-        $('.mobile-form-card').prepend(header);
-        
-        // Style existing inputs
-        $('.frappe-control input').addClass('form-input');
-        $('.btn-primary').addClass('register-button').text('Register');
-    }, 100);
-});
-*/
+        const modal = document.createElement("div");
+        modal.style.background = "linear-gradient(135deg, #1f1c2c, #928DAB)";
+        modal.style.color = "#fff";
+        modal.style.padding = "30px 35px";
+        modal.style.borderRadius = "16px";
+        modal.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.4)";
+        modal.style.textAlign = "center";
+        modal.style.maxWidth = "400px";
+        modal.style.animation = "slideUp 0.4s ease";
+
+        modal.innerHTML = `
+    <div style="font-size: 24px; font-weight: bold; margin-bottom: 12px;">${message}</div>
+    <div style="font-size: 16px; opacity: 1; margin-bottom: 20px;">Thank you for registering with us!</div>
+    <div style="font-size: 16px; opacity: 1; margin-bottom: 20px;">We’ll reach out shortly! 🚀</div>
+  `;
+
+        overlay.id = "success-overlay";
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+    }
+
 
