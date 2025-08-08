@@ -45,6 +45,12 @@
       animation: bounceIn 1s ease-in-out;
     }
 
+    .blurred {
+    filter: blur(10px);
+    pointer-events: none; /* disable interaction */
+    user-select: none;
+    }
+
     @keyframes bounceIn {
       0% { opacity: 0; transform: scale(0.8) translateY(-100px); }
       60% { opacity: 1; transform: scale(1.05) translateY(20px); }
@@ -264,6 +270,10 @@
         return;
       }
 
+      // Blur background by adding 'blurred' class
+      document.querySelector(".main-wrapper").classList.add("blurred");
+      document.querySelector(".overlay").classList.add("blurred");
+
       // Show popup
       popup.style.display = "block";
 
@@ -271,10 +281,14 @@
       button.disabled = true;
       button.innerText = "Confirmed 🎉";
 
-      // Optional: auto-hide popup after 4 seconds
+      // Auto-hide popup and remove blur after 4 seconds
       setTimeout(() => {
-        window.location.href = "/registration-from/new";
-        popup.style.display = "none";
+      // Remove blur
+      document.querySelector(".main-wrapper").classList.remove("blurred");
+      document.querySelector(".overlay").classList.remove("blurred");
+
+      popup.style.display = "none";
+      window.location.href = "/registration-from/new";
       }, 4000);
     });
   </script>

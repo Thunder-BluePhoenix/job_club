@@ -1,16 +1,12 @@
 frappe.ready(() => {
-    const pageStyle = `
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400&display=swap" rel="stylesheet" />
+  const styles = `
+        <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400&display=swap" rel="stylesheet" />
     <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body {
-        font-family: 'Lato', sans-serif;
-        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 30px 15px;
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
 
       nav.navbar,
@@ -19,7 +15,7 @@ frappe.ready(() => {
       .navbar-expand-lg,
       footer,
       #footer {
-        display: none !important;
+      display: none !important;
       }
 
       body {
@@ -27,193 +23,258 @@ frappe.ready(() => {
         margin-top: 0 !important;
       }
 
-      /* Logo */
+      body {
+        background: #fff;
+        font-family: 'Lato', sans-serif;
+      }
+
+      .main-wrapper {
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+        overflow: hidden;
+      }
+
+      .top-section {
+        background: #ffffff;
+        text-align: center;
+        padding-top: 20px;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+      }
+
       .page-logo {
-        text-align: center;
-        margin-bottom: 10px;
-        background: rgba(255, 255, 255, 0.85);
-        border-radius: 12px;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-      }
-      .page-logo img {
-        width: 200px;
-        max-width: 80%;
-        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+        width: 250px;
+        margin-bottom: 9px;
       }
 
-      /* Air Hostess Image */
-      .air-hostess {
-        text-align: center;
-        z-index: 0;
-        position: relative;
-      }
-      .air-hostess img {
-        width: 260px;
-        max-width: 100%;
+      .logo {
+        width: 100%;
         height: auto;
-        filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5));
       }
 
-      /* Form wrapper - pull form up to overlap image */
+      .air-hostess {
+        width: 300px;
+        z-index: 0;
+      }
+
+      .girls-img {
+        width: 100%;
+        height: auto;
+      }
+
       .form-wrapper {
-        margin-top: -60px; /* pulls form up over image */
-        position: relative;
-        width: 100%;
-        max-width: 340px;
-        z-index: 1;
-      }
-
-      /* Form card */
-      .form-card {
-        background: rgba(255, 255, 255, 0.08);
-        border-radius: 16px;
-        padding: 28px;
-        width: 100%;
-        backdrop-filter: blur(14px);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        box-shadow: 0 8px 40px rgba(0,0,0,0.4);
-        color: white;
+        margin-top: -80px;
+        background: #d32f2f;
+        border-radius: 15px;
+        padding: 40px 27px 50px;
+        color: #fff;
         text-align: center;
-        animation: fadeUp 0.8s ease 0.2s forwards;
-        opacity: 0;
+        z-index: 1;
+        position: relative;
       }
 
-      @keyframes fadeUp {
-        from { opacity: 0; transform: translateY(30px); }
-        to { opacity: 1; transform: translateY(0); }
+      /* h2 text white */
+      .form-wrapper h2,
+      .form-wrapper h2 span {
+        color: white;
       }
 
-      .form-card h2 {
-        margin-bottom: 16px;
+      .form-wrapper h2 {
+        font-size: 20px;
+        margin-bottom: 20px;
         line-height: 1.4;
-        margin-top: 0rem;
-        font-weight: bold;
-        font-size: 1.4rem;
-        color: #ffd700;
+        font-weight: 400;
+        margin-top: 4px;
       }
 
+      .form-wrapper h2 span {
+        font-weight: bold;
+        font-size: 1.6rem;
+      }
+
+      /* Form groups styling */
       .form-group {
-        margin-bottom: 14px;
         text-align: left;
+        margin-bottom: 15px;
       }
+
       .form-group label {
-        font-size: 13px;
-        font-weight: 600;
         display: block;
+        font-weight: 600;
+        font-size: 14px;
         margin-bottom: 5px;
+        color: white;
       }
+
       .form-group input {
         width: 100%;
-        padding: 10px 12px;
-        border-radius: 8px;
+        padding: 14px 15px;
         border: none;
+        border-radius: 10px;
+        font-size: 16px;
         outline: none;
-        background: rgba(255,255,255,0.15);
-        color: white;
-        font-size: 13px;
-        transition: all 0.3s ease;
+        box-sizing: border-box;
       }
+
+      /* Input background and text color */
+      .form-group input {
+        background: #fff;
+        color: #333;
+      }
+
+      /* Placeholder color */
       .form-group input::placeholder {
-        color: rgba(255,255,255,0.6);
+        color: #808080ff;
       }
+
+      /* Input focus */
       .form-group input:focus {
-        background: rgba(255,255,255,0.25);
-        box-shadow: 0 0 6px #00f2fe, 0 0 12px #4facfe;
+        background: #f9f9f9;
+        border: 1px solid #3041e4;
       }
 
       .submit-btn {
         width: 100%;
-        padding: 12px;
+        padding: 14px;
         border: none;
-        border-radius: 10px;
-        background: linear-gradient(90deg, #4facfe, #00f2fe);
-        color: #1a1a1a;
-        font-size: 15px;
-        font-weight: 600;
+        border-radius: 12px;
+        background: linear-gradient(to right, #151f6d, #3041e4);
+        color: white;
+        font-size: 18px;
+        font-weight: 500;
         cursor: pointer;
-        transition: transform 0.2s ease, box-shadow 0.3s ease;
+        transition: background 0.3s ease;
       }
+
       .submit-btn:hover {
-        transform: scale(1.05);
-        box-shadow: 0 4px 20px rgba(0,242,254,0.5);
+        background: linear-gradient(to right, #0f1b5d, #263ccf);
       }
 
       .success-msg {
-        margin-top: 12px;
-        font-size: 14px;
-        color: #a5ff95;
+        margin-top: 15px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #c8facc;
         display: none;
       }
 
-      /* Mobile */
       @media (max-width: 480px) {
-        .page-logo img { width: 160px; }
-        .air-hostess img { width: 200px; }
-        .form-wrapper { margin-top: -60px; }
-        .form-card { padding-top: 20px; }
+        .main-wrapper {
+          border-radius: 0;
+        }
+
+        .form-wrapper {
+          padding: 30px 20px 60px;
+          margin-top: -40px;
+        }
+
+        .form-wrapper h2 {
+          font-size: 20x;
+        }
+
+        .form-wrapper h2 span {
+          font-size: 1.6rem;
+        }
+
+        .page-logo {
+          width: 180px;
+        }
+
+        .air-hostess {
+          width: 265px;
+        }
       }
     </style>`;
 
-    const formHTML = `
-    <div class="page-logo">
-      <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" alt="Emporium Logo">
-    </div>
-    <div class="air-hostess">
-      <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/2girl.png" alt="Air Hostess">
-    </div>
-    <div class="form-wrapper">
-      <div class="form-card">
-        <h2>Free Career Counselling</h2>
-        <div class="form-group">
-          <label for="full_name">Full Name</label>
-          <input type="text" id="full_name" placeholder="Enter your full name">
+  const html = `
+    <div class="main-wrapper">
+      <div class="top-section">
+        <div class="page-logo">
+          <img
+            src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png"
+            alt="Emporium Logo"
+            class="logo"
+          />
         </div>
-        <div class="form-group">
-          <label for="email_id">Email</label>
-          <input type="email" id="email_id" placeholder="Enter your email">
+
+        <div class="air-hostess">
+          <img
+            src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/2girl.png"
+            alt="Air Hostess"
+            class="girls-img"
+          />
         </div>
-        <div class="form-group">
-          <label for="mobile_number">Mobile Number</label>
-          <input type="text" id="mobile_number" placeholder="Enter your mobile number">
-        </div>
-        <button class="submit-btn" onclick="submitRegistration()">Register Now</button>
-        <div class="success-msg" id="success_msg">🎉 Thank you for registering!</div>
+      </div>
+      <div class="form-wrapper">
+        <h2>Register now for<br /><span>Free Career Counselling</span></h2>
+        <form id="registration-form">
+          <div class="form-group">
+            <label for="full_name">Full Name</label>
+            <input type="text" id="full_name" placeholder="Enter your full name" required />
+          </div>
+          <div class="form-group">
+            <label for="email_id">Email</label>
+            <input type="email" id="email_id" placeholder="Enter your email" required />
+          </div>
+          <div class="form-group">
+            <label for="mobile_number">Mobile Number</label>
+            <input type="text" id="mobile_number" placeholder="Enter your mobile number" required />
+          </div>
+          <button type="submit" class="submit-btn">Register</button>
+          <div class="success-msg" id="success-msg">🎉 Thank you for registering!</div>
+        </form>
       </div>
     </div>`;
 
-    document.head.insertAdjacentHTML("beforeend", pageStyle);
-    document.querySelector("main").innerHTML = formHTML;
-});
+  // Inject styles and html
+  document.head.insertAdjacentHTML('beforeend', styles);
+  const container = document.querySelector('main') || document.body;
+  container.innerHTML = html;
 
-function submitRegistration() {
-    const full_name = document.getElementById("full_name").value.trim();
-    const email_id = document.getElementById("email_id").value.trim();
-    const mobile_number = document.getElementById("mobile_number").value.trim();
-    const button = document.querySelector(".submit-btn");
+  const form = document.getElementById('registration-form');
+  const successMsg = document.getElementById('success-msg');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    successMsg.style.display = 'none';
+
+    const full_name = document.getElementById('full_name').value.trim();
+    const email_id = document.getElementById('email_id').value.trim();
+    const mobile_number = document.getElementById('mobile_number').value.trim();
 
     if (!full_name || !email_id || !mobile_number) {
-        frappe.msgprint("Please fill in all fields.");
-        return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email_id)) {
-        frappe.msgprint("Please enter a valid email address.");
-        return;
+      frappe.msgprint('Please fill in all fields.');
+      return;
     }
 
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email_id)) {
+      frappe.msgprint('Please enter a valid email address.');
+      return;
+    }
+
+    const button = form.querySelector('button');
     button.disabled = true;
-    button.innerText = "Submitting...";
+    button.textContent = 'Submitting...';
 
     frappe.call({
-        method: 'frappe.website.doctype.web_form.web_form.accept',
-        args: { web_form: 'registration-from', data: JSON.stringify({ full_name, email_id, mobile_number }) },
-        callback: (r) => {
-            if (r.message) {
-                window.location.href = `/assets/job_club/thank_you.html?name=${encodeURIComponent(full_name)}`;
-            } else {
-                frappe.msgprint("Something went wrong. Please try again.");
-                button.disabled = false;
-                button.innerText = "Register Now";
-            }
+      method: 'frappe.website.doctype.web_form.web_form.accept',
+      args: {
+        web_form: 'registration-from',
+        data: JSON.stringify({ full_name, email_id, mobile_number }),
+      },
+      callback: (r) => {
+        if (r.message) {
+          // Redirect to thank_you.html with full_name in query param
+          window.location.href = `/assets/job_club/thank_you.html?name=${encodeURIComponent(full_name)}`;
+        } else {
+          frappe.msgprint('Something went wrong. Please try again.');
+          button.disabled = false;
+          button.textContent = 'Register Now';
         }
+      },
     });
-}
+  });
+});
