@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2025-08-12 02:11:22.564273",
+ "creation": "2025-08-12 02:50:20.460465",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -17,8 +17,9 @@
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
+ "issingle": 1,
  "links": [],
- "modified": "2025-08-12 02:26:30.198270",
+ "modified": "2025-08-12 02:52:31.165475",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "OTP Settings",
@@ -28,30 +29,25 @@
    "create": 1,
    "delete": 1,
    "email": 1,
-   "export": 1,
    "print": 1,
    "read": 1,
-   "report": 1,
    "role": "System Manager",
+   "select": 1,
    "share": 1,
    "write": 1
   },
   {
    "email": 1,
-   "export": 1,
    "print": 1,
    "read": 1,
-   "report": 1,
    "role": "All",
    "select": 1,
    "share": 1
   },
   {
    "email": 1,
-   "export": 1,
    "print": 1,
    "read": 1,
-   "report": 1,
    "role": "Guest",
    "select": 1,
    "share": 1

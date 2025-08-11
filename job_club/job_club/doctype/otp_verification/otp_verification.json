@@ -49,7 +49,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-12 02:25:42.203932",
+ "modified": "2025-08-12 03:03:09.807224",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "OTP Verification",
@@ -95,6 +95,7 @@
    "write": 1
   }
  ],
+ "read_only": 1,
  "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
