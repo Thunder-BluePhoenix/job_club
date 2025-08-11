@@ -86,7 +86,7 @@ def send_otp(data):
         message = f"""
         Dear,
 
-        Your One-Time Password for the Vendor Management System (VMS) Portal is {otp}.
+        Your One-Time Password for the Registration Portal is {otp}.
 
         Regards,
         VMS Team
@@ -96,6 +96,7 @@ def send_otp(data):
             recipients=[reciever_email],
             subject=subject,
             message=message,
+            now = True
         )
 
         # print(message)
