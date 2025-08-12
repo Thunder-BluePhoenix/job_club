@@ -9,7 +9,6 @@
   "naming_series",
   "section_break_iqdi",
   "full_name",
-  "applicant_name",
   "email_id",
   "mobile_number"
  ],
@@ -30,11 +29,6 @@
    "label": "Full Name"
   },
   {
-   "fieldname": "applicant_name",
-   "fieldtype": "Data",
-   "label": "Applicant Name"
-  },
-  {
    "fieldname": "email_id",
    "fieldtype": "Data",
    "label": "Email ID"
@@ -48,8 +42,8 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-12 01:55:33.433956",
- "modified_by": "Administrator",
+ "modified": "2025-08-12 14:30:52.261887",
+ "modified_by": "prasunmajismk@gmail.com",
  "module": "Job Club",
  "name": "Interview",
  "owner": "Administrator",
