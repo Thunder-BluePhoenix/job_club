@@ -12,7 +12,7 @@ frappe.ready(() => {
       .air-hostess { width: 300px; }
       .girls-img { width: 100%; height: auto; }
       .form-wrapper { margin-top: -80px; background: #d32f2f; border-radius: 15px; padding: 40px 27px 50px; color: #fff; text-align: center; position: relative; }
-      .form-wrapper h2 { font-size: 20px; margin-bottom: 20px; font-weight: 400; margin-top: 4px; line-height: 1.4; }
+      .form-wrapper h2 { font-size: 20px; margin-bottom: 20px; font-weight: 400; margin-top: 4px; line-height: 1.4; color: white; }
       .form-wrapper h2 span { font-weight: bold; font-size: 1.6rem; }
       .form-group { text-align: left; margin-bottom: 15px; }
       .form-group label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 5px; color: white; }
