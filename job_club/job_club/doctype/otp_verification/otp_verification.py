@@ -13,7 +13,7 @@ class OTPVerification(Document):
       
         
         if exp_doc != None:
-            exp_t_min = float(exp_doc.otp_expiration_time)
+            exp_t_min = float(exp_doc.otp_expiration_time or 10)  # Default to 10 minutes if not set
             exp_t_sec = exp_t_min * 60
         else:
             exp_t_sec = 300
