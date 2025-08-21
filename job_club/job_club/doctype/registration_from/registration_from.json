@@ -9,6 +9,11 @@
   "full_name",
   "mobile_number",
   "email_id",
+  "city",
+  "gender",
+  "age",
+  "height",
+  "qualification",
   "naming_series",
   "invitation_accepted",
   "acceptance_date"
@@ -48,12 +53,38 @@
    "fieldname": "acceptance_date",
    "fieldtype": "Datetime",
    "label": "Acceptance Date"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "label": "Gender",
+   "options": "Male\nFemale\nOther"
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Data",
+   "label": "Age"
+  },
+  {
+   "fieldname": "height",
+   "fieldtype": "Data",
+   "label": "Height"
+  },
+  {
+   "fieldname": "qualification",
+   "fieldtype": "Data",
+   "label": "Qualification"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-27 23:22:49.657704",
+ "modified": "2025-08-21 17:36:31.365217",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Registration From",
@@ -97,6 +128,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []
