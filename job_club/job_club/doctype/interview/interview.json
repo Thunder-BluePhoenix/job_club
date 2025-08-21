@@ -10,7 +10,13 @@
   "section_break_iqdi",
   "full_name",
   "email_id",
-  "mobile_number"
+  "mobile_number",
+  "city",
+  "column_break_ohgl",
+  "gender",
+  "age",
+  "height",
+  "qualification"
  ],
  "fields": [
   {
@@ -37,13 +43,43 @@
    "fieldname": "mobile_number",
    "fieldtype": "Data",
    "label": "Mobile Number"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fieldname": "column_break_ohgl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "label": "Gender",
+   "options": "Male\nFemale\nOther"
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Data",
+   "label": "Age"
+  },
+  {
+   "fieldname": "height",
+   "fieldtype": "Data",
+   "label": "Height"
+  },
+  {
+   "fieldname": "qualification",
+   "fieldtype": "Data",
+   "label": "Qualification"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-12 14:30:52.261887",
- "modified_by": "prasunmajismk@gmail.com",
+ "modified": "2025-08-21 17:44:29.213253",
+ "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Interview",
  "owner": "Administrator",
