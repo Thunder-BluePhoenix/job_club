@@ -15,12 +15,22 @@ class RegistrationFrom(Document):
         # Only create a new Interview if one doesn't already exist
         if not existing_interview:
             interview = frappe.new_doc("Interview")
+            
+            # Basic details
             interview.full_name = self.full_name
             interview.applicant_name = self.full_name
             interview.email_id = self.email_id
             interview.mobile_number = self.mobile_number
 
+            # ✅ New fields mapping
+            interview.city = self.city
+            interview.gender = self.gender
+            interview.age = self.age
+            interview.height = self.height
+            interview.qualification = self.qualification
+
             interview.save()
+
 
 
             

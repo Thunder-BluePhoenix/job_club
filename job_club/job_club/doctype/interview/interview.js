@@ -21,6 +21,11 @@ frappe.ui.form.on('Interview', {
                 email_id: frm.doc.email_id,
                 mobile_no: frm.doc.mobile_number,
                 lead_name: frm.doc.full_name,
+                city: frm.doc.custom_city,
+                gender: frm.doc.custom_gender,
+                age: frm.doc.custom_age,
+                height: frm.doc.custom_height,
+                qualification: frm.doc.custom_qualification
             });
         }, 'Create');
     }
