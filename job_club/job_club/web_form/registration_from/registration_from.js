@@ -1,125 +1,342 @@
-frappe.ready(() => {
-  const styles = `
+frappe.ready(() => { const styles = `
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;600&display=swap" rel="stylesheet" />
 <style>
-          * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Lato', sans-serif; }
-          nav.navbar, footer, #footer { display: none !important; }
-          body { background: #f5f7fa; }
-
-          .main-wrapper {
-            width: 100%; max-width: 960px; margin: 40px auto;
-            display: flex; border-radius: 16px; overflow: hidden;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15); background: #fff;
-          }
-
-          /* Left branding (desktop only) */
-          .left-section {
-            flex: 1; background: linear-gradient(160deg, #d32f2f, #3041e4);
-            color: white; padding: 30px 20px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-          }
-          .page-logo { width: 180px; margin-bottom: 15px; background: #fff; border-radius: 10px; padding: 8px; } /* ✅ white bg for logo */
-          .logo { width: 100%; height: auto; }
-          .air-hostess { width: 240px; margin-top: 10px; }
-          .girls-img { width: 100%; height: auto; }
-          .left-section h2 { font-size: 22px; font-weight: 600; margin-top: 15px; }
-          .left-section p { font-size: 14px; max-width: 300px; margin-top: 10px; opacity: 0.9; text-align: center; }
-
-          /* Right form */
-          .form-wrapper {
-            flex: 1.3; background: #fff; padding: 20px 30px;
-          }
-          .form-wrapper h2 {
-            font-size: 30px; margin-top: 20px;
-            font-weight: 700; color: #fff; text-align: center;
-            background: linear-gradient(160deg, #d32f2f, #3041e4);
-            padding: 12px;
-            border-radius: 8px;
-          }
-          .form-wrapper h3.sub-title {
-          font-size: 24px;   /* ✅ smaller subheading */
-          margin-top: 30px;
-          margin-bottom: 30px;
-          font-weight: 600;
-          color: #333;
-          text-align: center;
-          text-decoration: underline;
-          }
-          .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-          .form-group { text-align: left; margin-bottom: 14px; }
-          .form-group label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 4px; color: #333; }
-          .form-group input, .form-group select {
-            width: 100%; padding: 10px 12px;
-            border: 1px solid #ddd; border-radius: 8px;
-            font-size: 14px; background: #fff; color: #333;
-            transition: all 0.25s ease;
-          }
-          .form-group input:focus, .form-group select:focus {
-            border: 1px solid #3041e4; box-shadow: 0 0 6px rgba(48,65,228,0.3); outline: none;
-          }
-          .submit-btn {
-            width: 100%; padding: 12px; border: none; border-radius: 10px;
-            background: linear-gradient(to right, #151f6d, #3041e4);
-            color: white; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px;
-            transition: all 0.25s ease;
-          }
-          .submit-btn:hover {
-            background: linear-gradient(to right, #0f1b5d, #263ccf);
-            box-shadow: 0 4px 12px rgba(48,65,228,0.4);
-          }
-
-          /* Wave top bar (mobile) */
-          .wave-header {
-            display: none; background: linear-gradient(160deg, #d32f2f, #3041e4);
-            color: white; text-align: center; padding: 15px 10px; position: relative;
-          }
-          .wave-header .logo { width: 120px; margin-bottom: 5px; background:#fff; border-radius:8px; padding:5px; } /* ✅ white bg logo mobile */
-          .wave-header h2 { font-size: 26px; margin: 8px 0; color: #fff; }
-          .wave-header .girls-img { width: 150px; display: block; margin: 8px auto 0; }
-          .wave-svg {
-            position: absolute; bottom: -1px; left: 0; width: 100%; height: 40px;
-          }
-
-          /* OTP Modal */
-          .otp-modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.45); z-index:999; justify-content:center; align-items:center; backdrop-filter: blur(6px); }
-          .otp-modal { background: white; padding: 16px; border-radius: 12px; width: 320px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.3); position: relative; animation: modalPop 0.25s ease-out; }
-          @keyframes modalPop { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-          .otp-input { padding: 9px; width: 100%; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; }
-          .otp-btn { padding: 7px 12px; margin: 4px; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; }
-          .otp-btn-primary { background: linear-gradient(to right, #151f6d, #3041e4); color: white; }
-          .otp-btn-secondary { background: #eee; color: #333; }
-          .otp-close-btn { position: absolute; top: 6px; right: 8px; background: none; border: none; font-size: 22px; cursor: pointer; }
-          .timer { margin-top: 6px; font-size: 12px; }
-          .success-check { display: none; margin: 8px auto; width: 38px; height: 38px; border-radius: 50%; background: #4caf50; position: relative; }
-          .success-check::after { content: ''; position: absolute; left: 11px; top: 9px; width: 11px; height: 18px; border: solid white; border-width: 0 3px 3px 0; transform: rotate(45deg); }
-          #otp-message { margin-top: 8px; font-size: 13px; text-align: center; }
-
-          /* Mobile adjustments */
-          .register-title-mobile {
-      display: none;
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Lato", sans-serif;
     }
-          @media(max-width: 768px) {
-            .main-wrapper { flex-direction: column; margin: 0; border-radius: 0; box-shadow: none; }
-            .left-section { display: none; }
-            .wave-header { display: block; }
-            .form-wrapper { padding: 12px 20px; }
-            /* two-column form even on mobile */
-            .form-row { grid-template-columns: 1fr 1fr; gap: 8px; }
-            .form-group { margin-bottom: 6px; }
-            .form-group label { font-size: 11px; margin-bottom: 2px; }
-            .form-group input, .form-group select { padding: 6px 8px; font-size: 12px; border-radius: 6px; }
-            .submit-btn { padding: 8px; font-size: 13px; border-radius: 8px; margin-top: 6px; }
-            .desktop-title { display: none; }
-              .register-title-mobile {
-        display: block;
-        font-size: 22px;
+    nav.navbar,
+    footer,
+    #footer {
+        display: none !important;
+    }
+    body {
+        background: #f5f7fa;
+    }
+
+    .main-wrapper {
+        width: 100%;
+        max-width: 960px;
+        margin: 40px auto;
+        display: flex;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        background: #fff;
+    }
+
+    /* Left branding (desktop only) */
+    .left-section {
+        flex: 1;
+        background: linear-gradient(160deg, #d32f2f, #3041e4);
+        color: white;
+        padding: 30px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .page-logo {
+        width: 180px;
+        margin-bottom: 15px;
+        background: #fff;
+        border-radius: 10px;
+        padding: 8px;
+    } /* ✅ white bg for logo */
+    .logo {
+        width: 100%;
+        height: auto;
+    }
+    .air-hostess {
+        width: 240px;
         margin-top: 10px;
-        margin-bottom: 24px;
+    }
+    .girls-img {
+        width: 100%;
+        height: auto;
+    }
+    .left-section h2 {
+        font-size: 22px;
+        font-weight: 600;
+        margin-top: 15px;
+    }
+    .left-section p {
+        font-size: 14px;
+        max-width: 300px;
+        margin-top: 10px;
+        opacity: 0.9;
+        text-align: center;
+    }
+
+    /* Right form */
+    .form-wrapper {
+        flex: 1.3;
+        background: #fff;
+        padding: 20px 30px;
+    }
+    .form-wrapper h2 {
+        font-size: 30px;
+        margin-top: 20px;
+        font-weight: 700;
+        color: #fff;
+        text-align: center;
+        background: linear-gradient(160deg, #d32f2f, #3041e4);
+        padding: 12px;
+        border-radius: 8px;
+    }
+    .form-wrapper h3.sub-title {
+        font-size: 24px; /* ✅ smaller subheading */
+        margin-top: 30px;
+        margin-bottom: 30px;
         font-weight: 600;
         color: #333;
         text-align: center;
         text-decoration: underline;
-          }
+    }
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+    }
+    .form-group {
+        text-align: left;
+        margin-bottom: 14px;
+    }
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        font-size: 13px;
+        margin-bottom: 4px;
+        color: #333;
+    }
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        background: #fff;
+        color: #333;
+        transition: all 0.25s ease;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+        border: 1px solid #3041e4;
+        box-shadow: 0 0 6px rgba(48, 65, 228, 0.3);
+        outline: none;
+    }
+    .submit-btn {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(to right, #151f6d, #3041e4);
+        color: white;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: all 0.25s ease;
+    }
+    .submit-btn:hover {
+        background: linear-gradient(to right, #0f1b5d, #263ccf);
+        box-shadow: 0 4px 12px rgba(48, 65, 228, 0.4);
+    }
+
+    /* Wave top bar (mobile) */
+    .wave-header {
+        display: none;
+        background: linear-gradient(160deg, #d32f2f, #3041e4);
+        color: white;
+        text-align: center;
+        padding: 15px 10px;
+        position: relative;
+    }
+    .wave-header .logo {
+        width: 120px;
+        margin-bottom: 5px;
+        background: #fff;
+        border-radius: 8px;
+        padding: 5px;
+    } /* ✅ white bg logo mobile */
+    .wave-header h2 {
+        font-size: 26px;
+        margin: 8px 0;
+        color: #fff;
+    }
+    .wave-header .girls-img {
+        width: 150px;
+        display: block;
+        margin: 8px auto 0;
+    }
+    .wave-svg {
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 100%;
+        height: 40px;
+    }
+
+    /* OTP Modal */
+    .otp-modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.45);
+        z-index: 999;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(6px);
+    }
+    .otp-modal {
+        background: white;
+        padding: 16px;
+        border-radius: 12px;
+        width: 320px;
+        text-align: center;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        position: relative;
+        animation: modalPop 0.25s ease-out;
+    }
+    @keyframes modalPop {
+        from {
+            transform: scale(0.9);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+    .otp-input {
+        padding: 9px;
+        width: 100%;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+    }
+    .otp-btn {
+        padding: 7px 12px;
+        margin: 4px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+    }
+    .otp-btn-primary {
+        background: linear-gradient(to right, #151f6d, #3041e4);
+        color: white;
+    }
+    .otp-btn-secondary {
+        background: #eee;
+        color: #333;
+    }
+    .otp-close-btn {
+        position: absolute;
+        top: 6px;
+        right: 8px;
+        background: none;
+        border: none;
+        font-size: 22px;
+        cursor: pointer;
+    }
+    .timer {
+        margin-top: 6px;
+        font-size: 12px;
+    }
+    .success-check {
+        display: none;
+        margin: 8px auto;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #4caf50;
+        position: relative;
+    }
+    .success-check::after {
+        content: "";
+        position: absolute;
+        left: 11px;
+        top: 9px;
+        width: 11px;
+        height: 18px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        transform: rotate(45deg);
+    }
+    #otp-message {
+        margin-top: 8px;
+        font-size: 13px;
+        text-align: center;
+    }
+
+    /* Mobile adjustments */
+    .register-title-mobile {
+        display: none;
+    }
+    @media (max-width: 768px) {
+        .main-wrapper {
+            flex-direction: column;
+            margin: 0;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        .left-section {
+            display: none;
+        }
+        .wave-header {
+            display: block;
+        }
+
+        /* ✅ Make fields appear consecutively */
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 6px;
+        }
+
+        .form-group {
+            margin-bottom: 8px;
+        }
+        .form-group label {
+            font-size: 12px;
+            margin-bottom: 3px;
+        }
+        .form-group input,
+        .form-group select {
+            padding: 7px 9px;
+            font-size: 13px;
+            border-radius: 6px;
+        }
+
+        /* Compact button */
+        .submit-btn {
+            padding: 9px;
+            font-size: 14px;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+
+        /* Titles */
+        .desktop-title {
+            display: none;
+        }
+        .register-title-mobile {
+            display: block;
+            font-size: 20px;
+            margin: 0px 0 20px;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            text-decoration: underline;
+        }
+    }
 </style>
 `; const html = `
 <!-- Mobile Header -->
