@@ -1,4 +1,5 @@
-frappe.ready(() => { const styles = `
+frappe.ready(() => {
+    const styles = `
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;600&display=swap" rel="stylesheet" />
 <style>
     * {
@@ -117,7 +118,7 @@ frappe.ready(() => { const styles = `
         padding: 10px 12px;
         border: 1px solid #ddd;
         border-radius: 8px;
-        font-size: 14px;
+        font-size: 13px;
         background: #fff;
         color: #333;
         transition: all 0.25s ease;
@@ -127,6 +128,11 @@ frappe.ready(() => { const styles = `
         border: 1px solid #3041e4;
         box-shadow: 0 0 6px rgba(48, 65, 228, 0.3);
         outline: none;
+    }
+    .form-group label::after {
+    content: " *";
+    color: red;
+    font-weight: bold;
     }
     .submit-btn {
         width: 100%;
@@ -198,7 +204,6 @@ frappe.ready(() => { const styles = `
         background: white;
         padding: 16px;
         border-radius: 12px;
-        width: 320px;
         text-align: center;
         box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
         position: relative;
@@ -338,7 +343,8 @@ frappe.ready(() => { const styles = `
         }
     }
 </style>
-`; const html = `
+`
+    const html = `
 <!-- Mobile Header -->
 <div class="wave-header">
     <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" class="logo" />
@@ -350,13 +356,11 @@ frappe.ready(() => { const styles = `
 </div>
 
 <div class="main-wrapper" id="page-content">
-    <!-- Left Section (desktop only) -->
     <div class="left-section">
         <div class="page-logo"><img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" class="logo" /></div>
         <div class="air-hostess"><img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/2girl.png" class="girls-img" /></div>
     </div>
 
-    <!-- Right Form -->
     <div class="form-wrapper">
         <h2 class="desktop-title">Free Career Counselling</h2>
         <h3 class="sub-title desktop-title">Register Now</h3>
@@ -364,10 +368,10 @@ frappe.ready(() => { const styles = `
             <h3 class="register-title-mobile">Register Now</h3>
             <div class="form-row">
                 <div>
-                    <div class="form-group"><label>Full Name</label><input type="text" id="full_name" placeholder="Enter your full name" required /></div>
-                    <div class="form-group"><label>Email</label><input type="email" id="email_id" placeholder="Enter your email" required /></div>
-                    <div class="form-group"><label>Mobile Number</label><input type="text" id="mobile_number" placeholder="Enter your mobile number" required /></div>
-                    <div class="form-group"><label>City</label><input type="text" id="city" placeholder="Enter your city" /></div>
+                    <div class="form-group"><label>Full Name</label><input type="text" id="full_name" placeholder="Enter your full name" required /><div class="error-msg" id="error-full_name"></div></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="email_id" placeholder="Enter your email" required /><div class="error-msg" id="error-email_id"></div></div>
+                    <div class="form-group"><label>Mobile Number</label><input type="text" id="mobile_number" placeholder="Enter your mobile/whatsapp number" required /><div class="error-msg" id="error-mobile_number"></div></div>
+                    <div class="form-group"><label>Location</label><input type="text" id="location" placeholder="Enter your District, State in India" /><div class="error-msg" id="error-location"></div></div>
                 </div>
                 <div>
                     <div class="form-group">
@@ -378,12 +382,21 @@ frappe.ready(() => { const styles = `
                             <option value="Female">Female</option>
                             <option value="Other">Other</option>
                         </select>
+                        <div class="error-msg" id="error-gender"></div>
                     </div>
-                    <div class="form-group"><label>Age</label><input type="number" id="age" placeholder="Enter your age" /></div>
-                    <div class="form-group"><label>Height</label><input type="text" id="height" placeholder="Enter your height" /></div>
-                    <div class="form-group"><label>Qualification</label><input type="text" id="qualification" placeholder="Enter your qualification" /></div>
+                    <div class="form-group"><label>Age</label><input type="number" id="age" placeholder="Between 18-27 Years" /><div class="error-msg" id="error-age"></div></div>
+                    <div class="form-group"><label>Height (in cm)</label><input type="text" id="height" placeholder="Enter your height" /><div class="error-msg" id="error-height"></div></div>
+                    <div class="form-group">
+                        <label>Qualification</label>
+                        <select id="qualification">
+                            <option value="">Select</option>
+                            <option value="Class 12 and Above">Class 12 and Above</option>
+                        </select>
+                        <div class="error-msg" id="error-qualification"></div>
+                    </div>
                 </div>
             </div>
+            <div id="form-error" style="color: red; font-size: 13px; margin-top: 5px; text-align: center;"></div>
             <button type="submit" class="submit-btn" id="register-btn">Register</button>
         </form>
     </div>
@@ -406,161 +419,263 @@ frappe.ready(() => { const styles = `
 </div>
 `;
 
-  document.head.insertAdjacentHTML('beforeend', styles);
-  const container = document.querySelector('main') || document.body;
-  container.innerHTML = html;
+    document.head.insertAdjacentHTML('beforeend', styles);
+    const container = document.querySelector('main') || document.body;
+    container.innerHTML = html;
 
-  const otpModalOverlay = document.getElementById('otp-modal-overlay');
-  const otpCloseBtn = document.getElementById('otp-close-btn');
-  const pageContent = document.getElementById('page-content');
-  const successCheck = document.getElementById('otp-success-check');
-  const otpMessage = document.getElementById('otp-message');
-  const otpTimer = document.getElementById('otp-timer');
+    // ---------- Common references ----------
+    const otpModalOverlay = document.getElementById('otp-modal-overlay');
+    const otpCloseBtn = document.getElementById('otp-close-btn');
+    const pageContent = document.getElementById('page-content');
+    const successCheck = document.getElementById('otp-success-check');
+    const otpMessage = document.getElementById('otp-message');
+    const otpTimer = document.getElementById('otp-timer');
+    const formError = document.getElementById('form-error');
 
-  let countdownInterval;
-  function startCountdown(seconds) {
-    clearInterval(countdownInterval);
-    let remaining = seconds;
-    updateTimerDisplay(remaining);
-    countdownInterval = setInterval(() => {
-      remaining--;
-      updateTimerDisplay(remaining);
-      if (remaining <= 0) {
+    // ---------- Helpers ----------
+    function showFieldError(field, message) {
+        const errorBox = document.getElementById(`error-${field}`);
+        const fieldInput = document.getElementById(field);
+
+        if (errorBox) {
+            errorBox.textContent = message || "";
+            errorBox.style.color = message ? "red" : "";
+            errorBox.style.fontSize = "12px";
+        }
+        if (fieldInput) {
+            fieldInput.style.border = message ? "1px solid red" : "1px solid #ccc";
+        }
+    }
+    function showOtpMessage(text, color = "#d32f2f") {
+        otpMessage.style.color = color;
+        otpMessage.textContent = text;
+    }
+
+    let countdownInterval;
+    function startCountdown(seconds) {
         clearInterval(countdownInterval);
-        otpTimer.style.color = "#d32f2f";
-        otpTimer.textContent = "OTP expired. Please resend.";
-      }
-    }, 1000);
-  }
-
-  function updateTimerDisplay(seconds) {
-    const min = Math.floor(seconds / 60);
-    const sec = seconds % 60;
-    otpTimer.style.color = seconds <= 60 ? "#d32f2f" : "#666";
-    otpTimer.textContent = `OTP expires in ${min}:${sec.toString().padStart(2, '0')}`;
-  }
-
-  function showOtpMessage(text, color = "#d32f2f") {
-    otpMessage.style.color = color;
-    otpMessage.textContent = text;
-  }
-
-  let full_name, email_id, mobile_number, city, gender, age, height, qualification;
-
-  // Send OTP on Register
-  document.getElementById('registration-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    full_name = document.getElementById('full_name').value.trim();
-    email_id = document.getElementById('email_id').value.trim();
-    mobile_number = document.getElementById('mobile_number').value.trim();
-    city = document.getElementById('city').value.trim();
-    gender = document.getElementById('gender').value;
-    age = document.getElementById('age').value.trim();
-    height = document.getElementById('height').value.trim();
-    qualification = document.getElementById('qualification').value.trim();
-
-    if (!full_name || !email_id || !mobile_number) {
-      showOtpMessage('Please fill in all required fields.');
-      return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email_id)) {
-      showOtpMessage('Please enter a valid email address.');
-      return;
-    }
-
-    otpModalOverlay.style.display = 'flex';
-    pageContent.style.filter = 'blur(6px)';
-    showOtpMessage('Sending OTP...', '#666');
-
-    frappe.call({
-      method: 'job_club.job_club.doctype.otp_verification.otp_api.send_otp',
-      args: { data: { email: email_id, full_name: full_name } },
-      callback: (r) => {
-        if (r.message && r.message.status === "success") {
-          showOtpMessage(r.message.message, '#4caf50');
-          startCountdown(600); // 10 minutes
-        } else {
-          showOtpMessage(r.message ? r.message.message : 'Failed to send OTP.');
-        }
-      }
-    });
-  });
-
-  // Validate OTP
-  document.getElementById('validate-otp-btn').addEventListener('click', () => {
-    const otp_code = document.getElementById('otp-input').value.trim();
-    if (!otp_code) {
-      showOtpMessage('Please enter OTP.');
-      return;
-    }
-
-    showOtpMessage('Verifying OTP...', '#666');
-
-    frappe.call({
-      method: 'job_club.job_club.doctype.otp_verification.otp_api.verify_otp_and_delete',
-      args: { data: { email: email_id, otp: otp_code } },
-      callback: (res) => {
-        if (res.message && res.message.status === "success") {
-          showOtpMessage('OTP verified successfully.', '#4caf50');
-
-          frappe.call({
-            method: 'frappe.website.doctype.web_form.web_form.accept',
-            args: {
-              web_form: 'registration-from',
-              data: JSON.stringify({
-                full_name: full_name,
-                email_id: email_id,
-                mobile_number: mobile_number,
-                city: city,
-                gender: gender,
-                age: age,
-                height: height,
-                qualification: qualification
-              }),
-            },
-            callback: (r) => {
-              if (r.message) {
-                successCheck.style.display = 'block';
-                setTimeout(() => {
-                  successCheck.style.display = 'none';
-                  otpModalOverlay.style.display = 'none';
-                  pageContent.style.filter = 'none';
-                  clearInterval(countdownInterval);
-                  window.location.href = `/assets/job_club/thank_you.html?name=${encodeURIComponent(full_name)}`;
-                }, 1000);
-              } else {
-                showOtpMessage('Failed to save registration.');
-              }
+        let remaining = seconds;
+        updateTimerDisplay(remaining);
+        countdownInterval = setInterval(() => {
+            remaining--;
+            updateTimerDisplay(remaining);
+            if (remaining <= 0) {
+                clearInterval(countdownInterval);
+                otpTimer.style.color = "#d32f2f";
+                otpTimer.textContent = "OTP expired. Please resend.";
             }
-          });
-        } else {
-          showOtpMessage(res.message ? res.message.message : 'Invalid OTP.');
-        }
-      }
-    });
-  });
+        }, 1000);
+    }
+    function updateTimerDisplay(seconds) {
+        const min = Math.floor(seconds / 60);
+        const sec = seconds % 60;
+        otpTimer.style.color = seconds <= 60 ? "#d32f2f" : "#666";
+        otpTimer.textContent = `OTP expires in ${min}:${sec.toString().padStart(2, '0')}`;
+    }
 
-  // Resend OTP
-  document.getElementById('resend-otp-btn').addEventListener('click', () => {
-    showOtpMessage('Resending OTP...', '#666');
-    frappe.call({
-      method: 'job_club.job_club.doctype.otp_verification.otp_api.send_otp',
-      args: { data: { email: email_id, full_name: full_name } },
-      callback: (r) => {
-        if (r.message && r.message.status === "success") {
-          showOtpMessage(r.message.message, '#4caf50');
-          startCountdown(600); // Reset timer
+    // ---------- Instant Field Validations ----------
+    document.getElementById('full_name').addEventListener('blur', function () {
+        if (!this.value.trim()) {
+            showFieldError('full_name', "Full Name is required.");
         } else {
-          showOtpMessage(r.message ? r.message.message : 'Failed to resend OTP.');
+            showFieldError('full_name', "");
         }
-      }
     });
-  });
 
-  otpCloseBtn.addEventListener('click', () => {
-    otpModalOverlay.style.display = 'none';
-    pageContent.style.filter = 'none';
-    clearInterval(countdownInterval);
-  });
+    document.getElementById('email_id').addEventListener('blur', function () {
+        const email = this.value.trim();
+        if (email && !/^[^@]+@[^@]+\.[^@]+$/.test(email)) {
+            showFieldError('email_id', "Enter a valid email address.");
+            return;
+        } else if (!email) {
+            showFieldError('email_id', "Email is required.");
+            return;
+        } else {
+            frappe.call({
+                method: 'job_club.job_club.doctype.registration_from.registration_from.check_duplicate',
+                args: { fieldname: "email_id", value: email },
+                callback: (r) => {
+                    if (r.message.status === "error") {
+                        showFieldError('email_id', r.message.message);
+                    } else {
+                        showFieldError('email_id', "");
+                    }
+                }
+            });
+        }
+    });
+
+    document.getElementById('mobile_number').addEventListener('blur', function () {
+        const mobile = this.value.trim();
+        if (mobile && !/^(\+91\d{10}|\d{10})$/.test(mobile)) {
+            showFieldError('mobile_number', "Enter a valid 10-digit number or +91 followed by 10 digits.");
+            return;
+        } else if (!mobile) {
+            showFieldError('mobile_number', "Mobile number is required.");
+            return;
+        } else {
+            frappe.call({
+                method: 'job_club.job_club.doctype.registration_from.registration_from.check_duplicate',
+                args: { fieldname: "mobile_number", value: mobile },
+                callback: (r) => {
+                    if (r.message.status === "error") {
+                        showFieldError('mobile_number', r.message.message);
+                    } else {
+                        showFieldError('mobile_number', "");
+                    }
+                }
+            });
+        }
+    });
+
+    document.getElementById('location').addEventListener('blur', function () {
+        if (!this.value.trim()) {
+            showFieldError('location', "Location is required.");
+        } else {
+            showFieldError('location', "");
+        }
+    });
+    document.getElementById('gender').addEventListener('blur', function () {
+        if (!this.value.trim()) {
+            showFieldError('gender', "Gender is required.");
+        } else {
+            showFieldError('gender', "");
+        }
+    });
+    document.getElementById('age').addEventListener('blur', function () {
+        const age = parseInt(this.value.trim());
+        if (!age) {
+            showFieldError('age', "Age is required.");
+        } else if (age < 18 || age > 27) {
+            showFieldError('age', "Age must be between 18–27.");
+        } else {
+            showFieldError('age', "");
+        }
+    });
+    document.getElementById('height').addEventListener('blur', function () {
+        if (!this.value.trim()) {
+            showFieldError('height', "Height is required.");
+        } else {
+            showFieldError('height', "");
+        }
+    });
+    document.getElementById('qualification').addEventListener('blur', function () {
+        if (!this.value.trim()) {
+            showFieldError('qualification', "Qualification is required.");
+        } else {
+            showFieldError('qualification', "");
+        }
+    });
+
+    // ---------- Form Submit (pre_validate + OTP send) ----------
+    let full_name, email_id, mobile_number, location, gender, age, height, qualification;
+    document.getElementById('registration-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        formError.textContent = '';
+
+        full_name = document.getElementById('full_name').value.trim();
+        email_id = document.getElementById('email_id').value.trim();
+        mobile_number = document.getElementById('mobile_number').value.trim();
+        location = document.getElementById('location').value.trim();
+        gender = document.getElementById('gender').value;
+        age = document.getElementById('age').value.trim();
+        height = document.getElementById('height').value.trim();
+        qualification = document.getElementById('qualification').value.trim();
+
+        frappe.call({
+            method: 'job_club.job_club.doctype.registration_from.registration_from.pre_validate_registration',
+            args: { data: { full_name, email_id, mobile_number, location, gender, age, height, qualification } },
+            callback: (r) => {
+                if (r.message && r.message.status === "error") {
+                    document.querySelectorAll(".error-msg").forEach(el => el.textContent = "");
+                    document.querySelectorAll("#registration-form input, #registration-form select")
+                        .forEach(el => el.style.border = "1px solid #ccc");
+
+                    r.message.errors.forEach(err => {
+                        showFieldError(err.field, err.message);
+                    });
+                } else if (r.message && r.message.status === "success") {
+                    otpModalOverlay.style.display = 'flex';
+                    pageContent.style.filter = 'blur(6px)';
+                    showOtpMessage('Sending OTP...', '#666');
+                    frappe.call({
+                        method: 'job_club.job_club.doctype.otp_verification.otp_api.send_otp',
+                        args: { data: { email: email_id, full_name: full_name } },
+                        callback: (otpRes) => {
+                            if (otpRes.message && otpRes.message.status === "success") {
+                                showOtpMessage(otpRes.message.message, '#4caf50');
+                                startCountdown(600);
+                            } else {
+                                showOtpMessage(otpRes.message ? otpRes.message.message : 'Failed to send OTP.');
+                            }
+                        }
+                    });
+                } else {
+                    formError.textContent = 'Something went wrong. Please try again.';
+                }
+            }
+        });
+    });
+
+    // ---------- OTP Validation (then save) ----------
+    document.getElementById('validate-otp-btn').addEventListener('click', () => {
+        const otp_code = document.getElementById('otp-input').value.trim();
+        if (!otp_code) {
+            showOtpMessage('Please enter OTP.');
+            return;
+        }
+        showOtpMessage('Verifying OTP...', '#666');
+        frappe.call({
+            method: 'job_club.job_club.doctype.otp_verification.otp_api.verify_otp_and_delete',
+            args: { data: { email: email_id, otp: otp_code } },
+            callback: (res) => {
+                if (res.message && res.message.status === "success") {
+                    showOtpMessage('OTP verified successfully.', '#4caf50');
+                    successCheck.style.display = 'block';
+                    frappe.call({
+                        method: 'frappe.website.doctype.web_form.web_form.accept',
+                        args: { web_form: 'registration-from', data: JSON.stringify({ full_name, email_id, mobile_number, location, gender, age, height, qualification }) },
+                        callback: (saveRes) => {
+                            if (saveRes.exc) {
+                                showOtpMessage('Failed to save data. Please try again.');
+                            } else {
+                                setTimeout(() => {
+                                    successCheck.style.display = 'none';
+                                    otpModalOverlay.style.display = 'none';
+                                    pageContent.style.filter = 'none';
+                                    clearInterval(countdownInterval);
+                                    window.location.href = `/assets/job_club/thank_you.html?name=${encodeURIComponent(full_name)}`;
+                                }, 1000);
+                            }
+                        }
+                    });
+                } else {
+                    showOtpMessage(res.message ? res.message.message : 'Invalid OTP.');
+                }
+            }
+        });
+    });
+
+    // ---------- Resend OTP ----------
+    document.getElementById('resend-otp-btn').addEventListener('click', () => {
+        showOtpMessage('Resending OTP...', '#666');
+        frappe.call({
+            method: 'job_club.job_club.doctype.otp_verification.otp_api.send_otp',
+            args: { data: { email: email_id, full_name: full_name } },
+            callback: (r) => {
+                if (r.message && r.message.status === "success") {
+                    showOtpMessage(r.message.message, '#4caf50');
+                    startCountdown(600);
+                } else {
+                    showOtpMessage(r.message ? r.message.message : 'Failed to resend OTP.');
+                }
+            }
+        });
+    });
+
+    otpCloseBtn.addEventListener('click', () => {
+        otpModalOverlay.style.display = 'none';
+        pageContent.style.filter = 'none';
+        clearInterval(countdownInterval);
+    });
 });

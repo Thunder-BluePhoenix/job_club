@@ -21,7 +21,7 @@ frappe.ui.form.on('Interview', {
                 email_id: frm.doc.email_id,
                 mobile_no: frm.doc.mobile_number,
                 lead_name: frm.doc.full_name,
-                city: frm.doc.city,
+                location: frm.doc.location,
                 gender: frm.doc.gender,
                 age: frm.doc.age,
                 height: frm.doc.height,

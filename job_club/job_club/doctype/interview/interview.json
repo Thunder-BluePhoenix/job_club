@@ -11,19 +11,20 @@
   "full_name",
   "email_id",
   "mobile_number",
-  "city",
+  "location",
   "column_break_ohgl",
   "gender",
   "age",
   "height",
-  "qualification"
+  "qualification",
+  "invitation_acceptance_date"
  ],
  "fields": [
   {
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "label": "Naming Series",
-   "options": "JC-IW-.YYYY.-.MM.-"
+   "options": "RCM-CAN-.YYYY.-"
   },
   {
    "fieldname": "section_break_iqdi",
@@ -32,22 +33,23 @@
   {
    "fieldname": "full_name",
    "fieldtype": "Data",
-   "label": "Full Name"
+   "in_list_view": 1,
+   "label": "Full Name",
+   "reqd": 1
   },
   {
    "fieldname": "email_id",
    "fieldtype": "Data",
-   "label": "Email ID"
+   "in_list_view": 1,
+   "label": "Email ID",
+   "reqd": 1
   },
   {
    "fieldname": "mobile_number",
    "fieldtype": "Data",
-   "label": "Mobile Number"
-  },
-  {
-   "fieldname": "city",
-   "fieldtype": "Data",
-   "label": "City"
+   "in_list_view": 1,
+   "label": "Mobile Number",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_ohgl",
@@ -57,29 +59,47 @@
    "fieldname": "gender",
    "fieldtype": "Select",
    "label": "Gender",
-   "options": "Male\nFemale\nOther"
+   "options": "Male\nFemale\nOther",
+   "reqd": 1
   },
   {
    "fieldname": "age",
    "fieldtype": "Data",
-   "label": "Age"
+   "label": "Age",
+   "reqd": 1
   },
   {
    "fieldname": "height",
    "fieldtype": "Data",
-   "label": "Height"
+   "label": "Height (in cm)",
+   "reqd": 1
   },
   {
    "fieldname": "qualification",
+   "fieldtype": "Select",
+   "label": "Qualification",
+   "options": "Class 12 and Above",
+   "reqd": 1
+  },
+  {
+   "fieldname": "location",
    "fieldtype": "Data",
-   "label": "Qualification"
+   "in_list_view": 1,
+   "label": "Location",
+   "reqd": 1
+  },
+  {
+   "fieldname": "invitation_acceptance_date",
+   "fieldtype": "Datetime",
+   "label": "Invitation Acceptance Date",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-21 17:44:29.213253",
- "modified_by": "Administrator",
+ "modified": "2025-08-23 21:08:14.582603",
+ "modified_by": "prasunmajismk@gmail.com",
  "module": "Job Club",
  "name": "Interview",
  "owner": "Administrator",

@@ -2,31 +2,39 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "naming_series:",
- "creation": "2025-05-27 19:22:22.323048",
+ "creation": "2025-08-23 20:45:26.525774",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "naming_series",
+  "section_break_iqdi",
   "full_name",
-  "mobile_number",
   "email_id",
+  "mobile_number",
   "location",
+  "column_break_ohgl",
   "gender",
   "age",
   "height",
   "qualification",
-  "naming_series"
+  "invitation_acceptance_date"
  ],
  "fields": [
   {
-   "fieldname": "full_name",
-   "fieldtype": "Data",
-   "label": "Full Name",
-   "reqd": 1
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "ADM-INQ-.YYYY.-"
   },
   {
-   "fieldname": "mobile_number",
+   "fieldname": "section_break_iqdi",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "full_name",
    "fieldtype": "Data",
-   "label": "Mobile Number",
+   "in_list_view": 1,
+   "label": "Full Name",
    "reqd": 1
   },
   {
@@ -34,14 +42,25 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Email ID",
-   "options": "Email",
    "reqd": 1
   },
   {
-   "fieldname": "naming_series",
-   "fieldtype": "Select",
-   "label": "Naming Series",
-   "options": "REG-.YYYY.-.MM.-"
+   "fieldname": "mobile_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Mobile Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Location",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_ohgl",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "gender",
@@ -70,21 +89,21 @@
    "reqd": 1
   },
   {
-   "fieldname": "location",
-   "fieldtype": "Data",
-   "label": "Location",
-   "reqd": 1
+   "fieldname": "invitation_acceptance_date",
+   "fieldtype": "Datetime",
+   "label": "Invitation Acceptance Date",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-23 20:58:41.464769",
+ "modified": "2025-08-23 20:56:34.787919",
  "modified_by": "prasunmajismk@gmail.com",
  "module": "Job Club",
- "name": "Registration From",
+ "name": "Admission Form",
  "naming_rule": "By \"Naming Series\" field",
- "owner": "Administrator",
+ "owner": "prasunmajismk@gmail.com",
  "permissions": [
   {
    "create": 1,
@@ -95,30 +114,6 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "All",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Guest",
    "share": 1,
    "write": 1
   }
