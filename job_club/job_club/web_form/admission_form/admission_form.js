@@ -341,7 +341,7 @@ frappe.ready(() => {
 <!-- Mobile Header -->
 <div class="wave-header">
     <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" class="logo" />
-    <h2>Free Career Counselling</h2>
+    <h2>Admission Form</h2>
     <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/2girl.png" class="girls-img" />
     <svg class="wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
         <path fill="#fff" fill-opacity="1" d="M0,192L1440,96L1440,320L0,320Z"></path>
@@ -355,7 +355,7 @@ frappe.ready(() => {
         <div class="page-logo">
             <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" class="logo" />
         </div>
-        <h2>Free Career Counselling</h2>
+        <h2>Admission Form</h2>
         <div class="air-hostess">
             <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/2girl.png" class="girls-img" />
         </div>
@@ -363,9 +363,9 @@ frappe.ready(() => {
 
     <!-- Right Section -->
     <div class="form-wrapper">
-        <h3 class="sub-title desktop-title"><u>Register Now</u></h3>
-        <form id="registration-form">
-            <h3 class="register-title-mobile">Register Now</h3>
+        <h3 class="sub-title desktop-title"><u>Apply Now</u></h3>
+        <form id="admission-form">
+            <h3 class="register-title-mobile">Apply Now</h3>
             <div class="form-row">
                 <div>
                     <div class="form-group"><label>Full Name</label><input type="text" id="full_name" placeholder="Enter your full name" required /><div class="error-msg" id="error-full_name"></div></div>
@@ -394,7 +394,7 @@ frappe.ready(() => {
                 </div>
             </div>
             <div id="form-error" style="color: red; font-size: 13px; margin-top: 5px; text-align: center;"></div>
-            <button type="submit" class="submit-btn" id="register-btn">Register</button>
+            <button type="submit" class="submit-btn" id="register-btn">Submit</button>
         </form>
     </div>
 </div>
@@ -489,7 +489,7 @@ frappe.ready(() => {
             return;
         } else {
             frappe.call({
-                method: 'job_club.job_club.doctype.registration_from.registration_from.check_duplicate',
+                method: 'job_club.job_club.doctype.admission.admission.check_duplicate_admission',
                 args: { fieldname: "email_id", value: email },
                 callback: (r) => {
                     if (r.message.status === "error") {
@@ -512,7 +512,7 @@ frappe.ready(() => {
             return;
         } else {
             frappe.call({
-                method: 'job_club.job_club.doctype.registration_from.registration_from.check_duplicate',
+                method: 'job_club.job_club.doctype.admission.admission.check_duplicate_admission',
                 args: { fieldname: "mobile_number", value: mobile },
                 callback: (r) => {
                     if (r.message.status === "error") {
@@ -569,7 +569,7 @@ frappe.ready(() => {
 
     // ---------- Form Submit (pre_validate + OTP send) ----------
     let full_name, email_id, mobile_number, location, gender, age, height, qualification;
-    document.getElementById('registration-form').addEventListener('submit', (e) => {
+    document.getElementById('admission-form').addEventListener('submit', (e) => {
         e.preventDefault();
         formError.textContent = '';
 
@@ -583,12 +583,12 @@ frappe.ready(() => {
         qualification = document.getElementById('qualification').value.trim();
 
         frappe.call({
-            method: 'job_club.job_club.doctype.registration_from.registration_from.pre_validate_registration',
+            method: 'job_club.job_club.doctype.admission.admission.pre_validate_admission',
             args: { data: { full_name, email_id, mobile_number, location, gender, age, height, qualification } },
             callback: (r) => {
                 if (r.message && r.message.status === "error") {
                     document.querySelectorAll(".error-msg").forEach(el => el.textContent = "");
-                    document.querySelectorAll("#registration-form input, #registration-form select")
+                    document.querySelectorAll("#admission-form input, #admission-form select")
                         .forEach(el => el.style.border = "1px solid #ccc");
 
                     r.message.errors.forEach(err => {
@@ -634,7 +634,7 @@ frappe.ready(() => {
                     successCheck.style.display = 'block';
                     frappe.call({
                         method: 'frappe.website.doctype.web_form.web_form.accept',
-                        args: { web_form: 'registration-from', data: JSON.stringify({ full_name, email_id, mobile_number, location, gender, age, height, qualification }) },
+                        args: { web_form: 'admission-form', data: JSON.stringify({ full_name, email_id, mobile_number, location, gender, age, height, qualification }) },
                         callback: (saveRes) => {
                             if (saveRes.exc) {
                                 showOtpMessage('Failed to save data. Please try again.');
@@ -644,7 +644,7 @@ frappe.ready(() => {
                                     otpModalOverlay.style.display = 'none';
                                     pageContent.style.filter = 'none';
                                     clearInterval(countdownInterval);
-                                    window.location.href = `/assets/job_club/thank_you.html?name=${encodeURIComponent(full_name)}`;
+                                    window.location.href = `/assets/job_club/admission_success.html?name=${encodeURIComponent(full_name)}`;
                                 }, 1000);
                             }
                         }
