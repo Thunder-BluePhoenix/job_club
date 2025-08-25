@@ -23,6 +23,7 @@
   {
    "fieldname": "naming_series",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Naming Series",
    "options": "RCM-CAN-.YYYY.-"
   },
@@ -59,7 +60,7 @@
    "fieldname": "gender",
    "fieldtype": "Select",
    "label": "Gender",
-   "options": "Male\nFemale\nOther",
+   "options": "Select\nMale\nFemale\nOther",
    "reqd": 1
   },
   {
@@ -75,13 +76,6 @@
    "reqd": 1
   },
   {
-   "fieldname": "qualification",
-   "fieldtype": "Select",
-   "label": "Qualification",
-   "options": "Class 12 and Above",
-   "reqd": 1
-  },
-  {
    "fieldname": "location",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -93,15 +87,22 @@
    "fieldtype": "Datetime",
    "label": "Invitation Acceptance Date",
    "read_only": 1
+  },
+  {
+   "fieldname": "qualification",
+   "fieldtype": "Small Text",
+   "label": "Qualification",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-23 21:08:14.582603",
- "modified_by": "prasunmajismk@gmail.com",
+ "modified": "2025-08-25 16:01:02.617501",
+ "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Interview",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {

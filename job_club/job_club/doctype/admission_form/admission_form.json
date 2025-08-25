@@ -23,6 +23,7 @@
   {
    "fieldname": "naming_series",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Naming Series",
    "options": "ADM-INQ-.YYYY.-"
   },
@@ -66,7 +67,7 @@
    "fieldname": "gender",
    "fieldtype": "Select",
    "label": "Gender",
-   "options": "Male\nFemale\nOther",
+   "options": "Select\nMale\nFemale\nOther",
    "reqd": 1
   },
   {
@@ -83,9 +84,8 @@
   },
   {
    "fieldname": "qualification",
-   "fieldtype": "Select",
+   "fieldtype": "Small Text",
    "label": "Qualification",
-   "options": "Class 12 and Above",
    "reqd": 1
   },
   {
@@ -98,8 +98,8 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-23 20:56:34.787919",
- "modified_by": "prasunmajismk@gmail.com",
+ "modified": "2025-08-25 16:02:07.212634",
+ "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Admission Form",
  "naming_rule": "By \"Naming Series\" field",

@@ -105,6 +105,19 @@ frappe.ready(() => {
         text-align: left;
         margin-bottom: 14px;
     }
+    .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+    resize: vertical; /* Allows resizing vertically only */
+    }
+    .form-group textarea:focus {
+        border-color: #007bff;
+        outline: none;
+    }
     .form-group label {
         display: block;
         font-weight: 600;
@@ -174,7 +187,7 @@ frappe.ready(() => {
         color: #fff;
     }
     .wave-header .girls-img {
-        width: 150px;
+        width: 200px;
         display: block;
         margin: 8px auto 0;
     }
@@ -388,10 +401,7 @@ frappe.ready(() => {
                     <div class="form-group"><label>Height (in cm)</label><input type="text" id="height" placeholder="Enter your height" /><div class="error-msg" id="error-height"></div></div>
                     <div class="form-group">
                         <label>Qualification</label>
-                        <select id="qualification">
-                            <option value="">Select</option>
-                            <option value="Class 12 and Above">Class 12 and Above</option>
-                        </select>
+                        <textarea id="qualification" placeholder="Class 12 and above" rows="2"></textarea>
                         <div class="error-msg" id="error-qualification"></div>
                     </div>
                 </div>
