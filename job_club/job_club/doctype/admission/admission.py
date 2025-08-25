@@ -28,7 +28,7 @@ class Admission(Document):
             admission.qualification = self.qualification
 
             # Auto set Admission Date
-            admission.admission_date = now_datetime()
+            admission.form_submission_date = now_datetime()
 
             admission.save()
 
