@@ -18,7 +18,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2025-08-25 16:05:20.757271",
+ "modified": "2025-08-26 12:45:26.079105",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "registration-from",
@@ -69,11 +69,12 @@
   {
    "allow_read_on_all_link_options": 0,
    "fieldname": "location",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "hidden": 0,
    "label": "Location",
    "max_length": 0,
    "max_value": 0,
+   "options": "Branch",
    "read_only": 0,
    "reqd": 1,
    "show_in_filter": 0

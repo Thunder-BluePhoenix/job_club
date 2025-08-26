@@ -65,8 +65,9 @@
   },
   {
    "fieldname": "location",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Location",
+   "options": "Branch",
    "reqd": 1
   },
   {
@@ -79,7 +80,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-25 16:01:39.747834",
+ "modified": "2025-08-26 12:29:24.683595",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Registration From",

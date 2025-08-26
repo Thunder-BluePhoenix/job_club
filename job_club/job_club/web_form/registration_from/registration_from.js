@@ -326,12 +326,11 @@ frappe.ready(() => {
         }
         .register-title-mobile {
             display: block;
-            font-size: 20px;
+            font-size: 24px;
             margin: 0px 0 20px;
             font-weight: 600;
             color: #333;
             text-align: center;
-            text-decoration: underline;
         }
     }
 </style>
@@ -363,15 +362,30 @@ frappe.ready(() => {
 
     <!-- Right Section -->
     <div class="form-wrapper">
-        <h3 class="sub-title desktop-title"><u>Register Now</u></h3>
+        <h3 class="sub-title desktop-title">Register Now</h3>
         <form id="registration-form">
             <h3 class="register-title-mobile">Register Now</h3>
             <div class="form-row">
                 <div>
-                    <div class="form-group"><label>Full Name</label><input type="text" id="full_name" placeholder="Enter your full name" required /><div class="error-msg" id="error-full_name"></div></div>
-                    <div class="form-group"><label>Email</label><input type="email" id="email_id" placeholder="Enter your email" required /><div class="error-msg" id="error-email_id"></div></div>
-                    <div class="form-group"><label>Mobile Number</label><input type="text" id="mobile_number" placeholder="Enter your mobile/whatsapp number" required /><div class="error-msg" id="error-mobile_number"></div></div>
-                    <div class="form-group"><label>Location</label><input type="text" id="location" placeholder="Enter your District, State in India" /><div class="error-msg" id="error-location"></div></div>
+                    <div class="form-group">
+                        <label>Full Name</label><input type="text" id="full_name" placeholder="Enter your full name" required />
+                        <div class="error-msg" id="error-full_name"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label><input type="email" id="email_id" placeholder="Enter your email" required />
+                        <div class="error-msg" id="error-email_id"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Mobile Number</label><input type="text" id="mobile_number" placeholder="Enter your mobile/whatsapp number" required />
+                        <div class="error-msg" id="error-mobile_number"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <select id="location" required>
+                            <option value="">Select Branch</option>
+                        </select>
+                        <div class="error-msg" id="error-location"></div>
+                    </div>
                 </div>
                 <div>
                     <div class="form-group">
@@ -384,11 +398,31 @@ frappe.ready(() => {
                         </select>
                         <div class="error-msg" id="error-gender"></div>
                     </div>
-                    <div class="form-group"><label>Age</label><input type="number" id="age" placeholder="Between 18-27 Years" /><div class="error-msg" id="error-age"></div></div>
-                    <div class="form-group"><label>Height (in cm)</label><input type="text" id="height" placeholder="Enter your height" /><div class="error-msg" id="error-height"></div></div>
                     <div class="form-group">
-                        <label>Qualification</label>
-                        <textarea id="qualification" placeholder="Class 12 and above" rows="2"></textarea>
+                        <label>Age</label><input type="number" id="age" placeholder="Between 18-27 Years" />
+                        <div class="error-msg" id="error-age"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Height (in cm)</label><input type="text" id="height" placeholder="Enter your height" />
+                        <div class="error-msg" id="error-height"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="qualification">Qualification</label>
+                        <input
+                            type="text"
+                            id="qualification"
+                            name="qualification"
+                            class="form-control"
+                            placeholder="Class 12 and above"
+                            list="qualification-options"
+                            style="height: 42px; font-size: 13px; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;"
+                        />
+
+                        <datalist id="qualification-options">
+                            <option value="Class 12"></option>
+                            <option value="Graduation"></option>
+                            <option value="Post Graduation"></option>
+                        </datalist>
                         <div class="error-msg" id="error-qualification"></div>
                     </div>
                 </div>
@@ -414,11 +448,31 @@ frappe.ready(() => {
         <div id="otp-message"></div>
     </div>
 </div>
-
 `;
     document.head.insertAdjacentHTML('beforeend', styles);
     const container = document.querySelector('main') || document.body;
     container.innerHTML = html;
+
+    // ---------- Load Branch List Dynamically ----------
+    frappe.call({
+        method: "frappe.client.get_list",
+        args: {
+            doctype: "Branch",
+            fields: ["name", "branch"],
+            limit_page_length: 100
+        },
+        callback: function (r) {
+            if (r.message) {
+                const locationSelect = document.getElementById("location");
+                r.message.forEach(branch => {
+                    const opt = document.createElement("option");
+                    opt.value = branch.branch; // docname
+                    opt.textContent = branch.branch;
+                    locationSelect.appendChild(opt);
+                });
+            }
+        }
+    });
 
     // ---------- Common references ----------
     const otpModalOverlay = document.getElementById('otp-modal-overlay');
@@ -551,7 +605,7 @@ frappe.ready(() => {
     });
     document.getElementById('height').addEventListener('blur', function () {
         const height = parseInt(this.value.trim());
-		if (!height) {
+        if (!height) {
             showFieldError('height', "Height is required.");
         } else if (isNaN(height) || height < 155) {
             showFieldError('height', "Minimum height is 155 cm.");
@@ -644,7 +698,7 @@ frappe.ready(() => {
                                     otpModalOverlay.style.display = 'none';
                                     pageContent.style.filter = 'none';
                                     clearInterval(countdownInterval);
-                                    window.location.href = `/assets/job_club/thank_you.html?name=${encodeURIComponent(full_name)}`;
+                                    window.location.href = `/assets/job_club/thank_you.html?name=${encodeURIComponent(full_name)}&location=${encodeURIComponent(location)}`;
                                 }, 1000);
                             }
                         }

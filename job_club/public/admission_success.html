@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Registration Confirmation</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     body {
       font-family: 'Poppins', sans-serif;
@@ -19,8 +24,10 @@
 
     .overlay {
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: rgba(255, 255, 255, 0.6);
       backdrop-filter: blur(6px);
       z-index: 1;
@@ -31,9 +38,9 @@
       z-index: 2;
       max-width: 460px;
       margin: 8vh auto;
-      background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(245,245,245,0.95));
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(245, 245, 245, 0.95));
       border-radius: 18px;
-      box-shadow: 0 10px 35px rgba(0,0,0,0.2);
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
       padding: 32px;
       text-align: center;
       animation: bounceIn 1s ease-in-out;
@@ -46,17 +53,34 @@
     }
 
     @keyframes bounceIn {
-      0% { opacity: 0; transform: scale(0.8) translateY(-100px); }
-      60% { opacity: 1; transform: scale(1.05) translateY(20px); }
-      80% { transform: scale(0.97) translateY(-10px); }
-      100% { transform: scale(1) translateY(0); }
+      0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(-100px);
+      }
+
+      60% {
+        opacity: 1;
+        transform: scale(1.05) translateY(20px);
+      }
+
+      80% {
+        transform: scale(0.97) translateY(-10px);
+      }
+
+      100% {
+        transform: scale(1) translateY(0);
+      }
     }
 
     .page-logo {
       max-width: 200px;
       margin: 0 auto 20px;
     }
-    .logo { width: 100%; height: auto; }
+
+    .logo {
+      width: 100%;
+      height: auto;
+    }
 
     .brand-name {
       font-size: 1.4rem;
@@ -64,6 +88,7 @@
       color: #444;
       margin-bottom: 10px;
     }
+
     .small-text {
       font-size: 1rem;
       color: #555;
@@ -78,14 +103,17 @@
       background: #fff;
       padding: 16px 18px;
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       text-align: left;
     }
+
     .location-card img {
       width: 48px;
+      margin-top: 40px;
     }
+
     .locations-small-text {
-      font-size: 15px;
+      font-size: 13px;
       color: #555;
     }
 
@@ -98,6 +126,7 @@
       margin: 14px 0;
       text-align: left;
     }
+
     .checkbox-area input {
       margin-top: 4px;
       transform: scale(1.2);
@@ -117,14 +146,20 @@
       transition: all 0.3s ease;
       margin-top: 14px;
     }
+
     .p-button:hover {
       background: linear-gradient(to right, #0f1b5d, #263ccf);
       box-shadow: 0 4px 12px rgba(48, 65, 228, 0.4);
     }
 
     @keyframes bounce {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-6px); }
+      0% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(-6px);
+      }
     }
 
     /* Success Popup */
@@ -132,9 +167,11 @@
       display: none;
       position: fixed;
       z-index: 1000;
-      top: 50%; left: 50%;
+      top: 50%;
+      left: 50%;
       transform: translate(-50%, -50%);
     }
+
     .popup-card {
       background: #fff;
       border-radius: 18px;
@@ -143,49 +180,64 @@
       text-align: center;
       max-width: 320px;
     }
+
     .popup-card .brand-name {
       font-size: 1.2rem;
       color: #1e88e5;
       margin: 12px 0;
     }
+
     .popup-img {
       width: 80px;
       margin-top: 12px;
     }
 
     @media (max-width: 480px) {
-      .main-wrapper { margin: 5vh 20px; padding: 24px; }
-      .page-logo { max-width: 150px; }
-      .location-card { flex-direction: column; align-items: center; text-align: center; }
+      .main-wrapper {
+        margin: 5vh 20px;
+        padding: 24px;
+      }
+
+      .page-logo {
+        max-width: 150px;
+      }
+
+      .location-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="overlay" id="overlay"></div>
 
   <div class="main-wrapper" id="mainWrapper">
     <div class="page-logo">
-      <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" alt="Emporium Logo" class="logo"/>
+      <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" alt="Emporium Logo"
+        class="logo" />
     </div>
 
     <h2 class="brand-name">Hi, <span id="candidate-name">Candidate</span></h2>
     <p class="small-text">
-      Welcome to Emporium!<br/>
-      We will reach out to you shortly with next steps.<br/>
+      Welcome to Emporium!<br />
+      We will reach out to you shortly with next steps.<br />
       Please visit the following venue:
     </p>
 
     <div class="location-card">
-      <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/8afd6f348e768e0846bc3d431513be4e9e810ac6.png" alt="Location Icon"/>
-      <p class="locations-small-text">
-        Emporium Training and Consultancy<br/>
-        230/B AJC Bose Road, 3rd Floor,<br/>
-        Minto Park, Kolkata, 700020, INDIA
+      <img
+        src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/8afd6f348e768e0846bc3d431513be4e9e810ac6.png"
+        alt="Location Icon" />
+      <p class="locations-small-text" id="branch-details">
+        Loading branch details...
       </p>
     </div>
 
     <label class="checkbox-area">
-      <input type="checkbox" id="acceptCheckbox"/>
+      <input type="checkbox" id="acceptCheckbox" />
       I choose to accept the invitation and enroll myself as a candidate.
     </label>
 
@@ -197,16 +249,45 @@
     <div class="popup-card">
       <p>Thank you for the admission!</p>
       <h2 class="brand-name">See you at Emporium!</h2>
-      <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/great-1.png" alt="Success Icon" class="popup-img"/>
+      <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/great-1.png" alt="Success Icon"
+        class="popup-img" />
     </div>
   </div>
 
   <script>
-    // Get name from query params
+    // Get query params
     const urlParams = new URLSearchParams(window.location.search);
     const name = urlParams.get('name') || "Candidate";
+    const branchLocation = urlParams.get('location'); // Branch docname
+
+    // Set candidate name
     document.getElementById("candidate-name").textContent = name;
 
+    // ---------- Fetch Branch Details via REST API ----------
+    if (branchLocation) {
+      fetch(`/api/resource/Branch/${encodeURIComponent(branchLocation)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.data) {
+            const branch = data.data;
+            let details = `<b>${branch.branch}</b><br/>${branch.address}`;
+            if (branch.contact_number) details += `<br/>Call: ${branch.contact_number}`;
+            if (branch.email) details += `<br/>Email: <a href="mailto:${branch.email}">${branch.email}</a>`;
+            if (branch.instagram) details += `<br/>Instagram: <a href="${branch.instagram}" target="_blank">${branch.instagram}</a>`;
+            document.getElementById("branch-details").innerHTML = details;
+          } else {
+            document.getElementById("branch-details").innerText = "Branch details not found.";
+          }
+        })
+        .catch(err => {
+          document.getElementById("branch-details").innerText = "Error fetching branch details.";
+          console.error(err);
+        });
+    } else {
+      document.getElementById("branch-details").innerText = "Branch not selected.";
+    }
+
+    // ---------- Accept Button Logic ----------
     const button = document.getElementById("acceptButton");
     const checkbox = document.getElementById("acceptCheckbox");
     const popup = document.getElementById("successPopup");
@@ -240,4 +321,5 @@
     });
   </script>
 </body>
+
 </html>

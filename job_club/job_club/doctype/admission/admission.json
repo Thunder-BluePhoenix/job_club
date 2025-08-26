@@ -54,9 +54,10 @@
   },
   {
    "fieldname": "location",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Location",
+   "options": "Branch",
    "reqd": 1
   },
   {
@@ -91,14 +92,14 @@
   {
    "fieldname": "form_submission_date",
    "fieldtype": "Datetime",
-   "label": "Form Submision Date",
+   "label": "Form Submission Date",
    "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-26 02:21:14.913556",
+ "modified": "2025-08-26 15:25:13.897697",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Admission",
