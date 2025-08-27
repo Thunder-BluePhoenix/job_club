@@ -464,7 +464,7 @@ frappe.ready(() => {
 
     // ---------- Load Branch List Dynamically ----------
     frappe.call({
-        method: "your_app.api.get_branches",
+        method: "job_club.job_club.doctype.registration_from.registration_from.api.get_branches",
         callback: function (r) {
             if (r.message) {
                 const locationSelect = document.getElementById("location");
