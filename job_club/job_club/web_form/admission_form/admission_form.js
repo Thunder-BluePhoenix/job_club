@@ -74,23 +74,24 @@ frappe.ready(() => {
     .form-wrapper {
         flex: 1.3;
         background: #fff;
-        padding: 30px 40px;
+        padding: 40px 40px;
     }
     .form-wrapper h2.desktop-title {
         display: none;
     }
     .form-wrapper h3.sub-title.desktop-title {
-        font-size: 26px;
+        font-size: 24px;
         font-weight: 700;
-        margin: 15px 0 30px;
+        margin: 5px 0 28px;
         color: #333;
         text-align: center;
         text-decoration: none;
     }
-    .form-row {
+    .form-row-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 18px;
+        column-gap: 10px;
+        row-gap: 1px;
     }
     .form-group {
         text-align: left;
@@ -111,10 +112,10 @@ frappe.ready(() => {
     }
     .form-group label {
         display: block;
-        font-weight: 600;
+        font-weight: 500;
         font-size: 12px;
         margin-bottom: 4px;
-        color: #333;
+        color: #000000;
     }
     .form-group input,
     .form-group select {
@@ -139,7 +140,7 @@ frappe.ready(() => {
         font-weight: bold;
     }
     .submit-btn {
-    margin-top: 9px;
+        margin-top: 9px;
         width: 100%;
         padding: 12px;
         border: none;
@@ -147,7 +148,7 @@ frappe.ready(() => {
         background: linear-gradient(to right, #151f6d, #3041e4);
         color: white;
         font-size: 15px;
-        font-weight: 600;
+        font-weight: 500;
         cursor: pointer;
         transition: all 0.25s ease;
     }
@@ -206,7 +207,7 @@ frappe.ready(() => {
     }
     .otp-modal {
         background: white;
-        padding: 16px;
+        padding: 20px;
         border-radius: 12px;
         text-align: center;
         box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
@@ -216,8 +217,9 @@ frappe.ready(() => {
         width: 90%;
     }
     .otp-modal h3 {
-        font-size: 26px;
-        margin-bottom: 20px;
+        font-size: 20px;
+        margin-bottom: 15px;
+        margin-top: 20px;
     }
     .otp-input {
         padding: 8px;
@@ -281,13 +283,23 @@ frappe.ready(() => {
         font-size: 13px;
         text-align: center;
     }
-    .error-msg{ font-size:10px !important; }
+    .error-msg {
+        font-size: 10px !important;
+    }
     /* Mobile adjustments */
     .register-title-mobile {
         display: none;
     }
     @media (max-width: 768px) {
-    .wave-svg{display:none;}
+        .wave-svg {
+            display: none;
+        }
+        .form-row-grid {
+            grid-template-columns: 1fr;
+        }
+        .form-wrapper {
+            padding: 18px 25px;
+        }
         .main-wrapper {
             flex-direction: column;
             margin: 0;
@@ -300,10 +312,7 @@ frappe.ready(() => {
         .wave-header {
             display: block;
         }
-        .form-row {
-            grid-template-columns: 2fr;
-            gap: 6px;
-        }
+
         .form-group {
             margin-bottom: 8px;
         }
@@ -336,7 +345,6 @@ frappe.ready(() => {
         }
     }
 </style>
-
 `
     const html = `
 <!-- Mobile Header -->
@@ -367,73 +375,67 @@ frappe.ready(() => {
         <h3 class="sub-title desktop-title">Register Now</h3>
         <form id="admission-form">
             <h3 class="register-title-mobile">Register Now</h3>
-            <div class="form-row">
-                <div>
-                    <div class="form-group">
-                        <label>Full Name</label><input type="text" id="full_name" placeholder="Enter your full name" required />
-                        <div class="error-msg" id="error-full_name"></div>
-                    </div>
-                    <div class="form-group">
-                        <label>Email</label><input type="email" id="email_id" placeholder="Enter your email" required />
-                        <div class="error-msg" id="error-email_id"></div>
-                    </div>
-                    <div class="form-group">
-                        <label>Mobile Number</label><input type="text" id="mobile_number" placeholder="Enter your mobile/whatsapp number" required />
-                        <div class="error-msg" id="error-mobile_number"></div>
-                    </div>
-                    <div class="form-group">
-                        <label>Location</label>
-                        <select id="location" required>
-                            <option value="">Select Branch</option>
-                        </select>
-                        <div class="error-msg" id="error-location"></div>
-                    </div>
-                    <div class="form-group">
-                        <label>Qualification</label>
-                        <select id="qualification" required>
-                            <option value="">Select</option>
-                            <option value="Class 12">Class 12</option>
-                            <option value="Graduate">Graduate</option>
-                            <option value="Post Graduate">Post Graduate</option>
-                        </select>
-                        <div class="error-msg" id="error-qualification"></div>
-                    </div>
-                    
+            <div class="form-row-grid">
+                <div class="form-group">
+                    <label>Full Name</label><input type="text" id="full_name" placeholder="Enter your full name" required />
+                    <div class="error-msg" id="error-full_name"></div>
                 </div>
-                <div>
-                    
-                    <div class="form-group">
-                        <label>Gender</label>
-                        <select id="gender" required>
-                            <option value="">Select</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
-                        </select>
-                        <div class="error-msg" id="error-gender"></div>
-                    </div>
-                    <div class="form-group">
-                        <label>Age</label><input type="number" id="age" placeholder="Between 18-27 Years" />
-                        <div class="error-msg" id="error-age"></div>
-                    </div>
-                    <div class="form-group">
-                        <label>Height (in cm)</label><input type="text" id="height" placeholder="Enter your height" />
-                        <div class="error-msg" id="error-height"></div>
-                    </div>
-                    <div class="form-group">
-                        <label>Weight</label><input type="text" id="weight" placeholder="Enter your weight" />
-                        <div class="error-msg" id="error-weight"></div>
-                    </div>
-                    <div class="form-group">
-                        <label>Job Experience</label>
-                        <select id="job_experience" required>
-                            <option value="">Select</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                        </select>
-                        <div class="error-msg" id="error-job_experience"></div>
-                    </div>
+                <div class="form-group">
+                    <label>Email</label><input type="email" id="email_id" placeholder="Enter your email" required />
+                    <div class="error-msg" id="error-email_id"></div>
+                </div>
+                <div class="form-group">
+                    <label>Mobile Number</label><input type="text" id="mobile_number" placeholder="Enter your mobile/whatsapp number" required />
+                    <div class="error-msg" id="error-mobile_number"></div>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <select id="location" required>
+                        <option value="">Select Branch</option>
+                    </select>
+                    <div class="error-msg" id="error-location"></div>
+                </div>
+                <div class="form-group">
+                    <label>Qualification</label>
+                    <select id="qualification" required>
+                        <option value="">Select</option>
+                        <option value="Class 12">Class 12</option>
+                        <option value="Graduate">Graduate</option>
+                        <option value="Post Graduate">Post Graduate</option>
+                    </select>
+                    <div class="error-msg" id="error-qualification"></div>
+                </div>
+                <div class="form-group">
+                    <label>Job Experience</label>
+                    <select id="job_experience" required>
+                        <option value="">Select</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                    <div class="error-msg" id="error-job_experience"></div>
+                </div>
 
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select id="gender" required>
+                        <option value="">Select</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <div class="error-msg" id="error-gender"></div>
+                </div>
+                <div class="form-group">
+                    <label>Age</label><input type="number" id="age" placeholder="Between 18-27 Years" />
+                    <div class="error-msg" id="error-age"></div>
+                </div>
+                <div class="form-group">
+                    <label>Height (in cm)</label><input type="text" id="height" placeholder="Enter your height" />
+                    <div class="error-msg" id="error-height"></div>
+                </div>
+                <div class="form-group">
+                    <label>Weight</label><input type="text" id="weight" placeholder="Enter your weight" />
+                    <div class="error-msg" id="error-weight"></div>
                 </div>
             </div>
             <div id="form-error" style="color: red; font-size: 13px; margin-top: 5px; text-align: center;"></div>
@@ -458,13 +460,14 @@ frappe.ready(() => {
     </div>
 </div>
 `;
+
     document.head.insertAdjacentHTML('beforeend', styles);
     const container = document.querySelector('main') || document.body;
     container.innerHTML = html;
 
     // ---------- Load Branch List Dynamically ----------
     frappe.call({
-        method: "job_club.job_club.doctype.registration_from.registration_from.api.get_branches",
+        method: "job_club.job_club.doctype.registration_from.registration_from.get_branches",
         callback: function (r) {
             if (r.message) {
                 const locationSelect = document.getElementById("location");
@@ -563,7 +566,7 @@ frappe.ready(() => {
     document.getElementById('mobile_number').addEventListener('blur', function () {
         const mobile = this.value.trim();
         if (mobile && !/^(\+91\d{10}|\d{10})$/.test(mobile)) {
-            showFieldError('mobile_number', "Enter a valid 10-digit number or +91 followed by 10 digits.");
+            showFieldError('mobile_number', "Enter a valid 10-digit number");
             return;
         } else if (!mobile) {
             showFieldError('mobile_number', "Mobile number is required.");
