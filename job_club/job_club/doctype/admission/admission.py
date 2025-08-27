@@ -104,3 +104,7 @@ def check_duplicate_admission(fieldname, value):
         return {"status": "error", "message": f"This {fieldname.replace('_', ' ')} is already used in admission."}
 
     return {"status": "success", "message": "Available"}
+
+@frappe.whitelist(allow_guest=True)
+def get_branches():
+    return frappe.get_all("Branch", fields=["name", "branch"], limit_page_length=100)

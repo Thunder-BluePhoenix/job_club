@@ -106,3 +106,7 @@ def check_duplicate(fieldname, value):
 
     return {"status": "success", "message": "Available"}
 
+@frappe.whitelist(allow_guest=True)
+def get_branches():
+    return frappe.get_all("Branch", fields=["name", "branch"], limit_page_length=100)
+

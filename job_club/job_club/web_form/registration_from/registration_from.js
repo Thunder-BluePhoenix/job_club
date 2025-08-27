@@ -465,18 +465,13 @@ frappe.ready(() => {
 
     // ---------- Load Branch List Dynamically ----------
     frappe.call({
-        method: "frappe.client.get_list",
-        args: {
-            doctype: "Branch",
-            fields: ["name", "branch"],
-            limit_page_length: 100
-        },
+        method: "your_app.api.get_branches",
         callback: function (r) {
             if (r.message) {
                 const locationSelect = document.getElementById("location");
                 r.message.forEach(branch => {
                     const opt = document.createElement("option");
-                    opt.value = branch.branch; // docname
+                    opt.value = branch.branch;
                     opt.textContent = branch.branch;
                     locationSelect.appendChild(opt);
                 });
@@ -630,14 +625,14 @@ frappe.ready(() => {
             showFieldError('qualification', "");
         }
     });
-        document.getElementById('weight').addEventListener('blur', function () {
+    document.getElementById('weight').addEventListener('blur', function () {
         if (!this.value.trim()) {
             showFieldError('weight', "Weight is required.");
         } else {
             showFieldError('weight', "");
         }
     });
-        document.getElementById('job_experience').addEventListener('blur', function () {
+    document.getElementById('job_experience').addEventListener('blur', function () {
         if (!this.value.trim()) {
             showFieldError('job_experience', "Job Experience is required.");
         } else {
