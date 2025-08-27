@@ -94,7 +94,7 @@ frappe.ready(() => {
     }
     .form-group {
         text-align: left;
-        margin-bottom: 14px;
+        margin-bottom: 7px;
     }
     .form-group textarea {
         width: 100%;
@@ -112,14 +112,14 @@ frappe.ready(() => {
     .form-group label {
         display: block;
         font-weight: 600;
-        font-size: 13px;
+        font-size: 12px;
         margin-bottom: 4px;
         color: #333;
     }
     .form-group input,
     .form-group select {
         width: 100%;
-        padding: 10px 12px;
+        padding: 7px 10px;
         border: 1px solid #ddd;
         border-radius: 8px;
         font-size: 13px;
@@ -139,6 +139,7 @@ frappe.ready(() => {
         font-weight: bold;
     }
     .submit-btn {
+    margin-top: 9px;
         width: 100%;
         padding: 12px;
         border: none;
@@ -179,7 +180,7 @@ frappe.ready(() => {
     .wave-header .girls-img {
         width: 200px;
         display: block;
-        margin: 8px auto 0;
+        margin: 8px auto -15px;
     }
     .wave-svg {
         position: absolute;
@@ -280,12 +281,13 @@ frappe.ready(() => {
         font-size: 13px;
         text-align: center;
     }
-
+    .error-msg{ font-size:10px !important; }
     /* Mobile adjustments */
     .register-title-mobile {
         display: none;
     }
     @media (max-width: 768px) {
+    .wave-svg{display:none;}
         .main-wrapper {
             flex-direction: column;
             margin: 0;
@@ -299,7 +301,7 @@ frappe.ready(() => {
             display: block;
         }
         .form-row {
-            grid-template-columns: 1fr;
+            grid-template-columns: 2fr;
             gap: 6px;
         }
         .form-group {
@@ -362,9 +364,9 @@ frappe.ready(() => {
 
     <!-- Right Section -->
     <div class="form-wrapper">
-        <h3 class="sub-title desktop-title">Apply Now</h3>
+        <h3 class="sub-title desktop-title">Register Now</h3>
         <form id="admission-form">
-            <h3 class="register-title-mobile">Apply Now</h3>
+            <h3 class="register-title-mobile">Register Now</h3>
             <div class="form-row">
                 <div>
                     <div class="form-group">
@@ -386,8 +388,6 @@ frappe.ready(() => {
                         </select>
                         <div class="error-msg" id="error-location"></div>
                     </div>
-                </div>
-                <div>
                     <div class="form-group">
                         <label>Qualification</label>
                         <select id="qualification" required>
@@ -398,15 +398,10 @@ frappe.ready(() => {
                         </select>
                         <div class="error-msg" id="error-qualification"></div>
                     </div>
-                    <div class="form-group">
-                        <label>Job Experience</label>
-                        <select id="job_experience" required>
-                            <option value="">Select</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                        </select>
-                        <div class="error-msg" id="error-job_experience"></div>
-                    </div>
+                    
+                </div>
+                <div>
+                    
                     <div class="form-group">
                         <label>Gender</label>
                         <select id="gender" required>
@@ -429,6 +424,16 @@ frappe.ready(() => {
                         <label>Weight</label><input type="text" id="weight" placeholder="Enter your weight" />
                         <div class="error-msg" id="error-weight"></div>
                     </div>
+                    <div class="form-group">
+                        <label>Job Experience</label>
+                        <select id="job_experience" required>
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                        <div class="error-msg" id="error-job_experience"></div>
+                    </div>
+
                 </div>
             </div>
             <div id="form-error" style="color: red; font-size: 13px; margin-top: 5px; text-align: center;"></div>
