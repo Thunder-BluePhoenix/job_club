@@ -13,7 +13,9 @@
   "gender",
   "age",
   "height",
+  "weight",
   "qualification",
+  "job_experience",
   "naming_series"
  ],
  "fields": [
@@ -72,15 +74,29 @@
   },
   {
    "fieldname": "qualification",
-   "fieldtype": "Small Text",
+   "fieldtype": "Select",
    "label": "Qualification",
+   "options": "Select\nClass 12\nGraduate\nPost Graduate",
+   "reqd": 1
+  },
+  {
+   "fieldname": "weight",
+   "fieldtype": "Data",
+   "label": "Weight",
+   "reqd": 1
+  },
+  {
+   "fieldname": "job_experience",
+   "fieldtype": "Select",
+   "label": "Job Experience",
+   "options": "Select\nYes\nNo",
    "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-26 12:29:24.683595",
+ "modified": "2025-08-27 11:45:51.204466",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Registration From",

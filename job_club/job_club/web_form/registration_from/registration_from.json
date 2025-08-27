@@ -18,7 +18,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2025-08-26 12:45:26.079105",
+ "modified": "2025-08-27 12:21:20.991041",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "registration-from",
@@ -141,6 +141,33 @@
    "precision": "",
    "read_only": 0,
    "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "weight",
+   "fieldtype": "Data",
+   "hidden": 0,
+   "label": "Weight",
+   "max_length": 0,
+   "max_value": 0,
+   "precision": "",
+   "read_only": 0,
+   "reqd": 1,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "job_experience",
+   "fieldtype": "Select",
+   "hidden": 0,
+   "label": "Job Experience",
+   "max_length": 0,
+   "max_value": 0,
+   "options": "Select\nYes\nNo",
+   "precision": "",
+   "read_only": 0,
+   "reqd": 1,
    "show_in_filter": 0
   }
  ]

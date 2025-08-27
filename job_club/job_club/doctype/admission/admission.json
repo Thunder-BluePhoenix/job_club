@@ -12,11 +12,13 @@
   "email_id",
   "mobile_number",
   "location",
+  "qualification",
+  "job_experience",
   "column_break_ohgl",
   "gender",
   "age",
   "height",
-  "qualification",
+  "weight",
   "form_submission_date"
  ],
  "fields": [
@@ -85,8 +87,9 @@
   },
   {
    "fieldname": "qualification",
-   "fieldtype": "Small Text",
+   "fieldtype": "Select",
    "label": "Qualification",
+   "options": "Select\nClass 12\nGraduate\nPost Graduate",
    "reqd": 1
   },
   {
@@ -94,12 +97,25 @@
    "fieldtype": "Datetime",
    "label": "Form Submission Date",
    "read_only": 1
+  },
+  {
+   "fieldname": "weight",
+   "fieldtype": "Data",
+   "label": "Weight",
+   "reqd": 1
+  },
+  {
+   "fieldname": "job_experience",
+   "fieldtype": "Select",
+   "label": "Job Experience",
+   "options": "Select\nYes\nNo",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-26 15:25:13.897697",
+ "modified": "2025-08-27 11:44:05.575520",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Admission",

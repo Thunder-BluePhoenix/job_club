@@ -27,6 +27,8 @@ class RegistrationFrom(Document):
             interview.age = self.age
             interview.height = self.height
             interview.qualification = self.qualification
+            interview.job_experience = self.job_experience
+            interview.weight = self.weight
 
             # Save Invitation Acceptance Date (auto-set)
             interview.invitation_acceptance_date = now_datetime()

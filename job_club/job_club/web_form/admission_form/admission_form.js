@@ -389,8 +389,27 @@ frappe.ready(() => {
                 </div>
                 <div>
                     <div class="form-group">
+                        <label>Qualification</label>
+                        <select id="qualification" required>
+                            <option value="">Select</option>
+                            <option value="Class 12">Class 12</option>
+                            <option value="Graduate">Graduate</option>
+                            <option value="Post Graduate">Post Graduate</option>
+                        </select>
+                        <div class="error-msg" id="error-qualification"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Job Experience</label>
+                        <select id="job_experience" required>
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                        <div class="error-msg" id="error-job_experience"></div>
+                    </div>
+                    <div class="form-group">
                         <label>Gender</label>
-                        <select id="gender">
+                        <select id="gender" required>
                             <option value="">Select</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
@@ -407,23 +426,8 @@ frappe.ready(() => {
                         <div class="error-msg" id="error-height"></div>
                     </div>
                     <div class="form-group">
-                        <label for="qualification">Qualification</label>
-                        <input
-                            type="text"
-                            id="qualification"
-                            name="qualification"
-                            class="form-control"
-                            placeholder="Class 12 and above"
-                            list="qualification-options"
-                            style="height: 42px; font-size: 13px; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;"
-                        />
-
-                        <datalist id="qualification-options">
-                            <option value="Class 12"></option>
-                            <option value="Graduation"></option>
-                            <option value="Post Graduation"></option>
-                        </datalist>
-                        <div class="error-msg" id="error-qualification"></div>
+                        <label>Weight</label><input type="text" id="weight" placeholder="Enter your weight" />
+                        <div class="error-msg" id="error-weight"></div>
                     </div>
                 </div>
             </div>
@@ -613,6 +617,13 @@ frappe.ready(() => {
             showFieldError('height', "");
         }
     });
+        document.getElementById('weight').addEventListener('blur', function () {
+        if (!this.value.trim()) {
+            showFieldError('weight', "Weight is required.");
+        } else {
+            showFieldError('weight', "");
+        }
+    });
     document.getElementById('qualification').addEventListener('blur', function () {
         if (!this.value.trim()) {
             showFieldError('qualification', "Qualification is required.");
@@ -620,9 +631,16 @@ frappe.ready(() => {
             showFieldError('qualification', "");
         }
     });
+    document.getElementById('job_experience').addEventListener('blur', function () {
+        if (!this.value.trim()) {
+            showFieldError('job_experience', "Job Experience is required.");
+        } else {
+            showFieldError('job_experience', "");
+        }
+    });
 
     // ---------- Form Submit (pre_validate + OTP send) ----------
-    let full_name, email_id, mobile_number, location, gender, age, height, qualification;
+    let full_name, email_id, mobile_number, location, gender, age, height, qualification, weight, job_experience;
     document.getElementById('admission-form').addEventListener('submit', (e) => {
         e.preventDefault();
         formError.textContent = '';
@@ -635,6 +653,8 @@ frappe.ready(() => {
         age = document.getElementById('age').value.trim();
         height = document.getElementById('height').value.trim();
         qualification = document.getElementById('qualification').value.trim();
+        weight = document.getElementById('weight').value.trim();
+        job_experience = document.getElementById('job_experience').value;
 
         frappe.call({
             method: 'job_club.job_club.doctype.admission.admission.pre_validate_admission',
@@ -688,7 +708,7 @@ frappe.ready(() => {
                     successCheck.style.display = 'block';
                     frappe.call({
                         method: 'frappe.website.doctype.web_form.web_form.accept',
-                        args: { web_form: 'admission-form', data: JSON.stringify({ full_name, email_id, mobile_number, location, gender, age, height, qualification }) },
+                        args: { web_form: 'admission-form', data: JSON.stringify({ full_name, email_id, mobile_number, location, gender, age, height, qualification, weight, job_experience }) },
                         callback: (saveRes) => {
                             if (saveRes.exc) {
                                 showOtpMessage('Failed to save data. Please try again.');

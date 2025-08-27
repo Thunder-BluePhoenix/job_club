@@ -26,7 +26,8 @@ class Admission(Document):
             admission.age = self.age
             admission.height = self.height
             admission.qualification = self.qualification
-
+            admission.job_experience = self.job_experience
+            admission.weight = self.weight
             # Auto set Admission Date
             admission.form_submission_date = now_datetime()
 
