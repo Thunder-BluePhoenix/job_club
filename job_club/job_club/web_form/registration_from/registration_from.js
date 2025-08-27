@@ -352,7 +352,7 @@ frappe.ready(() => {
 <!-- Mobile Header -->
 <div class="wave-header">
     <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" class="logo" />
-    <h2>Free Career Counselling</h2>
+    <h2>Recruitment Drive</h2>
     <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/2girl.png" class="girls-img" />
     <svg class="wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
         <path fill="#fff" fill-opacity="1" d="M0,192L1440,96L1440,320L0,320Z"></path>
@@ -366,7 +366,7 @@ frappe.ready(() => {
         <div class="page-logo">
             <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" class="logo" />
         </div>
-        <h2>Free Career Counselling</h2>
+        <h2>Recruitment Drive</h2>
         <div class="air-hostess">
             <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/2girl.png" class="girls-img" />
         </div>
