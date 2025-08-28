@@ -500,16 +500,8 @@ frappe.ready(() => {
         if (!branch) return;
 
         frappe.call({
-            method: "frappe.client.get_list",
-            args: {
-                doctype: "Recruitment Drive",
-                filters: {
-                    status: "Open",
-                    branch: branch
-                },
-                fields: ["name", "drive_name"],
-                limit_page_length: 50
-            },
+            method: "job_club.job_club.doctype.recruitment_drive.recruitment_drive.get_open_drives",
+            args: { branch: branch },
             callback: function (r) {
                 if (r.message && r.message.length > 0) {
                     if (r.message.length === 1) {

@@ -203,3 +203,16 @@ def check_duplicate(fieldname, value):
 @frappe.whitelist(allow_guest=True)
 def get_branches():
     return frappe.get_all("Branch", fields=["name", "branch"], limit_page_length=100)
+
+@frappe.whitelist(allow_guest=True)
+def get_open_drives(branch):
+    """Return list of open drives for a branch"""
+    if not branch:
+        return []
+
+    drives = frappe.get_all(
+        "Recruitment Drive",
+        filters={"status": "Open", "branch": branch},
+        fields=["name", "drive_name"]
+    )
+    return drives
