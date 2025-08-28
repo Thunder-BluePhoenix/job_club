@@ -500,7 +500,7 @@ frappe.ready(() => {
         if (!branch) return;
 
         frappe.call({
-            method: "job_club.job_club.doctype.recruitment_drive.recruitment_drive.get_open_drives",
+            method: "job_club.job_club.doctype.registration_from.registration_from.get_open_drives",
             args: { branch: branch },
             callback: function (r) {
                 if (r.message && r.message.length > 0) {
