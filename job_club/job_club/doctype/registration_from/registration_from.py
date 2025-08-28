@@ -106,7 +106,7 @@ class RegistrationFrom(Document):
 
         <p style="margin-top: 20px; font-size: 14px; color: #777;">
             Regards,  
-            <br><strong> Emporium Recruitment Team </strong>
+            <br><strong> Emporium Team </strong>
         </p>
         </div>
     </body>
