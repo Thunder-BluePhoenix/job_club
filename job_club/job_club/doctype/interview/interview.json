@@ -19,7 +19,11 @@
   "age",
   "height",
   "weight",
-  "invitation_acceptance_date"
+  "invitation_acceptance_date",
+  "section_break_mjai",
+  "recruitment_drive",
+  "column_break_upyh",
+  "token_number"
  ],
  "fields": [
   {
@@ -110,12 +114,34 @@
    "label": "Job Experience",
    "options": "Select\nYes\nNo",
    "reqd": 1
+  },
+  {
+   "fieldname": "section_break_mjai",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "recruitment_drive",
+   "fieldtype": "Link",
+   "label": "Recruitment Drive",
+   "options": "Recruitment Drive",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_upyh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "token_number",
+   "fieldtype": "Data",
+   "label": "Token Number",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-27 11:44:18.807082",
+ "modified": "2025-08-28 13:17:44.943778",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Interview",

@@ -9,13 +9,16 @@
   "full_name",
   "mobile_number",
   "email_id",
-  "location",
   "gender",
   "age",
   "height",
   "weight",
   "qualification",
   "job_experience",
+  "column_break_rnmm",
+  "location",
+  "recruitment_drive",
+  "token_number",
   "naming_series"
  ],
  "fields": [
@@ -91,12 +94,30 @@
    "label": "Job Experience",
    "options": "Select\nYes\nNo",
    "reqd": 1
+  },
+  {
+   "fieldname": "column_break_rnmm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "recruitment_drive",
+   "fieldtype": "Link",
+   "label": "Recruitment Drive",
+   "options": "Recruitment Drive",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "token_number",
+   "fieldtype": "Data",
+   "label": "Token Number",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-27 11:45:51.204466",
+ "modified": "2025-08-28 13:18:05.769354",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Registration From",

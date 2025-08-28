@@ -251,6 +251,16 @@
       <h2 class="brand-name">See you at Emporium!</h2>
       <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/great-1.png" alt="Success Icon"
         class="popup-img" />
+
+      <!-- 🔹 Token Box -->
+      <div id="token-box" style="margin-top:15px; text-align:center;">
+        <p><b>Your Token Number:</b></p>
+        <h3 id="candidate-token" style="font-size:20px; color:#1e88e5; margin:10px 0;"></h3>
+        <button onclick="copyToken()"
+          style="background:linear-gradient(to right, #151f6d, #3041e4); color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer;">
+          Copy Token
+        </button>
+      </div>
     </div>
   </div>
 
@@ -287,6 +297,34 @@
       document.getElementById("branch-details").innerText = "Branch not selected.";
     }
 
+    const token = urlParams.get('token') || "";
+
+    if (token) {
+      document.getElementById("candidate-token").textContent = token;
+    } else {
+      document.getElementById("token-box").style.display = "none";
+    }
+
+    // Copy function
+    function copyToken() {
+      const tokenText = document.getElementById("candidate-token").textContent;
+      const copyBtn = document.querySelector("#token-box button");
+
+      if (tokenText) {
+        navigator.clipboard.writeText(tokenText).then(() => {
+          // Change button text
+          copyBtn.textContent = "Copied! ✅";
+          copyBtn.style.background = "#4caf50"; // green highlight
+
+          // Reset after 2 seconds
+          setTimeout(() => {
+            copyBtn.textContent = "Copy Token";
+            copyBtn.style.background = "linear-gradient(to right, #151f6d, #3041e4)"; // back to blue
+          }, 2000);
+        });
+      }
+    }
+
     // ---------- Accept Button Logic ----------
     const button = document.getElementById("acceptButton");
     const checkbox = document.getElementById("acceptCheckbox");
@@ -311,13 +349,13 @@
       button.disabled = true;
       button.innerText = "Confirmed 🎉";
 
-      // Auto-hide popup after 4s then redirect
+      // Auto-hide popup after 10s then redirect
       setTimeout(() => {
         mainWrapper.classList.remove("blurred");
         overlay.classList.remove("blurred");
         popup.style.display = "none";
         window.location.href = "/registration-from/new";
-      }, 4000);
+      }, 10000);
     });
   </script>
 </body>

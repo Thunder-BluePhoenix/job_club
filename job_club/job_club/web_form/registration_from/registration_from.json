@@ -18,7 +18,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2025-08-27 12:21:20.991041",
+ "modified": "2025-08-28 13:17:30.437105",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "registration-from",
@@ -168,6 +168,45 @@
    "precision": "",
    "read_only": 0,
    "reqd": 1,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "column_break_rnmm",
+   "fieldtype": "Column Break",
+   "hidden": 0,
+   "max_length": 0,
+   "max_value": 0,
+   "precision": "",
+   "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "recruitment_drive",
+   "fieldtype": "Link",
+   "hidden": 0,
+   "label": "Recruitment Drive",
+   "max_length": 0,
+   "max_value": 0,
+   "options": "Recruitment Drive",
+   "precision": "",
+   "read_only": 1,
+   "reqd": 1,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "token_number",
+   "fieldtype": "Data",
+   "hidden": 0,
+   "label": "Token Number",
+   "max_length": 0,
+   "max_value": 0,
+   "precision": "",
+   "read_only": 1,
+   "reqd": 0,
    "show_in_filter": 0
   }
  ]

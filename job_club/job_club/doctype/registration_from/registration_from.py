@@ -29,12 +29,106 @@ class RegistrationFrom(Document):
             interview.qualification = self.qualification
             interview.job_experience = self.job_experience
             interview.weight = self.weight
+            interview.recruitment_drive = self.recruitment_drive
+            interview.token_number = self.token_number
+
 
             # Save Invitation Acceptance Date (auto-set)
             interview.invitation_acceptance_date = now_datetime()
 
             interview.save()
 
+    def before_insert(self):
+        """Generate branch-wise, drive-wise token before saving"""
+        if not self.location or not self.recruitment_drive:
+            frappe.throw("Location (Branch) and Recruitment Drive are required to generate token")
+
+        # Branch code → take first 3 letters (or make a mapping if needed)
+        branch_code = self.location[:3].upper()
+
+        # Find last token for this location + drive
+        last_token = frappe.db.sql("""
+            SELECT token_number
+            FROM `tabRegistration From`
+            WHERE location=%s AND recruitment_drive=%s
+            ORDER BY creation DESC LIMIT 1
+        """, (self.location, self.recruitment_drive))
+
+        if last_token and last_token[0][0]:
+            try:
+                last_num = int(last_token[0][0].split("-")[1])
+            except:
+                last_num = 0
+            next_num = last_num + 1
+        else:
+            next_num = 1
+
+        # Format token → e.g. KOL-0001
+        self.token_number = f"{branch_code}-{next_num:04d}"
+
+    
+    def after_insert(self):
+        """Send confirmation email with token after registration"""
+        reciever_email = self.email_id
+        full_name = self.full_name or "Candidate"
+
+        if not reciever_email:
+            frappe.log_error("No email found for Registration From", f"Doc: {self.name}")
+            return
+
+        subject = f"Your Registration Token - {self.token_number}"
+
+        message = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; background-color: #f8f9fa; padding: 20px;">
+        <div style="max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" 
+                alt="Emporium Logo" style="max-width: 180px;" />
+        </div>
+
+        <p style="font-size: 16px;">Dear <strong>{full_name}</strong>,</p>
+
+        <p style="font-size: 15px; color: #333;">
+            Thank you for registering with <strong>Emporium</strong>.  
+            Your Token Number for the Recruitment Drive at <b>{self.location}</b> is:
+        </p>
+
+        <div style="text-align: center; margin: 20px 0;">
+            <span style="display: inline-block; font-size: 24px; font-weight: bold; background: #3041e4; color: white; padding: 10px 20px; border-radius: 6px;">
+            {self.token_number}
+            </span>
+        </div>
+
+        <p style="font-size: 15px; color: #555;">
+            Please keep this Token Number safe. You will need it on the day of your interview process.
+        </p>
+
+        <p style="margin-top: 20px; font-size: 14px; color: #777;">
+            Regards,  
+            <br><strong> Emporium Recruitment Team </strong>
+        </p>
+        </div>
+    </body>
+    </html>
+    """
+
+        try:
+            frappe.sendmail(
+                recipients=[reciever_email],
+                subject=subject,
+                message=message,
+                now=True
+            )
+        except Exception as e:
+            frappe.log_error(f"Failed to send Token email: {e}", "Registration From Email Error")
+
+
+@frappe.whitelist(allow_guest=True)
+def get_registration_token(docname):
+    """Fetch token for a submitted registration (for webform redirect)"""
+    token = frappe.db.get_value("Registration From", docname, "token_number")
+    return {"token_number": token}
 
 @frappe.whitelist(allow_guest=True)
 def pre_validate_registration(data):
@@ -109,4 +203,3 @@ def check_duplicate(fieldname, value):
 @frappe.whitelist(allow_guest=True)
 def get_branches():
     return frappe.get_all("Branch", fields=["name", "branch"], limit_page_length=100)
-

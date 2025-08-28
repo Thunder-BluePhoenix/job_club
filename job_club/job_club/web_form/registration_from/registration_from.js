@@ -379,6 +379,20 @@ frappe.ready(() => {
             <h3 class="register-title-mobile">Register Now</h3>
             <div class="form-row-grid">
                 <div class="form-group">
+                    <label>Location</label>
+                    <select id="location" required>
+                        <option value="">Select Branch</option>
+                    </select>
+                    <div class="error-msg" id="error-location"></div>
+                </div>
+                <div class="form-group">
+                    <label>Recruitment Drive</label>
+                    <select id="recruitment_drive" required>
+                        <option value="">Select Drive</option>
+                    </select>
+                    <div class="error-msg" id="error-recruitment_drive"></div>
+                </div>
+                <div class="form-group">
                     <label>Full Name</label><input type="text" id="full_name" placeholder="Enter your full name" required />
                     <div class="error-msg" id="error-full_name"></div>
                 </div>
@@ -389,13 +403,6 @@ frappe.ready(() => {
                 <div class="form-group">
                     <label>Mobile Number</label><input type="text" id="mobile_number" placeholder="Enter your mobile/whatsapp number" required />
                     <div class="error-msg" id="error-mobile_number"></div>
-                </div>
-                <div class="form-group">
-                    <label>Location</label>
-                    <select id="location" required>
-                        <option value="">Select Branch</option>
-                    </select>
-                    <div class="error-msg" id="error-location"></div>
                 </div>
                 <div class="form-group">
                     <label>Qualification</label>
@@ -482,6 +489,54 @@ frappe.ready(() => {
                 });
             }
         }
+    });
+
+    // When branch is selected → fetch open drives for that branch
+    document.getElementById('location').addEventListener('change', function () {
+        const branch = this.value;
+        const driveSelect = document.getElementById('recruitment_drive');
+        driveSelect.innerHTML = '<option value="">Select Drive</option>'; // reset
+
+        if (!branch) return;
+
+        frappe.call({
+            method: "frappe.client.get_list",
+            args: {
+                doctype: "Recruitment Drive",
+                filters: {
+                    status: "Open",
+                    branch: branch
+                },
+                fields: ["name", "drive_name"],
+                limit_page_length: 50
+            },
+            callback: function (r) {
+                if (r.message && r.message.length > 0) {
+                    if (r.message.length === 1) {
+                        // Only 1 open drive → auto-select & lock
+                        let drive = r.message[0];
+                        const opt = document.createElement("option");
+                        opt.value = drive.name;
+                        opt.textContent = drive.drive_name;
+                        opt.selected = true;
+                        driveSelect.appendChild(opt);
+                        driveSelect.disabled = true;
+                    } else {
+                        // Multiple open drives → show in dropdown
+                        r.message.forEach(drive => {
+                            const opt = document.createElement("option");
+                            opt.value = drive.name;
+                            opt.textContent = drive.drive_name;
+                            driveSelect.appendChild(opt);
+                        });
+                        driveSelect.disabled = false;
+                    }
+                } else {
+                    frappe.msgprint(`No open drives available for ${branch}`);
+                    driveSelect.disabled = true;
+                }
+            }
+        });
     });
 
     // ---------- Common references ----------
@@ -646,7 +701,7 @@ frappe.ready(() => {
     });
 
     // ---------- Form Submit (pre_validate + OTP send) ----------
-    let full_name, email_id, mobile_number, location, gender, age, height, qualification, weight, job_experience;
+    let full_name, email_id, mobile_number, location, gender, age, height, qualification, weight, job_experience, recruitment_drive;
     document.getElementById('registration-form').addEventListener('submit', (e) => {
         e.preventDefault();
         formError.textContent = '';
@@ -661,6 +716,8 @@ frappe.ready(() => {
         qualification = document.getElementById('qualification').value.trim();
         weight = document.getElementById('weight').value.trim();
         job_experience = document.getElementById('job_experience').value;
+        recruitment_drive = document.getElementById('recruitment_drive').value.trim();
+
 
         frappe.call({
             method: 'job_club.job_club.doctype.registration_from.registration_from.pre_validate_registration',
@@ -705,6 +762,7 @@ frappe.ready(() => {
             return;
         }
         showOtpMessage('Verifying OTP...', '#666');
+
         frappe.call({
             method: 'job_club.job_club.doctype.otp_verification.otp_api.verify_otp_and_delete',
             args: { data: { email: email_id, otp: otp_code } },
@@ -712,20 +770,42 @@ frappe.ready(() => {
                 if (res.message && res.message.status === "success") {
                     showOtpMessage('OTP verified successfully.', '#4caf50');
                     successCheck.style.display = 'block';
+
+                    // Save Registration
                     frappe.call({
                         method: 'frappe.website.doctype.web_form.web_form.accept',
-                        args: { web_form: 'registration-from', data: JSON.stringify({ full_name, email_id, mobile_number, location, gender, age, height, qualification, weight, job_experience }) },
+                        args: {
+                            web_form: 'registration-from',
+                            data: JSON.stringify({
+                                full_name, email_id, mobile_number, location, gender,
+                                age, height, qualification, weight, job_experience,
+                                recruitment_drive
+                            })
+                        },
                         callback: (saveRes) => {
                             if (saveRes.exc) {
                                 showOtpMessage('Failed to save data. Please try again.');
                             } else {
-                                setTimeout(() => {
-                                    successCheck.style.display = 'none';
-                                    otpModalOverlay.style.display = 'none';
-                                    pageContent.style.filter = 'none';
-                                    clearInterval(countdownInterval);
-                                    window.location.href = `/assets/job_club/thank_you.html?name=${encodeURIComponent(full_name)}&location=${encodeURIComponent(location)}`;
-                                }, 1000);
+                                const docname = saveRes.message.name;  // saved Registration docname
+
+                                // Fetch generated token from backend
+                                frappe.call({
+                                    method: "job_club.job_club.doctype.registration_from.registration_from.get_registration_token",
+                                    args: { docname },
+                                    callback: function (tokenRes) {
+                                        const token = tokenRes.message.token_number;
+
+                                        setTimeout(() => {
+                                            successCheck.style.display = 'none';
+                                            otpModalOverlay.style.display = 'none';
+                                            pageContent.style.filter = 'none';
+                                            clearInterval(countdownInterval);
+
+                                            // Redirect with token
+                                            window.location.href = `/assets/job_club/thank_you.html?name=${encodeURIComponent(full_name)}&location=${encodeURIComponent(location)}&token=${encodeURIComponent(token)}`;
+                                        }, 1000);
+                                    }
+                                });
                             }
                         }
                     });
