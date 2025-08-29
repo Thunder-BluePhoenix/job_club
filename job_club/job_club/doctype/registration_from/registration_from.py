@@ -145,7 +145,6 @@ class RegistrationFrom(Document):
             frappe.log_error(f"Failed to send Token email: {e}", "Registration From Email Error")
 
 
-
 @frappe.whitelist(allow_guest=True)
 def get_registration_token(docname):
     """Fetch token for a submitted registration (for webform redirect)"""
@@ -208,6 +207,7 @@ def pre_validate_registration(data):
 
     return {"status": "success", "message": "Validation passed."}
 
+
 @frappe.whitelist(allow_guest=True)
 def check_duplicate(fieldname, value, drive):
     """Check if email already exists for the same drive"""
@@ -227,6 +227,7 @@ def check_duplicate(fieldname, value, drive):
 @frappe.whitelist(allow_guest=True)
 def get_branches():
     return frappe.get_all("Branch", fields=["name", "branch"], limit_page_length=100)
+
 
 @frappe.whitelist(allow_guest=True)
 def get_open_drives(branch):
