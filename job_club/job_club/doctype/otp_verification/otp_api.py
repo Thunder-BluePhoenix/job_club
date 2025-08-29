@@ -113,7 +113,7 @@ def send_otp(data):
       </p>
 
       <div style="text-align: center; margin: 20px 0;">
-        <span style="display: inline-block; font-size: 24px; font-weight: bold; background: #3041e4; color: white; padding: 10px 20px; border-radius: 6px;">
+        <span style="display: inline-block; font-size: 24px; font-weight: bold; background: linear-gradient(to right, #151f6d, #3041e4); color: white; padding: 10px 20px; border-radius: 6px;">
           {otp}
         </span>
       </div>
