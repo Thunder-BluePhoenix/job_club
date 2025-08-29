@@ -38,7 +38,7 @@ function generate_branch_qr(frm) {
     wrapper.append(qr_div);
 
     // Generate the QR code (using QRCode.js)
-    const qr = new QRCode(qr_div, {
+    new QRCode(qr_div, {
         text: qr_url,
         width: 200,
         height: 200
@@ -50,7 +50,7 @@ function generate_branch_qr(frm) {
     downloadBtn.className = "btn btn-primary mt-2";
     wrapper.append(downloadBtn);
 
-    // Handle download with branch name below QR
+    // Handle download with logo + QR + branch name
     downloadBtn.addEventListener("click", () => {
         const qrImg = qr_div.querySelector("img") || qr_div.querySelector("canvas");
         if (!qrImg) {
@@ -58,38 +58,48 @@ function generate_branch_qr(frm) {
             return;
         }
 
-        // Create a new canvas for QR + text
+        // Create canvas for Logo + QR + Text
+        const qrSize = 220; 
+        const logoHeight = 60; 
+        const textHeight = 40; 
         const canvas = document.createElement("canvas");
-        const size = 220; // QR size with padding
-        const textHeight = 40; // space for branch name
-        canvas.width = size;
-        canvas.height = size + textHeight;
+        canvas.width = qrSize;
+        canvas.height = logoHeight + qrSize + textHeight;
 
         const ctx = canvas.getContext("2d");
-
-        // Fill background white
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Draw QR image
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.onload = function() {
-            ctx.drawImage(img, 10, 10, size - 20, size - 20);
+        // Load logo first
+        const logo = new Image();
+        logo.crossOrigin = "anonymous";
+        logo.onload = function() {
+            const logoW = 120;
+            const logoH = 40;
+            ctx.drawImage(logo, (canvas.width - logoW) / 2, 10, logoW, logoH);
 
-            // Add branch name text
-            ctx.fillStyle = "#000000";
-            ctx.font = "bold 16px Arial";
-            ctx.textAlign = "center";
-            ctx.fillText(frm.doc.name, size / 2, size + 20);
+            // Load QR code next
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.onload = function() {
+                ctx.drawImage(img, 10, logoHeight, qrSize - 20, qrSize - 20);
 
-            // Download
-            const link = document.createElement("a");
-            link.href = canvas.toDataURL("image/png");
-            link.download = `QR-${frm.doc.name}.png`;
-            link.click();
+                // Add branch name text
+                ctx.fillStyle = "#000000";
+                ctx.font = "bold 16px Arial";
+                ctx.textAlign = "center";
+                ctx.fillText(frm.doc.name, qrSize / 2, logoHeight + qrSize);
+
+                // Download final PNG
+                const link = document.createElement("a");
+                link.href = canvas.toDataURL("image/png");
+                link.download = `QR-${frm.doc.name}.png`;
+                link.click();
+            };
+            img.src = qrImg.src || qrImg.toDataURL("image/png");
         };
 
-        img.src = qrImg.src || qrImg.toDataURL("image/png");
+        // 🔹 Replace with your actual company logo URL
+        logo.src = "https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-es.png";
     });
 }
