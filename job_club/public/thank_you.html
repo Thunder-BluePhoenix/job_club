@@ -14,7 +14,7 @@
     }
 
     body {
-      font-family: 'Poppins', sans-serif;
+      font-family: "Poppins", sans-serif;
       background-size: cover;
       color: #333;
       overflow-x: hidden;
@@ -181,7 +181,7 @@
     }
 
     .popup-card .brand-name {
-      font-size: .87rem;
+      font-size: 0.87rem;
       color: #1e88e5;
       margin: 0;
     }
@@ -189,6 +189,17 @@
     .popup-img {
       width: 80px;
       margin-top: 12px;
+    }
+
+    #candidate-qr {
+      display: flex;
+      justify-content: center;
+      margin: 15px auto;
+    }
+
+    #candidate-qr canvas,
+    #candidate-qr img {
+      margin: auto;
     }
 
     @media (max-width: 480px) {
@@ -251,23 +262,39 @@
       <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/great-1.png" alt="Success Icon"
         class="popup-img" />
 
-      <!-- 🔹 Token Box -->
-      <div id="token-box" style="margin-top:15px; text-align:center;">
+      <!-- 🔹 Token + QR Box -->
+      <div id="token-box" style="margin-top: 15px; text-align: center;">
         <p><b>Your Token Number:</b></p>
-        <h3 id="candidate-token" style="font-size:20px; color:#1e88e5; margin:10px 0;"></h3>
-        <button onclick="copyToken()"
-          style="background:linear-gradient(to right, #151f6d, #3041e4); color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer;">
-          Copy Token
-        </button>
+        <h3 id="candidate-token" style="font-size: 20px; color: #1e88e5; margin: 10px 0;"></h3>
+
+        <!-- QR Code -->
+        <div id="candidate-qr" style="margin: 15px auto; text-align: center;"></div>
+
+        <!-- Buttons -->
+        <div style="margin-top: 10px;">
+          <button onclick="downloadQR()"
+            style="background: linear-gradient(to right, #151f6d, #3041e4); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer;">
+            Download QR
+          </button>
+
+          <!-- 🔹 Refer a Friend Button -->
+          <button onclick="referFriend()"
+            style="background: linear-gradient(to right, #28a745, #5cd65c); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer;">
+            Refer a Friend
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
   <script>
     // Get query params
     const urlParams = new URLSearchParams(window.location.search);
-    const name = urlParams.get('name') || "Candidate";
-    const branchLocation = urlParams.get('location'); // Branch docname
+    const name = urlParams.get("name") || "Candidate";
+    const branchLocation = urlParams.get("location"); // Branch docname
+    const token = urlParams.get("token") || "";
 
     // Set candidate name
     document.getElementById("candidate-name").textContent = name;
@@ -275,8 +302,8 @@
     // ---------- Fetch Branch Details via REST API ----------
     if (branchLocation) {
       fetch(`/api/resource/Branch/${encodeURIComponent(branchLocation)}`)
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           if (data && data.data) {
             const branch = data.data;
             let details = `<b>${branch.branch}</b><br/>${branch.address}`;
@@ -288,7 +315,7 @@
             document.getElementById("branch-details").innerText = "Branch details not found.";
           }
         })
-        .catch(err => {
+        .catch((err) => {
           document.getElementById("branch-details").innerText = "Error fetching branch details.";
           console.error(err);
         });
@@ -296,30 +323,78 @@
       document.getElementById("branch-details").innerText = "Branch not selected.";
     }
 
-    const token = urlParams.get('token') || "";
-
+    // ---------- Token + QR ----------
     if (token) {
       document.getElementById("candidate-token").textContent = token;
+
+      // Generate QR Code
+      new QRCode(document.getElementById("candidate-qr"), {
+        text: token,
+        width: 128,
+        height: 128,
+      });
     } else {
       document.getElementById("token-box").style.display = "none";
     }
 
-    // Copy function
-    function copyToken() {
+    // Download QR (with token text)
+    function downloadQR() {
+      const qrCanvas = document.querySelector("#candidate-qr canvas");
       const tokenText = document.getElementById("candidate-token").textContent;
-      const copyBtn = document.querySelector("#token-box button");
 
-      if (tokenText) {
-        navigator.clipboard.writeText(tokenText).then(() => {
-          // Change button text
-          copyBtn.textContent = "Copied! ✅";
-          copyBtn.style.background = "#4caf50"; // green highlight
+      if (!qrCanvas) {
+        alert("QR Code not found!");
+        return;
+      }
 
-          // Reset after 2 seconds
-          setTimeout(() => {
-            copyBtn.textContent = "Copy Token";
-            copyBtn.style.background = "linear-gradient(to right, #151f6d, #3041e4)"; // back to blue
-          }, 2000);
+      // Create new canvas bigger than QR (extra space for text)
+      const newCanvas = document.createElement("canvas");
+      const ctx = newCanvas.getContext("2d");
+
+      const qrSize = qrCanvas.width;
+      const padding = 20;
+      const textHeight = 30;
+
+      newCanvas.width = qrSize + padding * 2;
+      newCanvas.height = qrSize + padding * 2 + textHeight;
+
+      // Background
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+
+      // Draw QR
+      ctx.drawImage(qrCanvas, padding, padding, qrSize, qrSize);
+
+      // Draw token number below QR
+      ctx.fillStyle = "#000";
+      ctx.font = "bold 18px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText(tokenText, newCanvas.width / 2, qrSize + padding + textHeight - 5);
+
+      // Save file
+      const link = document.createElement("a");
+      link.download = `${tokenText}.png`;
+      link.href = newCanvas.toDataURL("image/png");
+      link.click();
+    }
+
+    // Refer a Friend
+    function referFriend() {
+      const shareText = `Hey! I've just registered for the Emporium recruitment drive. You should join too!`;
+      const shareUrl = window.location.origin + "/registration-form/new";
+
+      if (navigator.share) {
+        navigator
+          .share({
+            title: "Refer a Friend - Emporium",
+            text: shareText,
+            url: shareUrl,
+          })
+          .catch((err) => console.log("Share cancelled:", err));
+      } else {
+        // fallback copy link
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          alert("Link copied! Share it with your friends.");
         });
       }
     }
@@ -342,7 +417,7 @@
       overlay.classList.add("blurred");
 
       // Show popup
-      popup.style.display = "block";
+      popup.style.display = "flex";
 
       // Disable button
       button.disabled = true;
@@ -354,7 +429,7 @@
         overlay.classList.remove("blurred");
         popup.style.display = "none";
         window.location.href = "/registration-from/new";
-      }, 10000);
+      }, 8000);
     });
   </script>
 </body>

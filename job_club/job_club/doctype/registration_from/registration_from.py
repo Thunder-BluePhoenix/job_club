@@ -8,13 +8,7 @@ from frappe.utils import now_datetime
 class RegistrationFrom(Document):
 
     def on_update(self):
-        # Check if an Interview already exists for this email
-        existing_interview = frappe.db.exists("Interview", {
-            "email_id": self.email_id
-        })
 
-        # Only create a new Interview if one doesn't already exist
-        if not existing_interview:
             interview = frappe.new_doc("Interview")
             
             # Basic details
@@ -68,7 +62,7 @@ class RegistrationFrom(Document):
 
     
     def after_insert(self):
-        """Send confirmation email with token after registration"""
+        """Send confirmation email with token + QR + branch details (inline + attachment)"""
         reciever_email = self.email_id
         full_name = self.full_name or "Candidate"
 
@@ -76,52 +70,80 @@ class RegistrationFrom(Document):
             frappe.log_error("No email found for Registration From", f"Doc: {self.name}")
             return
 
+        # 🔹 Fetch branch details
+        try:
+            branch = frappe.get_doc("Branch", self.location)
+            branch_details = f"<b>{branch.branch}</b><br/>{branch.address or ''}"
+            if branch.contact_number:
+                branch_details += f"<br/>Call: {branch.contact_number}"
+            if branch.email:
+                branch_details += f"<br/>Email: <a href='mailto:{branch.email}'>{branch.email}</a>"
+            if getattr(branch, "instagram", None):
+                branch_details += f"<br/>Instagram: <a href='{branch.instagram}' target='_blank'>{branch.instagram}</a>"
+        except Exception as e:
+            branch_details = f"<b>{self.location}</b> (details not found)"
+            frappe.log_error(f"Branch fetch failed: {e}", "Registration From Email Error")
+
+        # 🔹 Generate QR for token
+        import qrcode, io, base64
+        qr = qrcode.make(self.token_number)
+        buf = io.BytesIO()
+        qr.save(buf, format="PNG")
+        qr_bytes = buf.getvalue()
+
+        # 🔹 Build email
         subject = f"Your Registration Token - {self.token_number}"
 
         message = f"""
-    <html>
-    <body style="font-family: Arial, sans-serif; background-color: #f8f9fa; padding: 20px;">
-        <div style="max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
-        <div style="text-align: center; margin-bottom: 20px;">
-            <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" 
-                alt="Emporium Logo" style="max-width: 180px;" />
-        </div>
+        <html>
+        <body style="font-family: Arial, sans-serif; background-color: #f8f9fa; padding: 20px;">
+            <div style="max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" 
+                        alt="Emporium Logo" style="max-width: 180px;" />
+                </div>
 
-        <p style="font-size: 16px;">Dear <strong>{full_name}</strong>,</p>
+                <p style="font-size: 16px;">Dear <strong>{full_name}</strong>,</p>
 
-        <p style="font-size: 15px; color: #333;">
-            Thank you for registering with <strong>Emporium</strong>.  
-            Your Token Number for the Recruitment Drive at <b>{self.location}</b> is:
-        </p>
+                <p style="font-size: 15px; color: #333;">
+                    Thank you for registering with <strong>Emporium</strong>.  
+                    Your Token Number for the Recruitment Drive at <b>{self.location}</b> is:
+                </p>
 
-        <div style="text-align: center; margin: 20px 0;">
-            <span style="display: inline-block; font-size: 24px; font-weight: bold; background: #3041e4; color: white; padding: 10px 20px; border-radius: 6px;">
-            {self.token_number}
-            </span>
-        </div>
+                <div style="text-align: center; margin: 20px 0;">
+                    <span style="display: inline-block; font-size: 24px; font-weight: bold; background: linear-gradient(to right, #151f6d, #3041e4); color: white; padding: 10px 20px; border-radius: 6px;">
+                        {self.token_number}
+                    </span>
+                </div>
 
-        <p style="font-size: 15px; color: #555;">
-            Please keep this Token Number safe. You will need it on the day of your interview process.
-        </p>
+                <div style="margin-top: 20px; font-size: 14px; color: #555;">
+                    <p><b>Location Details:</b></p>
+                    {branch_details}
+                </div>
 
-        <p style="margin-top: 20px; font-size: 14px; color: #777;">
-            Regards,  
-            <br><strong> Emporium Team </strong>
-        </p>
-        </div>
-    </body>
-    </html>
-    """
+                <p style="margin-top: 20px; font-size: 14px; color: #777;">
+                    Regards,<br/>
+                    <strong>Emporium Team</strong>
+                </p>
+            </div>
+        </body>
+        </html>
+        """
 
         try:
             frappe.sendmail(
                 recipients=[reciever_email],
                 subject=subject,
                 message=message,
-                now=True
+                now=True,
+                attachments=[{
+                    "fname": f"{self.token_number}.png",
+                    "fcontent": qr_bytes
+                }]
             )
         except Exception as e:
             frappe.log_error(f"Failed to send Token email: {e}", "Registration From Email Error")
+
 
 
 @frappe.whitelist(allow_guest=True)
@@ -187,18 +209,20 @@ def pre_validate_registration(data):
     return {"status": "success", "message": "Validation passed."}
 
 @frappe.whitelist(allow_guest=True)
-def check_duplicate(fieldname, value):
-    """Check if email or mobile already exists"""
-    if not fieldname or not value:
+def check_duplicate(fieldname, value, drive):
+    """Check if email already exists for the same drive"""
+    if not fieldname or not value or not drive:
         return {"status": "error", "message": "Invalid request"}
 
-    if fieldname not in ["email_id", "mobile_number"]:
+    if fieldname not in ["email_id"]:
         return {"status": "error", "message": "Invalid field"}
 
-    if frappe.db.exists("Registration From", {fieldname: value}):
-        return {"status": "error", "message": f"This {fieldname.replace('_', ' ')} is already registered."}
+    # Check if email exists for the same drive
+    if frappe.db.exists("Registration From", {fieldname: value, "recruitment_drive": drive}):
+        return {"status": "error", "message": f"This {fieldname.replace('_', ' ')} is already registered for this drive."}
 
     return {"status": "success", "message": "Available"}
+
 
 @frappe.whitelist(allow_guest=True)
 def get_branches():

@@ -497,7 +497,7 @@ frappe.ready(() => {
                         // Trigger change event to load drives automatically
                         setTimeout(() => {
                             locationSelect.dispatchEvent(new Event("change"));
-                        }, 300);
+                        }, 0);
                     }
 
                     locationSelect.appendChild(opt);
@@ -608,16 +608,21 @@ frappe.ready(() => {
 
     document.getElementById('email_id').addEventListener('blur', function () {
         const email = this.value.trim();
+        const drive = document.getElementById('recruitment_drive').value; // ID of your drive field
+
         if (email && !/^[^@]+@[^@]+\.[^@]+$/.test(email)) {
             showFieldError('email_id', "Enter a valid email address.");
             return;
         } else if (!email) {
             showFieldError('email_id', "Email is required.");
             return;
+        } else if (!drive) {
+            showFieldError('email_id', "Select a recruitment drive first.");
+            return;
         } else {
             frappe.call({
                 method: 'job_club.job_club.doctype.registration_from.registration_from.check_duplicate',
-                args: { fieldname: "email_id", value: email },
+                args: { fieldname: "email_id", value: email, drive: drive },
                 callback: (r) => {
                     if (r.message.status === "error") {
                         showFieldError('email_id', r.message.message);
@@ -629,28 +634,26 @@ frappe.ready(() => {
         }
     });
 
+
     document.getElementById('mobile_number').addEventListener('blur', function () {
         const mobile = this.value.trim();
-        if (mobile && !/^(\+91\d{10}|\d{10})$/.test(mobile)) {
-            showFieldError('mobile_number', "Enter a valid 10-digit number");
-            return;
-        } else if (!mobile) {
+
+        if (!mobile) {
+            // Empty mobile number
             showFieldError('mobile_number', "Mobile number is required.");
             return;
-        } else {
-            frappe.call({
-                method: 'job_club.job_club.doctype.registration_from.registration_from.check_duplicate',
-                args: { fieldname: "mobile_number", value: mobile },
-                callback: (r) => {
-                    if (r.message.status === "error") {
-                        showFieldError('mobile_number', r.message.message);
-                    } else {
-                        showFieldError('mobile_number', "");
-                    }
-                }
-            });
         }
+
+        if (!/^(\+91\d{10}|\d{10})$/.test(mobile)) {
+            // Invalid format
+            showFieldError('mobile_number', "Enter a valid 10-digit number");
+            return;
+        }
+
+        // If valid, clear any previous errors
+        showFieldError('mobile_number', "");
     });
+
 
     document.getElementById('location').addEventListener('blur', function () {
         if (!this.value.trim()) {
