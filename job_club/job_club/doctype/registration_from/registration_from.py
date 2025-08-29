@@ -85,7 +85,7 @@ class RegistrationFrom(Document):
             frappe.log_error(f"Branch fetch failed: {e}", "Registration From Email Error")
 
         # 🔹 Generate QR for token
-        import qrcode, io, base64
+        import qrcode, io
         qr = qrcode.make(self.token_number)
         buf = io.BytesIO()
         qr.save(buf, format="PNG")
