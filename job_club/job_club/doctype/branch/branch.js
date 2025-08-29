@@ -88,7 +88,7 @@ function generate_branch_qr(frm) {
                 ctx.fillStyle = "#000000";
                 ctx.font = "bold 16px Arial";
                 ctx.textAlign = "center";
-                ctx.fillText(frm.doc.name, qrSize / 2, logoHeight + qrSize);
+                ctx.fillText(`Branch - ${frm.doc.name}`, qrSize / 2, logoHeight + qrSize);
 
                 // Download final PNG
                 const link = document.createElement("a");
