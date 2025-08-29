@@ -100,6 +100,6 @@ function generate_branch_qr(frm) {
         };
 
         // 🔹 Replace with your actual company logo URL
-        logo.src = "https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-es.png";
+        logo.src = "/files/logo-es.png";
     });
 }
