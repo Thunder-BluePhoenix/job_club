@@ -481,15 +481,31 @@ frappe.ready(() => {
         callback: function (r) {
             if (r.message) {
                 const locationSelect = document.getElementById("location");
+
+                // Get branch from URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const branchFromUrl = urlParams.get("branch");
+
                 r.message.forEach(branch => {
                     const opt = document.createElement("option");
                     opt.value = branch.branch;
                     opt.textContent = branch.branch;
+
+                    // Auto-select if matches URL param
+                    if (branchFromUrl && branchFromUrl.toLowerCase() === branch.branch.toLowerCase()) {
+                        opt.selected = true;
+                        // Trigger change event to load drives automatically
+                        setTimeout(() => {
+                            locationSelect.dispatchEvent(new Event("change"));
+                        }, 300);
+                    }
+
                     locationSelect.appendChild(opt);
                 });
             }
         }
     });
+
 
     // When branch is selected → fetch open drives for that branch
     document.getElementById('location').addEventListener('change', function () {
