@@ -44,10 +44,40 @@ function generate_branch_qr(frm) {
         height: 200
     });
 
-    // Add download button
+    // 🔹 Add link box with clickable link + copy button
+    const linkBox = document.createElement('div');
+    linkBox.className = "d-flex align-items-center mt-3";
+
+    const linkAnchor = document.createElement('a');
+    linkAnchor.href = qr_url;
+    linkAnchor.target = "_blank";
+    linkAnchor.innerText = qr_url;
+    linkAnchor.className = "form-control";
+    linkAnchor.style.maxWidth = "350px";
+    linkAnchor.style.overflow = "hidden";
+    linkAnchor.style.textOverflow = "ellipsis";
+    linkAnchor.style.whiteSpace = "nowrap";
+    linkAnchor.style.padding = "6px 10px";
+
+    const copyBtn = document.createElement('button');
+    copyBtn.innerText = "Copy";
+    copyBtn.className = "btn btn-secondary ml-2";
+
+    linkBox.append(linkAnchor);
+    linkBox.append(copyBtn);
+    wrapper.append(linkBox);
+
+    // Copy handler
+    copyBtn.addEventListener("click", () => {
+        navigator.clipboard.writeText(qr_url).then(() => {
+            frappe.show_alert({message: "Link copied!", indicator: "green"});
+        });
+    });
+
+    // 🔹 Add download button
     const downloadBtn = document.createElement('button');
     downloadBtn.innerText = "Download QR Code";
-    downloadBtn.className = "btn btn-primary mt-2";
+    downloadBtn.className = "btn btn-primary mt-3";
     wrapper.append(downloadBtn);
 
     // Handle download with logo + QR + branch name
@@ -58,7 +88,6 @@ function generate_branch_qr(frm) {
             return;
         }
 
-        // Create canvas for Logo + QR + Text
         const qrSize = 220; 
         const logoHeight = 60; 
         const textHeight = 40; 
@@ -70,7 +99,6 @@ function generate_branch_qr(frm) {
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Load logo first
         const logo = new Image();
         logo.crossOrigin = "anonymous";
         logo.onload = function() {
@@ -78,19 +106,16 @@ function generate_branch_qr(frm) {
             const logoH = 40;
             ctx.drawImage(logo, (canvas.width - logoW) / 2, 10, logoW, logoH);
 
-            // Load QR code next
             const img = new Image();
             img.crossOrigin = "anonymous";
             img.onload = function() {
                 ctx.drawImage(img, 10, logoHeight, qrSize - 20, qrSize - 20);
 
-                // Add branch name text
                 ctx.fillStyle = "#000000";
                 ctx.font = "bold 16px Arial";
                 ctx.textAlign = "center";
                 ctx.fillText(`Branch - ${frm.doc.name}`, qrSize / 2, logoHeight + qrSize);
 
-                // Download final PNG
                 const link = document.createElement("a");
                 link.href = canvas.toDataURL("image/png");
                 link.download = `QR-${frm.doc.name}.png`;
@@ -99,7 +124,7 @@ function generate_branch_qr(frm) {
             img.src = qrImg.src || qrImg.toDataURL("image/png");
         };
 
-        // 🔹 Replace with your actual company logo URL
+        // 🔹 Replace with your actual logo
         logo.src = "/files/logo-es.png";
     });
 }
