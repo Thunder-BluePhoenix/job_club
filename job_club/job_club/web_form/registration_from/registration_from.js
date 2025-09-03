@@ -379,13 +379,6 @@ frappe.ready(() => {
             <h3 class="register-title-mobile">Register Now</h3>
             <div class="form-row-grid">
                 <div class="form-group">
-                    <label>Location</label>
-                    <select id="location" required>
-                        <option value="">Select Branch</option>
-                    </select>
-                    <div class="error-msg" id="error-location"></div>
-                </div>
-                <div class="form-group">
                     <label>Recruitment Drive</label>
                     <select id="recruitment_drive" required>
                         <option value="">Select Drive</option>
@@ -475,49 +468,50 @@ frappe.ready(() => {
     const container = document.querySelector('main') || document.body;
     container.innerHTML = html;
 
-    // ---------- Load Branch List Dynamically ----------
-    frappe.call({
-        method: "job_club.job_club.doctype.registration_from.registration_from.get_branches",
-        callback: function (r) {
-            if (r.message) {
-                const locationSelect = document.getElementById("location");
+    // // ---------- Load Branch List Dynamically ----------
+    // frappe.call({
+    //     method: "job_club.job_club.doctype.registration_from.registration_from.get_branches",
+    //     callback: function (r) {
+    //         if (r.message) {
+    //             const locationSelect = document.getElementById("location");
 
-                // Get branch from URL
-                const urlParams = new URLSearchParams(window.location.search);
-                const branchFromUrl = urlParams.get("branch");
+    //             // Get branch from URL
+    //             const urlParams = new URLSearchParams(window.location.search);
+    //             const branchFromUrl = urlParams.get("branch");
 
-                r.message.forEach(branch => {
-                    const opt = document.createElement("option");
-                    opt.value = branch.branch;
-                    opt.textContent = branch.branch;
+    //             r.message.forEach(branch => {
+    //                 const opt = document.createElement("option");
+    //                 opt.value = branch.branch;
+    //                 opt.textContent = branch.branch;
 
-                    // Auto-select if matches URL param
-                    if (branchFromUrl && branchFromUrl.toLowerCase() === branch.branch.toLowerCase()) {
-                        opt.selected = true;
-                        // Trigger change event to load drives automatically
-                        setTimeout(() => {
-                            locationSelect.dispatchEvent(new Event("change"));
-                        }, 0);
-                    }
+    //                 // Auto-select if matches URL param
+    //                 if (branchFromUrl && branchFromUrl.toLowerCase() === branch.branch.toLowerCase()) {
+    //                     opt.selected = true;
+    //                     // Trigger change event to load drives automatically
+    //                     setTimeout(() => {
+    //                         locationSelect.dispatchEvent(new Event("change"));
+    //                     }, 0);
+    //                 }
 
-                    locationSelect.appendChild(opt);
-                });
-            }
-        }
-    });
+    //                 locationSelect.appendChild(opt);
+    //             });
+    //         }
+    //     }
+    // });
 
 
-    // When branch is selected → fetch open drives for that branch
-    document.getElementById('location').addEventListener('change', function () {
-        const branch = this.value;
+    // ---------- Branch & Drive Logic ----------
+    const urlParams = new URLSearchParams(window.location.search);
+    let location = urlParams.get("branch");  // fallback if not provided
+
+    // Auto-load drives for that branch
+    if (location) {
         const driveSelect = document.getElementById('recruitment_drive');
         driveSelect.innerHTML = '<option value="">Select Drive</option>'; // reset
 
-        if (!branch) return;
-
         frappe.call({
             method: "job_club.job_club.doctype.registration_from.registration_from.get_open_drives",
-            args: { branch: branch },
+            args: { branch: location },
             callback: function (r) {
                 if (r.message && r.message.length > 0) {
                     if (r.message.length === 1) {
@@ -540,12 +534,13 @@ frappe.ready(() => {
                         driveSelect.disabled = false;
                     }
                 } else {
-                    frappe.msgprint(`No open drives available for ${branch}`);
+                    frappe.msgprint(`No open drives available for ${location}`);
                     driveSelect.disabled = true;
                 }
             }
         });
-    });
+    }
+
 
     // ---------- Common references ----------
     const otpModalOverlay = document.getElementById('otp-modal-overlay');
@@ -654,14 +649,6 @@ frappe.ready(() => {
         showFieldError('mobile_number', "");
     });
 
-
-    document.getElementById('location').addEventListener('blur', function () {
-        if (!this.value.trim()) {
-            showFieldError('location', "Location is required.");
-        } else {
-            showFieldError('location', "");
-        }
-    });
     document.getElementById('gender').addEventListener('blur', function () {
         if (!this.value.trim()) {
             showFieldError('gender', "Gender is required.");
@@ -669,6 +656,7 @@ frappe.ready(() => {
             showFieldError('gender', "");
         }
     });
+
     document.getElementById('age').addEventListener('blur', function () {
         const age = parseInt(this.value.trim());
         if (!age) {
@@ -679,6 +667,7 @@ frappe.ready(() => {
             showFieldError('age', "");
         }
     });
+
     document.getElementById('height').addEventListener('blur', function () {
         const height = parseInt(this.value.trim());
         if (!height) {
@@ -689,6 +678,7 @@ frappe.ready(() => {
             showFieldError('height', "");
         }
     });
+
     document.getElementById('qualification').addEventListener('blur', function () {
         if (!this.value.trim()) {
             showFieldError('qualification', "Qualification is required.");
@@ -696,6 +686,7 @@ frappe.ready(() => {
             showFieldError('qualification', "");
         }
     });
+
     document.getElementById('weight').addEventListener('blur', function () {
         if (!this.value.trim()) {
             showFieldError('weight', "Weight is required.");
@@ -703,6 +694,7 @@ frappe.ready(() => {
             showFieldError('weight', "");
         }
     });
+
     document.getElementById('job_experience').addEventListener('blur', function () {
         if (!this.value.trim()) {
             showFieldError('job_experience', "Job Experience is required.");
@@ -712,7 +704,7 @@ frappe.ready(() => {
     });
 
     // ---------- Form Submit (pre_validate + OTP send) ----------
-    let full_name, email_id, mobile_number, location, gender, age, height, qualification, weight, job_experience, recruitment_drive;
+    let full_name, email_id, mobile_number, gender, age, height, qualification, weight, job_experience, recruitment_drive;
     document.getElementById('registration-form').addEventListener('submit', (e) => {
         e.preventDefault();
         formError.textContent = '';
@@ -720,7 +712,7 @@ frappe.ready(() => {
         full_name = document.getElementById('full_name').value.trim();
         email_id = document.getElementById('email_id').value.trim();
         mobile_number = document.getElementById('mobile_number').value.trim();
-        location = document.getElementById('location').value.trim();
+        location = location;  // from URL param
         gender = document.getElementById('gender').value;
         age = document.getElementById('age').value.trim();
         height = document.getElementById('height').value.trim();
