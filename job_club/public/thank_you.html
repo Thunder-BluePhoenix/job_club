@@ -381,7 +381,10 @@
     // Refer a Friend
     function referFriend() {
       const shareText = `Hey! I've just registered for the Emporium recruitment drive. You should join too!`;
-      const shareUrl = window.location.origin + "/registration-form/new";
+      const branch = urlParams.get("location");
+      const shareUrl = branch
+        ? `${window.location.origin}/registration-from/new?branch=${encodeURIComponent(branch)}`
+        : `${window.location.origin}/registration-from/new`;
 
       if (navigator.share) {
         navigator
@@ -424,11 +427,18 @@
       button.innerText = "Confirmed 🎉";
 
       // Auto-hide popup after 10s then redirect
+      // Auto-hide popup after 10s then redirect
       setTimeout(() => {
         mainWrapper.classList.remove("blurred");
         overlay.classList.remove("blurred");
         popup.style.display = "none";
-        window.location.href = "/registration-from/new";
+
+        const branch = urlParams.get("location");
+        if (branch) {
+          window.location.href = `/registration-from/new?branch=${encodeURIComponent(branch)}`;
+        } else {
+          window.location.href = "/registration-from/new";
+        }
       }, 10000);
     });
   </script>
