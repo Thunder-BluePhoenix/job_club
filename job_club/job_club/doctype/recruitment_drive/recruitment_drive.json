@@ -11,7 +11,11 @@
   "status",
   "start_date",
   "end_date",
-  "naming_series"
+  "description",
+  "naming_series",
+  "column_break_pcol",
+  "qr_code",
+  "poster"
  ],
  "fields": [
   {
@@ -52,16 +56,36 @@
    "reqd": 1
   },
   {
+   "fieldname": "column_break_pcol",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "poster",
+   "fieldtype": "Attach Image",
+   "label": "Drive Poster"
+  },
+  {
+   "fieldname": "qr_code",
+   "fieldtype": "HTML",
+   "label": "QR Code"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Long Text",
+   "label": "Description"
+  },
+  {
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "label": "Naming Series",
-   "options": "KOL-DRIVE-.#####\nSIL-DRIVE-.#####\nMNI-IMP-DRIVE-.#####\nMNI-SEN-DRIVE-.#####\nSIK-DRIVE-.#####\nGUW-DRIVE-.#####\nSHL-DRIVE-.#####"
+   "options": "KOL-DRIVE-.#####\nSIL-DRIVE-.#####\nIMP-DRIVE-.#####\nSEN-DRIVE-.#####\nSIK-DRIVE-.#####\nGUW-DRIVE-.#####\nSHI-DRIVE-.#####",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-28 13:00:10.536037",
+ "modified": "2025-09-09 13:09:48.020680",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Recruitment Drive",

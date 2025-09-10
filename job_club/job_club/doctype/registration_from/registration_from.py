@@ -62,7 +62,7 @@ class RegistrationFrom(Document):
 
     
     def after_insert(self):
-        """Send confirmation email with token + QR + branch details (inline + attachment)"""
+        """Send confirmation email with QR as attachment only"""
         reciever_email = self.email_id
         full_name = self.full_name or "Candidate"
 
@@ -84,12 +84,20 @@ class RegistrationFrom(Document):
             branch_details = f"<b>{self.location}</b> (details not found)"
             frappe.log_error(f"Branch fetch failed: {e}", "Registration From Email Error")
 
-        # 🔹 Generate QR for token
-        import qrcode, io
-        qr = qrcode.make(self.token_number)
-        buf = io.BytesIO()
-        qr.save(buf, format="PNG")
-        qr_bytes = buf.getvalue()
+        # 🔹 Generate QR with verification page URL
+        try:
+            from frappe.utils import get_url
+            import qrcode, io
+
+            qr_url = f"{get_url()}/assets/job_club/candidate_verification.html?token={self.token_number}"
+            qr = qrcode.make(qr_url)
+            buf = io.BytesIO()
+            qr.save(buf, format="PNG")
+            qr_bytes = buf.getvalue()
+        except Exception as e:
+            frappe.log_error(f"QR generation failed: {e}", "Registration From QR Error")
+            qr_bytes = None
+            qr_url = None
 
         # 🔹 Build email
         subject = f"Your Registration Token - {self.token_number}"
@@ -110,19 +118,39 @@ class RegistrationFrom(Document):
                     Your Token Number for the Recruitment Drive at <b>{self.location}</b> is:
                 </p>
 
-                <div style="text-align: center; margin: 20px 0;">
-                    <span style="display: inline-block; font-size: 24px; font-weight: bold; background: linear-gradient(to right, #151f6d, #3041e4); color: white; padding: 10px 20px; border-radius: 6px;">
+                <div style="text-align: center; margin: 20px 0;">                    
+                    <!-- Token Number -->
+                    <span style="display: inline-block; font-size: 24px; font-weight: bold; background: linear-gradient(to right, #151f6d, #3041e4); color: white; padding: 15px 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(21, 31, 109, 0.3);">
                         {self.token_number}
                     </span>
                 </div>
 
-                <div style="margin-top: 20px; font-size: 14px; color: #555;">
-                    <p><b>Location Details:</b></p>
-                    {branch_details}
+                <!-- Verification Link -->
+                <div style="margin: 20px 0; text-align: center;">
+                    <a href="{qr_url}" 
+                    style="display: inline-block; padding: 12px 20px; background: #3041e4; color: white; font-size: 15px; border-radius: 6px; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                    🔍 Verify Candidate Details
+                    </a>
                 </div>
 
-                <p style="margin-top: 20px; font-size: 14px; color: #777;">
-                    Regards,<br/>
+                <div style="margin-top: 20px; font-size: 14px; color: #555;">
+                    <p><b>📍 Location Details:</b></p>
+                    <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">
+                        {branch_details}
+                    </div>
+                </div>
+
+                <!-- Important Instructions -->
+                <div style="margin: 25px 0; padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
+                    <h4 style="margin: 0 0 8px 0; color: #856404; font-size: 16px;">📋 Important Instructions:</h4>
+                    <ul style="margin: 0; padding-left: 20px; color: #856404; font-size: 14px;">
+                        <li>Save the attached QR code image to your phone</li>
+                        <li>Bring both your QR code and Token Number: <strong>{self.token_number}</strong></li>
+                    </ul>
+                </div>
+
+                <p style="margin-top: 25px; font-size: 14px; color: #777; text-align: center;">
+                    Best of luck for your interview!<br/>
                     <strong>Emporium Team</strong>
                 </p>
             </div>
@@ -130,17 +158,23 @@ class RegistrationFrom(Document):
         </html>
         """
 
+        # 🔹 Send Email
         try:
-            frappe.sendmail(
-                recipients=[reciever_email],
-                subject=subject,
-                message=message,
-                now=True,
-                attachments=[{
+            email_args = {
+                "recipients": [reciever_email],
+                "subject": subject,
+                "message": message,
+                "now": True
+            }
+            
+            if qr_bytes:
+                email_args["attachments"] = [{
                     "fname": f"{self.token_number}.png",
                     "fcontent": qr_bytes
                 }]
-            )
+            
+            frappe.sendmail(**email_args)
+            
         except Exception as e:
             frappe.log_error(f"Failed to send Token email: {e}", "Registration From Email Error")
 
@@ -150,6 +184,20 @@ def get_registration_token(docname):
     """Fetch token for a submitted registration (for webform redirect)"""
     token = frappe.db.get_value("Registration From", docname, "token_number")
     return {"token_number": token}
+
+@frappe.whitelist(allow_guest=True)
+def get_candidate_info(token):
+    """Fetch candidate info by token number"""
+    doc = frappe.get_doc("Registration From", {"token_number": token})
+    if not doc:
+        return {"error": "Candidate not found"}
+
+    return {
+        "candidate_name": doc.full_name,
+        "candidate_email": doc.email_id,
+        "candidate_phone": doc.mobile_number,
+        "token_number": doc.token_number
+    }
 
 @frappe.whitelist(allow_guest=True)
 def pre_validate_registration(data):
@@ -169,7 +217,8 @@ def pre_validate_registration(data):
         "gender": "Gender",
         "age": "Age",
         "height": "Height",
-        "qualification": "Qualification"
+        "qualification": "Qualification",
+        "recruitment_drive": "Recruitment Drive"
     }
     for field, label in required_fields.items():
         if not data.get(field):
@@ -181,7 +230,10 @@ def pre_validate_registration(data):
 
     # --- Mobile number format (+91XXXXXXXXXX or 10 digits) ---
     if data.get("mobile_number") and not re.fullmatch(r"^(\+91\d{10}|\d{10})$", str(data.mobile_number)):
-        errors.append({"field": "mobile_number", "message": "Enter a valid 10-digit mobile number or +91 followed by 10 digits."})
+        errors.append({
+            "field": "mobile_number",
+            "message": "Enter a valid 10-digit mobile number or +91 followed by 10 digits."
+        })
 
     # --- Age ---
     if data.get("age"):
@@ -200,6 +252,19 @@ def pre_validate_registration(data):
                 errors.append({"field": "height", "message": "Minimum height is 155 cm."})
         except Exception:
             errors.append({"field": "height", "message": "Height must be a number in cm (e.g., 170)."})
+
+    # --- Check Recruitment Drive Availability ---
+    if data.get("location") and data.get("recruitment_drive"):
+        drive = frappe.db.get_value(
+            "Recruitment Drive",
+            {"name": data.recruitment_drive, "branch": data.location, "status": "Open"},
+            ["name"]
+        )
+        if not drive:
+            errors.append({
+                "field": "recruitment_drive",
+                "message": f"No open recruitment drive available for branch {data.location}."
+            })
 
     # If errors exist, return them
     if errors:
@@ -241,3 +306,11 @@ def get_open_drives(branch):
         fields=["name", "drive_name"]
     )
     return drives
+
+@frappe.whitelist(allow_guest=True)
+def get_drive_poster(drive):
+    """Return poster image for a recruitment drive"""
+    if not drive:
+        return None
+    poster = frappe.db.get_value("Recruitment Drive", drive, "poster")
+    return {"poster": poster} if poster else None

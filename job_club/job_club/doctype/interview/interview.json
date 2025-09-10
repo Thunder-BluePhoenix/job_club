@@ -6,7 +6,6 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "naming_series",
   "section_break_iqdi",
   "full_name",
   "email_id",
@@ -23,16 +22,11 @@
   "section_break_mjai",
   "recruitment_drive",
   "column_break_upyh",
-  "token_number"
+  "token_number",
+  "section_break_egbw",
+  "naming_series"
  ],
  "fields": [
-  {
-   "fieldname": "naming_series",
-   "fieldtype": "Select",
-   "hidden": 1,
-   "label": "Naming Series",
-   "options": "RCM-CAN-.YYYY.-"
-  },
   {
    "fieldname": "section_break_iqdi",
    "fieldtype": "Section Break"
@@ -124,7 +118,6 @@
    "fieldtype": "Link",
    "label": "Recruitment Drive",
    "options": "Recruitment Drive",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -136,16 +129,26 @@
    "fieldtype": "Data",
    "label": "Token Number",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_egbw",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Naming Series"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-28 13:17:44.943778",
+ "modified": "2025-09-09 14:27:53.874316",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Interview",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "Set by user",
  "owner": "Administrator",
  "permissions": [
   {

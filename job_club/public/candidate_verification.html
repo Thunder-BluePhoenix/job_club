@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Candidate Verification - Emporium</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(135deg, #e8ecf5, #f9f9f9);
+      margin: 0;
+      padding: 30px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 650px;
+      margin: auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      overflow: hidden;
+      border: 1px solid #e0e0e0;
+    }
+
+    .header {
+      background: #151f6d;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .header img {
+      max-width: 160px;
+      margin-bottom: 10px;
+      background: #fff;
+      border-radius: 10px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .content {
+      padding: 25px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .intro {
+      margin-bottom: 20px;
+    }
+
+    .info-box {
+      background: #f8f9ff;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+
+    .info-row {
+      display: flex;
+      margin-bottom: 12px;
+    }
+
+    .info-row .label {
+      width: 180px;
+      font-weight: bold;
+      color: #151f6d;
+    }
+
+    .info-row .value {
+      flex: 1;
+      color: #444;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 13px;
+      color: #666;
+      border-top: 1px solid #eee;
+    }
+
+    .footer strong {
+      color: #151f6d;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" alt="Emporium Logo">
+      <h1>Candidate Verification</h1>
+    </div>
+
+
+      <div id="candidateInfo" class="info-box">
+        <!-- Candidate details will be injected here -->
+      </div>
+    </div>
+
+    <div class="footer">
+      Best regards,<br/>
+      <strong>Emporium Team</strong>
+    </div>
+  </div>
+
+  <script>
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, s => (
+        { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":"&#39;" }[s]
+      ));
+    }
+
+    function getQueryParam(param) {
+      return new URLSearchParams(window.location.search).get(param);
+    }
+
+    async function loadCandidate() {
+      const token = getQueryParam("token");
+      const infoBox = document.getElementById("candidateInfo");
+
+      if (!token) {
+        infoBox.innerHTML = "<p class='error'>❌ No token provided.</p>";
+        return;
+      }
+
+      try {
+        const res = await fetch(
+          `/api/method/job_club.job_club.doctype.registration_from.registration_from.get_candidate_info?token=${encodeURIComponent(token)}`
+        );
+        const data = await res.json();
+        const c = data.message || data;
+
+        if (c.error) {
+          infoBox.innerHTML = `<p class="error">❌ ${escapeHtml(c.error)}</p>`;
+          return;
+        }
+
+        infoBox.innerHTML = `
+          <div class="info-row">
+            <div class="label">Candidate Name:</div>
+            <div class="value">${escapeHtml(c.candidate_name)}</div>
+          </div>
+          <div class="info-row">
+            <div class="label">Email Address:</div>
+            <div class="value">${escapeHtml(c.candidate_email)}</div>
+          </div>
+          <div class="info-row">
+            <div class="label">Phone Number:</div>
+            <div class="value">${escapeHtml(c.candidate_phone)}</div>
+          </div>
+          <div class="info-row">
+            <div class="label">Token Number:</div>
+            <div class="value"><strong>${escapeHtml(c.token_number)}</strong></div>
+          </div>
+        `;
+      } catch (err) {
+        console.error(err);
+        infoBox.innerHTML = "<p class='error'>⚠️ Failed to load candidate data.</p>";
+      }
+    }
+
+    loadCandidate();
+  </script>
+</body>
+</html>

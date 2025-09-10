@@ -256,7 +256,13 @@
 
   <!-- Success Popup -->
   <div class="success-popup" id="successPopup">
-    <div class="popup-card">
+    <div class="popup-card" style="position: relative;">
+
+      <!-- 🔹 X Close Button -->
+      <button onclick="closePopup()"
+        style="position: absolute; top: 10px; right: 12px; background: transparent; border: none; font-size: 20px; font-weight: bold; cursor: pointer; color: #666;">
+        &times;
+      </button>
       <p>Thank you for confirming!</p>
       <h2 class="brand-name">See you at Emporium!</h2>
       <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/great-1.png" alt="Success Icon"
@@ -426,9 +432,8 @@
       button.disabled = true;
       button.innerText = "Confirmed 🎉";
 
-      // Auto-hide popup after 10s then redirect
-      // Auto-hide popup after 10s then redirect
-      setTimeout(() => {
+      // put this in your script (after you've defined mainWrapper, overlay, popup, urlParams)
+      function closePopup() {
         mainWrapper.classList.remove("blurred");
         overlay.classList.remove("blurred");
         popup.style.display = "none";
@@ -439,7 +444,11 @@
         } else {
           window.location.href = "/registration-from/new";
         }
-      }, 10000);
+      }
+
+      // make it available to onclick attribute
+      window.closePopup = closePopup;
+
     });
   </script>
 </body>

@@ -13,8 +13,7 @@
   "contact_number",
   "email",
   "instagram",
-  "column_break_mytc",
-  "qr_code"
+  "column_break_mytc"
  ],
  "fields": [
   {
@@ -54,17 +53,12 @@
   {
    "fieldname": "column_break_mytc",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "qr_code",
-   "fieldtype": "HTML",
-   "label": "QR Code"
   }
  ],
  "icon": "fa fa-code-fork",
  "idx": 1,
  "links": [],
- "modified": "2025-08-29 17:25:25.194356",
+ "modified": "2025-09-09 12:30:54.117838",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Branch",

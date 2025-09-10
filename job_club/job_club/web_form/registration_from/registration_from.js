@@ -31,15 +31,18 @@ frappe.ready(() => {
     /* Left branding (desktop only) */
     .left-section {
         flex: 1;
-        background: linear-gradient(160deg, #d32f2f, #3041e4);
-        color: white;
-        padding: 30px 20px;
+        padding: 0;
+        margin: 0;
         display: flex;
-        flex-direction: column;
+        justify-content: center;
         align-items: center;
-        text-align: center;
-        justify-content: space-between;
-        min-height: 100%;
+        overflow: hidden;
+    }
+    .poster-img {
+        width: 100%;
+        height: 100%;
+        // object-fit: cover; /* fills the entire column */
+        display: block;
     }
     .page-logo {
         width: 180px;
@@ -52,29 +55,29 @@ frappe.ready(() => {
         width: 100%;
         height: auto;
     }
-    .left-section h2 {
-        font-size: 28px;
-        font-weight: 600;
-        margin: 12px 0;
-        color: #fff;
-    }
-    .air-hostess {
-        margin-top: auto;
-        margin-bottom: -30px;
-        width: 300px;
-        max-width: 100%;
-    }
-    .girls-img {
-        width: 100%;
-        height: auto;
-        display: block;
-    }
+    // .left-section h2 {
+    //     font-size: 28px;
+    //     font-weight: 600;
+    //     margin: 12px 0;
+    //     color: #fff;
+    // }
+    // .air-hostess {
+    //     margin-top: auto;
+    //     margin-bottom: -30px;
+    //     width: 300px;
+    //     max-width: 100%;
+    // }
+    // .girls-img {
+    //     width: 100%;
+    //     height: auto;
+    //     display: block;
+    // }
 
     /* Right form */
     .form-wrapper {
         flex: 1.3;
         background: #fff;
-        padding: 40px 40px;
+        padding: 30px 30px;
     }
     .form-wrapper h2.desktop-title {
         display: none;
@@ -83,7 +86,7 @@ frappe.ready(() => {
     .form-wrapper h3.sub-title.desktop-title {
         font-size: 24px;
         font-weight: 700;
-        margin: 5px 0 28px;
+        margin: 5px 0 40px;
         color: #333;
         text-align: center;
         text-decoration: none;
@@ -179,11 +182,11 @@ frappe.ready(() => {
         margin: 8px 0;
         color: #fff;
     }
-    .wave-header .girls-img {
-        width: 200px;
-        display: block;
-        margin: 8px auto -15px;
-    }
+    // .wave-header .girls-img {
+    //     width: 200px;
+    //     display: block;
+    //     margin: 8px auto -15px;
+    // }
     .wave-svg {
         position: absolute;
         bottom: -1px;
@@ -292,6 +295,14 @@ frappe.ready(() => {
     .register-title-mobile {
         display: none;
     }
+
+    #heading-error-mobile { display: none; }
+
+    @media (max-width: 768px) {
+        #heading-error { display: none; }
+        #heading-error-mobile { display: block; }
+    }
+
     @media (max-width: 768px) {
         .form-row-grid {
             grid-template-columns: 1fr;
@@ -308,9 +319,9 @@ frappe.ready(() => {
             border-radius: 0;
             box-shadow: none;
         }
-        .left-section {
-            display: none;
-        }
+        // .left-section {
+        //     display: none;
+        // }
         .wave-header {
             display: block;
         }
@@ -340,7 +351,7 @@ frappe.ready(() => {
         .register-title-mobile {
             display: block;
             font-size: 24px;
-            margin: 0px 0 20px;
+            margin: 0px 0 40px;
             font-weight: 600;
             color: #333;
             text-align: center;
@@ -349,34 +360,36 @@ frappe.ready(() => {
 </style>
 `
     const html = `
-<!-- Mobile Header -->
-<div class="wave-header">
-    <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" class="logo" />
-    <h2>Recruitment Drive</h2>
-    <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/2girl.png" class="girls-img" />
-    <svg class="wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-        <path fill="#fff" fill-opacity="1" d="M0,192L1440,96L1440,320L0,320Z"></path>
-    </svg>
-</div>
+    <!-- Mobile Header
+    <div class="wave-header">
+        <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" class="logo" />
+        <h2>Recruitment Drive</h2>
+        <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/2girl.png" class="girls-img" />
+        <svg class="wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+            <path fill="#fff" fill-opacity="1" d="M0,192L1440,96L1440,320L0,320Z"></path>
+        </svg>
+    </div>
+    -->
 
-<!-- Main Wrapper -->
-<div class="main-wrapper" id="page-content">
+    <!-- Main Wrapper -->
+    <div class="main-wrapper" id="page-content">
     <!-- Left Section -->
     <div class="left-section">
-        <div class="page-logo">
-            <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" class="logo" />
-        </div>
-        <h2>Recruitment Drive</h2>
-        <div class="air-hostess">
-            <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/2girl.png" class="girls-img" />
-        </div>
+        <img src="" class="poster-img" />
     </div>
+
 
     <!-- Right Section -->
     <div class="form-wrapper">
         <h3 class="sub-title desktop-title">Register Now</h3>
+        <div id="heading-error" 
+            style="color: red; font-size: 14px; margin-bottom: 18px; margin-top: -14px; text-align: center;">
+        </div>
         <form id="registration-form">
             <h3 class="register-title-mobile">Register Now</h3>
+            <div id="heading-error-mobile" 
+                style="color: red; font-size: 14px; margin-bottom: 18px; margin-top: -14px; text-align: center;">
+            </div>
             <div class="form-row-grid">
                 <div class="form-group">
                     <label>Recruitment Drive</label>
@@ -441,7 +454,6 @@ frappe.ready(() => {
                     <div class="error-msg" id="error-weight"></div>
                 </div>
             </div>
-            <div id="form-error" style="color: red; font-size: 13px; margin-top: 5px; text-align: center;"></div>
             <button type="submit" class="submit-btn" id="register-btn">Register</button>
         </form>
     </div>
@@ -502,7 +514,8 @@ frappe.ready(() => {
 
     // ---------- Branch & Drive Logic ----------
     const urlParams = new URLSearchParams(window.location.search);
-    let location = urlParams.get("branch");  // fallback if not provided
+    let location = urlParams.get("branch");   // branch from QR
+    let selectedDrive = urlParams.get("drive");  // drive from QR (optional)
 
     // Auto-load drives for that branch
     if (location) {
@@ -514,6 +527,42 @@ frappe.ready(() => {
             args: { branch: location },
             callback: function (r) {
                 if (r.message && r.message.length > 0) {
+
+                    // 🔹 If QR has a drive param
+                    if (selectedDrive) {
+                        const found = r.message.find(d => d.name === selectedDrive);
+
+                        if (found) {
+                            // ✅ Drive exists AND is open
+                            const opt = document.createElement("option");
+                            opt.value = found.name;
+                            opt.textContent = found.drive_name;
+                            opt.selected = true;
+                            driveSelect.appendChild(opt);
+                            driveSelect.disabled = true;
+
+                            // Load poster for this drive
+                            loadDrivePoster(found.name);
+                            return; // ✅ stop here, QR logic wins
+                        } else {
+                            // ❌ Drive from QR is closed (not in open list)
+                            const headingError = document.getElementById("heading-error");
+                            if (headingError) {
+                                headingError.textContent = `This recruitment drive is closed. Registration is not possible.`;
+                            }
+
+                            const headingErrorMobile = document.getElementById("heading-error-mobile");
+                            if (headingErrorMobile) {
+                                headingErrorMobile.textContent = `This recruitment drive is closed. Registration is not possible.`;
+                            }
+
+                            driveSelect.disabled = true;
+                            document.getElementById("register-btn").disabled = true;
+                            return; // stop further logic
+                        }
+                    }
+
+                    // ✅ If no drive in QR, fallback to old logic
                     if (r.message.length === 1) {
                         // Only 1 open drive → auto-select & lock
                         let drive = r.message[0];
@@ -523,8 +572,11 @@ frappe.ready(() => {
                         opt.selected = true;
                         driveSelect.appendChild(opt);
                         driveSelect.disabled = true;
+
+                        loadDrivePoster(drive.name);
+
                     } else {
-                        // Multiple open drives → show in dropdown
+                        // Multiple open drives → let user pick
                         r.message.forEach(drive => {
                             const opt = document.createElement("option");
                             opt.value = drive.name;
@@ -532,15 +584,52 @@ frappe.ready(() => {
                             driveSelect.appendChild(opt);
                         });
                         driveSelect.disabled = false;
+
+                        driveSelect.addEventListener("change", function () {
+                            if (this.value) {
+                                loadDrivePoster(this.value);
+                            }
+                        });
                     }
+
                 } else {
-                    frappe.msgprint(`No open drives available for ${location}`);
+                    // ❌ No drives → show error under heading
+                    const headingError = document.getElementById("heading-error");
+                    if (headingError) {
+                        headingError.textContent = `No open drives available for ${location}. Registration is not possible.`;
+                    }
+
+                    const headingErrorMobile = document.getElementById("heading-error-mobile");
+                    if (headingErrorMobile) {
+                        headingErrorMobile.textContent = `No open drives available for ${location}. Registration is not possible.`;
+                    }
+
+                    // Disable dropdown + button
                     driveSelect.disabled = true;
+                    document.getElementById("register-btn").disabled = true;
                 }
             }
         });
     }
 
+    // 🔹 Helper to fetch and replace poster (auto-detect)
+    function loadDrivePoster(driveName) {
+        frappe.call({
+            method: "job_club.job_club.doctype.registration_from.registration_from.get_drive_poster",
+            args: { drive: driveName },
+            callback: function (res) {
+                const poster = res.message ? res.message.poster : null;
+                const posterImg = document.querySelector(".poster-img");
+
+                // fallback default if poster not set
+                const fallback = "https://www.emporiumsolutions.com/wp-content/uploads/2025/07/2girl.png";
+
+                if (posterImg) {
+                    posterImg.src = poster || fallback;
+                }
+            }
+        });
+    }
 
     // ---------- Common references ----------
     const otpModalOverlay = document.getElementById('otp-modal-overlay');
@@ -549,7 +638,8 @@ frappe.ready(() => {
     const successCheck = document.getElementById('otp-success-check');
     const otpMessage = document.getElementById('otp-message');
     const otpTimer = document.getElementById('otp-timer');
-    const formError = document.getElementById('form-error');
+    const formError = document.getElementById('heading-error');
+    const formErrorMobile = document.getElementById('heading-error-mobile');
 
     // ---------- Helpers ----------
     function showFieldError(field, message) {
@@ -705,14 +795,17 @@ frappe.ready(() => {
 
     // ---------- Form Submit (pre_validate + OTP send) ----------
     let full_name, email_id, mobile_number, gender, age, height, qualification, weight, job_experience, recruitment_drive;
+
     document.getElementById('registration-form').addEventListener('submit', (e) => {
         e.preventDefault();
-        formError.textContent = '';
+        formError.textContent = ''; // Clear desktop error
+        formErrorMobile.textContent = ''; // Clear mobile error
 
+        // Get form values
         full_name = document.getElementById('full_name').value.trim();
         email_id = document.getElementById('email_id').value.trim();
         mobile_number = document.getElementById('mobile_number').value.trim();
-        location = location;  // from URL param
+        location = location; // from URL param
         gender = document.getElementById('gender').value;
         age = document.getElementById('age').value.trim();
         height = document.getElementById('height').value.trim();
@@ -721,10 +814,18 @@ frappe.ready(() => {
         job_experience = document.getElementById('job_experience').value;
         recruitment_drive = document.getElementById('recruitment_drive').value.trim();
 
+        // Client-side validation for recruitment_drive
+        if (!recruitment_drive) {
+            showFieldError('recruitment_drive', 'Recruitment Drive is mandatory.');
+            return; // Stop here, don’t proceed to server-side validation
+        } else {
+            showFieldError('recruitment_drive', ''); // Clear error if valid
+        }
 
+        // Proceed with server-side validation
         frappe.call({
             method: 'job_club.job_club.doctype.registration_from.registration_from.pre_validate_registration',
-            args: { data: { full_name, email_id, mobile_number, location, gender, age, height, qualification } },
+            args: { data: { full_name, email_id, mobile_number, location, gender, age, height, qualification, weight, job_experience, recruitment_drive } },
             callback: (r) => {
                 if (r.message && r.message.status === "error") {
                     document.querySelectorAll(".error-msg").forEach(el => el.textContent = "");
@@ -752,6 +853,7 @@ frappe.ready(() => {
                     });
                 } else {
                     formError.textContent = 'Something went wrong. Please try again.';
+                    formErrorMobile.textContent = 'Something went wrong. Please try again.';
                 }
             }
         });

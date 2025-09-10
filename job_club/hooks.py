@@ -48,6 +48,20 @@ doctype_js = {"Lead" : "public/js/lead.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
+doc_events = {
+    "Branch": {
+        "after_insert": "job_club.overrides.branch_hooks.create_drive_series"
+    }
+}
+
+doc_events = {
+    "Interview": {
+        "before_insert": "job_club.overrides.interview_autoname.set_interview_name"
+    }
+}
+
+
+
 # Svg Icons
 # ------------------
 # include app icons in desk
