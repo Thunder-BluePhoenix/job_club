@@ -1,6 +1,3 @@
-# Copyright (c) 2025, BluePhoenix and contributors
-# For license information, please see license.txt
-
 import frappe
 from frappe.model.document import Document
 from frappe.utils import now_datetime
@@ -8,37 +5,35 @@ from frappe.utils import now_datetime
 class RegistrationFrom(Document):
 
     def on_update(self):
+        interview = frappe.new_doc("Interview")
+        
+        # Basic details
+        interview.full_name = self.full_name
+        interview.applicant_name = self.full_name
+        interview.email_id = self.email_id
+        interview.mobile_number = self.mobile_number
+        interview.location = self.location
+        interview.gender = self.gender
+        interview.age = self.age
+        interview.height = self.height
+        interview.qualification = self.qualification
+        interview.job_experience = self.job_experience
+        interview.weight = self.weight
+        interview.recruitment_drive = self.recruitment_drive
+        interview.token_number = self.token_number
 
-            interview = frappe.new_doc("Interview")
-            
-            # Basic details
-            interview.full_name = self.full_name
-            interview.applicant_name = self.full_name
-            interview.email_id = self.email_id
-            interview.mobile_number = self.mobile_number
-            interview.location = self.location
-            interview.gender = self.gender
-            interview.age = self.age
-            interview.height = self.height
-            interview.qualification = self.qualification
-            interview.job_experience = self.job_experience
-            interview.weight = self.weight
-            interview.recruitment_drive = self.recruitment_drive
-            interview.token_number = self.token_number
+        # Save Invitation Acceptance Date (auto-set)
+        interview.invitation_acceptance_date = now_datetime()
 
+        # 🔹 Fetch drive_date from Recruitment Drive → set as interview_date
+        try:
+            drive_date = frappe.db.get_value("Recruitment Drive", self.recruitment_drive, "drive_date")
+            if drive_date:
+                interview.interview_date = drive_date
+        except Exception as e:
+            frappe.log_error(f"Could not fetch drive_date for {self.recruitment_drive}: {e}", "Interview Creation Error")
 
-            # Save Invitation Acceptance Date (auto-set)
-            interview.invitation_acceptance_date = now_datetime()
-
-            # 🔹 Fetch drive_date from Recruitment Drive → set as interview_date
-            try:
-                drive_date = frappe.db.get_value("Recruitment Drive", self.recruitment_drive, "drive_date")
-                if drive_date:
-                    interview.interview_date = drive_date
-            except Exception as e:
-                frappe.log_error(f"Could not fetch drive_date for {self.recruitment_drive}: {e}", "Interview Creation Error")
-
-            interview.save()
+        interview.save()
 
     def before_insert(self):
         """Generate branch-wise, drive-wise token before saving"""
@@ -105,13 +100,37 @@ class RegistrationFrom(Document):
             qr_bytes = None
             qr_url = None
 
-        refer_page_url = f"{get_url()}/assets/job_club/refer.html?drive={self.recruitment_drive}&branch={self.location}"
-
         # 🔹 Build email
         subject = f"🎉 Registration Successful - Token {self.token_number}"
 
         message = f"""
         <html>
+        <head>
+            <!-- Structured Data for Sharing -->
+            <script type="application/ld+json">
+            {{
+                "@context": "https://schema.org",
+                "@type": "Event",
+                "name": "Emporium Recruitment Drive - Hiring Cabin Crew",
+                "description": "Join our free career counselling and recruitment drive for Cabin Crew positions. Register now to secure your spot and explore exciting career opportunities.",
+                "startDate": "{interview_date}",
+                "location": {{
+                    "@type": "Place",
+                    "name": "Emporium Branch",
+                    "address": "{branch_details}"
+                }},
+                "image": "https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png",
+                "url": "{qr_url}",
+                "offers": {{
+                    "@type": "Offer",
+                    "url": "{qr_url}",
+                    "price": "0",
+                    "priceCurrency": "INR",
+                    "availability": "https://schema.org/InStock"
+                }}
+            }}
+            </script>
+        </head>
         <body style="font-family: Arial, sans-serif; background-color: #f8f9fa; padding: 20px;">
             <div style="max-width: 600px; margin: auto; background: white; padding: 25px; border-radius: 12px; border: 1px solid #ddd; text-align: center; box-shadow: 0 6px 20px rgba(0,0,0,0.1);">
                 
@@ -160,11 +179,30 @@ class RegistrationFrom(Document):
                 {"<div style='margin:20px 0;'><a href='" + branch_link + "' style='display:inline-block; padding:12px 22px; background: linear-gradient(to right, #8e2de2, #ff6a00); color:white; font-size:15px; border-radius:8px; text-decoration:none; font-weight:600; box-shadow:0 4px 12px rgba(0,0,0,0.2);'>📍 Navigate with Google Maps</a></div>" if branch_link else ""}
 
                 <!-- Refer Friends -->
-                <div style="margin:20px 0;">
-                    <a href="{refer_page_url}" target="_blank"
-                    style="display:inline-block; padding:12px 22px; background: linear-gradient(to right, #00c6ff, #0072ff); color:white; font-size:15px; border-radius:8px; text-decoration:none; font-weight:600; box-shadow:0 4px 12px rgba(0,0,0,0.2);">
-                        📩 Refer Your Friends
-                    </a>
+                <div style="margin:20px 0; text-align: center;">
+                    <p style="font-size:14px; color:#555; margin-bottom: 10px;">Refer a Friend:</p>
+                    <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                        <a href="mailto:?subject=Emporium Recruitment Drive&body=🔢 Hi! Join me at the Emporium Recruitment Drive!  
+📍 Location: {branch_details}  
+🎫 My Token: {self.token_number}  
+🔗 Register Now: {qr_url}  
+Hurry, secure your spot today!" 
+                           style="display:inline-block; padding: 10px 15px; background: #0078D4; color:white; font-size:14px; border-radius:8px; text-decoration:none; font-weight:600;">
+                           Email
+                        </a>
+                        <a href="https://api.whatsapp.com/send?text=🔢 Hi! Join me at the Emporium Recruitment Drive!  
+📍 Location: {branch_details}  
+🎫 My Token: {self.token_number}  
+🔗 Register Now: {qr_url}  
+Hurry, secure your spot today!" 
+                           style="display:inline-block; padding: 10px 15px; background: #25D366; color:white; font-size:14px; border-radius:8px; text-decoration:none; font-weight:600;">
+                           WhatsApp
+                        </a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={qr_url}" 
+                           style="display:inline-block; padding: 10px 15px; background: #3B5998; color:white; font-size:14px; border-radius:8px; text-decoration:none; font-weight:600;">
+                           Facebook
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Footer -->
@@ -207,7 +245,6 @@ class RegistrationFrom(Document):
             
         except Exception as e:
             frappe.log_error(f"Failed to send Token email: {e}", "Registration From Email Error")
-
 
 @frappe.whitelist(allow_guest=True)
 def get_registration_token(docname):
@@ -302,7 +339,6 @@ def pre_validate_registration(data):
 
     return {"status": "success", "message": "Validation passed."}
 
-
 @frappe.whitelist(allow_guest=True)
 def check_duplicate(fieldname, value, drive):
     """Check if email already exists for the same drive"""
@@ -318,11 +354,9 @@ def check_duplicate(fieldname, value, drive):
 
     return {"status": "success", "message": "Available"}
 
-
 @frappe.whitelist(allow_guest=True)
 def get_branches():
     return frappe.get_all("Branch", fields=["name", "branch"], limit_page_length=100)
-
 
 @frappe.whitelist(allow_guest=True)
 def get_open_drives(branch):

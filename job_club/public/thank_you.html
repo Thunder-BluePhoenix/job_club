@@ -4,15 +4,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Registration Confirmation</title>
-  <!-- 🔹 OG Tags for WhatsApp / Telegram Preview -->
+  <title>Registration Confirmation - Hiring Cabin Crew Siliguri</title>
+  
+  <!-- Basic Meta Tags -->
+  <meta name="description" content="Join our free career counselling and recruitment drive for Cabin Crew positions in Siliguri. Register now to secure your spot and explore exciting career opportunities with Emporium." />
+  
+  <!-- Open Graph Meta Tags for WhatsApp/Facebook -->
   <meta property="og:title" content="Register Now — Hiring Cabin Crew - Siliguri (Female Only)" />
-  <meta property="og:description"
-    content="Join our free career counselling and recruitment drive. Register now to secure your spot and explore career." />
+  <meta property="og:description" content="Join our free career counselling and recruitment drive for Cabin Crew positions. Register now to secure your spot and explore exciting career opportunities." />
   <meta property="og:image" content="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" />
-  <meta property="og:url" content="https://yourdomain.com/registration-from/new" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:url" content="https://emporium.indwaredigital.com/registration-from/new" />
   <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Emporium Solutions" />
+  
+  <!-- Twitter Card Meta Tags -->
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Register Now — Hiring Cabin Crew - Siliguri (Female Only)" />
+  <meta name="twitter:description" content="Join our free career counselling and recruitment drive for Cabin Crew positions. Register now to secure your spot and explore exciting career opportunities." />
+  <meta name="twitter:image" content="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" />
+  
+  <!-- Additional Meta Tags for better sharing -->
+  <meta property="og:locale" content="en_US" />
+  <meta name="author" content="Emporium Solutions" />
+  <meta name="robots" content="index, follow" />
+  
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     * {
@@ -116,7 +133,6 @@
 
     .location-card img {
       width: 40px;
-      /* margin-top: 40px; */
     }
 
     .locations-small-text {
@@ -265,8 +281,6 @@
   <!-- Success Popup -->
   <div class="success-popup" id="successPopup">
     <div class="popup-card" style="position: relative;">
-
-      <!-- 🔹 X Close Button -->
       <button onclick="closePopup()"
         style="position: absolute; top: 10px; right: 12px; background: transparent; border: none; font-size: 20px; font-weight: bold; cursor: pointer; color: #666;">
         &times;
@@ -276,22 +290,18 @@
       <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/great-1.png" alt="Success Icon"
         class="popup-img" />
 
-      <!-- 🔹 Token + QR Box -->
       <div id="token-box" style="margin-top: 15px; text-align: center;">
         <p><b>Your Token Number:</b></p>
         <h3 id="candidate-token" style="font-size: 20px; color: #1e88e5; margin: 10px 0;"></h3>
 
-        <!-- QR Code -->
         <div id="candidate-qr" style="margin: 15px auto; text-align: center;"></div>
 
-        <!-- Buttons -->
         <div style="margin-top: 10px;">
           <button onclick="downloadQR()"
             style="background: linear-gradient(to right, #151f6d, #3041e4); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer;">
             Download QR
           </button>
 
-          <!-- 🔹 Refer a Friend Button -->
           <button onclick="referFriend()"
             style="background: linear-gradient(to right, #28a745, #5cd65c); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer;">
             Refer a Friend
@@ -304,27 +314,34 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
   <script>
-    // ---------- Get Query Params ----------
+    // Set dynamic OG URL based on current URL parameters
+    const currentUrl = window.location.href;
+    const ogUrlMeta = document.getElementById('dynamic-og-url');
+    if (ogUrlMeta) {
+      ogUrlMeta.setAttribute('content', currentUrl);
+    }
+
+    // Get Query Params
     const urlParams = new URLSearchParams(window.location.search);
     const name = urlParams.get("name") || "Candidate";
-    const branchLocation = urlParams.get("location"); // Branch docname
+    const branchLocation = urlParams.get("location");
     const token = urlParams.get("token") || "";
-    const driveName = urlParams.get("drive"); // Recruitment Drive name
+    const driveName = urlParams.get("drive");
 
     // Set candidate name
     document.getElementById("candidate-name").textContent = name;
 
-    // 🔹 Global var to hold full branch address
+    // Global var to hold full branch address
     let fullBranchAddress = branchLocation || "Emporium Branch";
 
-    // ---------- Fetch Branch Details via REST API ----------
+    // Fetch Branch Details via REST API
     if (driveName) {
       fetch(`/api/method/job_club.job_club.doctype.registration_from.registration_from.get_drive_and_branch_details?drive_name=${encodeURIComponent(driveName)}`)
         .then(res => res.json())
         .then(r => {
           if (r.message) {
             const d = r.message;
-            fullBranchAddress = (d.address || branchLocation || "").replace(/\n/g, " "); // ✅ clean address
+            fullBranchAddress = (d.address || branchLocation || "").replace(/\n/g, " ");
             let details = `${d.address}`;
             if (d.contact_number) details += `<br/>Call: ${d.contact_number}`;
             if (d.email) details += `<br/>Email: <a href="mailto:${d.email}">${d.email}</a>`;
@@ -342,12 +359,10 @@
       document.getElementById("branch-details").innerText = "Recruitment drive not specified.";
     }
 
-
-    // ---------- Token + QR ----------
+    // Token + QR
     if (token) {
       document.getElementById("candidate-token").textContent = token;
 
-      // Generate QR Code
       new QRCode(document.getElementById("candidate-qr"), {
         text: token,
         width: 128,
@@ -357,7 +372,7 @@
       document.getElementById("token-box").style.display = "none";
     }
 
-    // Download QR (with token text)
+    // Download QR
     function downloadQR() {
       const qrCanvas = document.querySelector("#candidate-qr canvas");
       const tokenText = document.getElementById("candidate-token").textContent;
@@ -367,7 +382,6 @@
         return;
       }
 
-      // Create new canvas bigger than QR (extra space for text)
       const newCanvas = document.createElement("canvas");
       const ctx = newCanvas.getContext("2d");
 
@@ -378,37 +392,32 @@
       newCanvas.width = qrSize + padding * 2;
       newCanvas.height = qrSize + padding * 2 + textHeight;
 
-      // Background
       ctx.fillStyle = "#fff";
       ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
 
-      // Draw QR
       ctx.drawImage(qrCanvas, padding, padding, qrSize, qrSize);
 
-      // Draw token number below QR
       ctx.fillStyle = "#000";
       ctx.font = "bold 18px Arial";
       ctx.textAlign = "center";
       ctx.fillText(tokenText, newCanvas.width / 2, qrSize + padding + textHeight - 5);
 
-      // Save file
       const link = document.createElement("a");
       link.download = `${tokenText}.png`;
       link.href = newCanvas.toDataURL("image/png");
       link.click();
     }
 
-
     function referFriend() {
       const urlParams = new URLSearchParams(window.location.search);
       const drive = urlParams.get("drive") || "";
-      const branchParam = urlParams.get("location") || "Emporium Branch"; // use docname/short
+      const branchParam = urlParams.get("location") || "Emporium Branch";
 
       const shareUrl = drive
         ? `${window.location.origin}/registration-from/new?drive=${encodeURIComponent(drive)}&branch=${encodeURIComponent(branchParam)}`
         : `${window.location.origin}/registration-from/new`;
 
-      const shareMessage = `📢 Hi! Emporium Recruitment Drive at  
+      const shareMessage = `🔢 Hi! Emporium Recruitment Drive at  
 📍 Location: ${fullBranchAddress}  
 🔗 Hurry Secure Your Seat Online  
 ${shareUrl}`.trim();
@@ -420,14 +429,15 @@ ${shareUrl}`.trim();
           url: shareUrl,
         }).catch(err => console.log("Share cancelled:", err));
       } else {
-        navigator.clipboard.writeText(shareMessage).then(() => {
+        // For clipboard copy, include the URL
+        const fullMessage = `${shareMessage}\n${shareUrl}`;
+        navigator.clipboard.writeText(fullMessage).then(() => {
           alert("Referral message copied!");
         });
       }
     }
 
-
-    // ---------- Accept Button Logic ----------
+    // Accept Button Logic
     const button = document.getElementById("acceptButton");
     const checkbox = document.getElementById("acceptCheckbox");
     const popup = document.getElementById("successPopup");
@@ -440,18 +450,14 @@ ${shareUrl}`.trim();
         return;
       }
 
-      // Blur & show overlay
       mainWrapper.classList.add("blurred");
       overlay.classList.add("blurred");
 
-      // Show popup
       popup.style.display = "flex";
 
-      // Disable button
       button.disabled = true;
       button.innerText = "Confirmed 🎉";
 
-      // put this in your script (after you've defined mainWrapper, overlay, popup, urlParams)
       function closePopup() {
         mainWrapper.classList.remove("blurred");
         overlay.classList.remove("blurred");
@@ -474,9 +480,7 @@ ${shareUrl}`.trim();
         window.location.href = redirectUrl;
       }
 
-      // make it available to onclick attribute
       window.closePopup = closePopup;
-
     });
   </script>
 </body>
