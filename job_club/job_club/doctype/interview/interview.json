@@ -21,6 +21,7 @@
   "invitation_acceptance_date",
   "section_break_mjai",
   "recruitment_drive",
+  "interview_date",
   "column_break_upyh",
   "token_number",
   "section_break_egbw",
@@ -139,12 +140,18 @@
    "fieldtype": "Select",
    "hidden": 1,
    "label": "Naming Series"
+  },
+  {
+   "fieldname": "interview_date",
+   "fieldtype": "Datetime",
+   "label": "Interview Date",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-09-09 14:27:53.874316",
+ "modified": "2025-09-11 11:42:13.275197",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Interview",

@@ -18,6 +18,7 @@
   "column_break_rnmm",
   "location",
   "recruitment_drive",
+  "interview_date",
   "token_number",
   "naming_series"
  ],
@@ -112,12 +113,18 @@
    "fieldtype": "Data",
    "label": "Token Number",
    "read_only": 1
+  },
+  {
+   "fieldname": "interview_date",
+   "fieldtype": "Datetime",
+   "label": "Interview Date",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-28 13:18:05.769354",
+ "modified": "2025-09-11 11:43:29.312786",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Registration From",

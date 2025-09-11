@@ -907,7 +907,8 @@ frappe.ready(() => {
                                             clearInterval(countdownInterval);
 
                                             // Redirect with token
-                                            window.location.href = `/assets/job_club/thank_you.html?name=${encodeURIComponent(full_name)}&location=${encodeURIComponent(location)}&token=${encodeURIComponent(token)}`;
+                                            window.location.href = `/assets/job_club/thank_you.html?name=${encodeURIComponent(full_name)}&location=${encodeURIComponent(location)}&token=${encodeURIComponent(token)}&drive=${encodeURIComponent(recruitment_drive)}`;
+
                                         }, 500);
                                     }
                                 });

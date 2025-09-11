@@ -5,6 +5,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Registration Confirmation</title>
+  <!-- 🔹 OG Tags for WhatsApp / Telegram Preview -->
+  <meta property="og:title" content="Register Now — Hiring Cabin Crew - Siliguri (Female Only)" />
+  <meta property="og:description"
+    content="Join our free career counselling and recruitment drive. Register now to secure your spot and explore career." />
+  <meta property="og:image" content="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" />
+  <meta property="og:url" content="https://yourdomain.com/registration-from/new" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     * {
@@ -296,38 +304,44 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
   <script>
-    // Get query params
+    // ---------- Get Query Params ----------
     const urlParams = new URLSearchParams(window.location.search);
     const name = urlParams.get("name") || "Candidate";
     const branchLocation = urlParams.get("location"); // Branch docname
     const token = urlParams.get("token") || "";
+    const driveName = urlParams.get("drive"); // Recruitment Drive name
 
     // Set candidate name
     document.getElementById("candidate-name").textContent = name;
 
+    // 🔹 Global var to hold full branch address
+    let fullBranchAddress = branchLocation || "Emporium Branch";
+
     // ---------- Fetch Branch Details via REST API ----------
-    if (branchLocation) {
-      fetch(`/api/resource/Branch/${encodeURIComponent(branchLocation)}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data && data.data) {
-            const branch = data.data;
-            let details = `<b>${branch.branch}</b><br/>${branch.address}`;
-            if (branch.contact_number) details += `<br/>Call: ${branch.contact_number}`;
-            if (branch.email) details += `<br/>Email: <a href="mailto:${branch.email}">${branch.email}</a>`;
-            if (branch.instagram) details += `<br/>Instagram: <a href="${branch.instagram}" target="_blank">${branch.instagram}</a>`;
+    if (driveName) {
+      fetch(`/api/method/job_club.job_club.doctype.registration_from.registration_from.get_drive_and_branch_details?drive_name=${encodeURIComponent(driveName)}`)
+        .then(res => res.json())
+        .then(r => {
+          if (r.message) {
+            const d = r.message;
+            fullBranchAddress = (d.address || branchLocation || "").replace(/\n/g, " "); // ✅ clean address
+            let details = `${d.address}`;
+            if (d.contact_number) details += `<br/>Call: ${d.contact_number}`;
+            if (d.email) details += `<br/>Email: <a href="mailto:${d.email}">${d.email}</a>`;
+            if (d.instagram) details += `<br/>Instagram: <a href="${d.instagram}" target="_blank">${d.instagram}</a>`;
             document.getElementById("branch-details").innerHTML = details;
           } else {
-            document.getElementById("branch-details").innerText = "Branch details not found.";
+            document.getElementById("branch-details").innerText = "Details not found.";
           }
         })
-        .catch((err) => {
-          document.getElementById("branch-details").innerText = "Error fetching branch details.";
+        .catch(err => {
+          document.getElementById("branch-details").innerText = "Error fetching details.";
           console.error(err);
         });
     } else {
-      document.getElementById("branch-details").innerText = "Branch not selected.";
+      document.getElementById("branch-details").innerText = "Recruitment drive not specified.";
     }
+
 
     // ---------- Token + QR ----------
     if (token) {
@@ -384,29 +398,34 @@
       link.click();
     }
 
-    // Refer a Friend
+
     function referFriend() {
-      const shareText = `Hey! I've just registered for the Emporium recruitment drive. You should join too!`;
-      const branch = urlParams.get("location");
-      const shareUrl = branch
-        ? `${window.location.origin}/registration-from/new?branch=${encodeURIComponent(branch)}`
+      const urlParams = new URLSearchParams(window.location.search);
+      const drive = urlParams.get("drive") || "";
+      const branchParam = urlParams.get("location") || "Emporium Branch"; // use docname/short
+
+      const shareUrl = drive
+        ? `${window.location.origin}/registration-from/new?drive=${encodeURIComponent(drive)}&branch=${encodeURIComponent(branchParam)}`
         : `${window.location.origin}/registration-from/new`;
 
+      const shareMessage = `📢 Hi! Emporium Recruitment Drive at  
+📍 Location: ${fullBranchAddress}  
+🔗 Hurry Secure Your Seat Online  
+${shareUrl}`.trim();
+
       if (navigator.share) {
-        navigator
-          .share({
-            title: "Refer a Friend - Emporium",
-            text: shareText,
-            url: shareUrl,
-          })
-          .catch((err) => console.log("Share cancelled:", err));
+        navigator.share({
+          title: "Emporium Recruitment Drive",
+          text: shareMessage,
+          url: shareUrl,
+        }).catch(err => console.log("Share cancelled:", err));
       } else {
-        // fallback copy link
-        navigator.clipboard.writeText(shareUrl).then(() => {
-          alert("Link copied! Share it with your friends.");
+        navigator.clipboard.writeText(shareMessage).then(() => {
+          alert("Referral message copied!");
         });
       }
     }
+
 
     // ---------- Accept Button Logic ----------
     const button = document.getElementById("acceptButton");
@@ -438,12 +457,21 @@
         overlay.classList.remove("blurred");
         popup.style.display = "none";
 
-        const branch = urlParams.get("location");
-        if (branch) {
-          window.location.href = `/registration-from/new?branch=${encodeURIComponent(branch)}`;
-        } else {
-          window.location.href = "/registration-from/new";
+        const branch = urlParams.get("location") || "Emporium Branch";
+        const drive = urlParams.get("drive");
+
+        let redirectUrl = "/registration-from/new";
+
+        if (drive) {
+          redirectUrl += `?drive=${encodeURIComponent(drive)}`;
+          if (branch) {
+            redirectUrl += `&branch=${encodeURIComponent(branch)}`;
+          }
+        } else if (branch) {
+          redirectUrl += `?branch=${encodeURIComponent(branch)}`;
         }
+
+        window.location.href = redirectUrl;
       }
 
       // make it available to onclick attribute

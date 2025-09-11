@@ -8,6 +8,8 @@
  "field_order": [
   "drive_name",
   "branch",
+  "address",
+  "drive_date",
   "status",
   "start_date",
   "end_date",
@@ -15,7 +17,9 @@
   "naming_series",
   "column_break_pcol",
   "qr_code",
-  "poster"
+  "poster",
+  "location_link",
+  "map_preview"
  ],
  "fields": [
   {
@@ -80,12 +84,35 @@
    "label": "Naming Series",
    "options": "KOL-DRIVE-.#####\nSIL-DRIVE-.#####\nIMP-DRIVE-.#####\nSEN-DRIVE-.#####\nSIK-DRIVE-.#####\nGUW-DRIVE-.#####\nSHI-DRIVE-.#####",
    "read_only": 1
+  },
+  {
+   "fieldname": "drive_date",
+   "fieldtype": "Datetime",
+   "label": "Drive Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "Address",
+   "reqd": 1
+  },
+  {
+   "fieldname": "location_link",
+   "fieldtype": "Data",
+   "label": "Location Link",
+   "options": "URL"
+  },
+  {
+   "fieldname": "map_preview",
+   "fieldtype": "HTML",
+   "label": "Map Preview"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-09-09 13:09:48.020680",
+ "modified": "2025-09-11 17:07:15.659909",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Recruitment Drive",

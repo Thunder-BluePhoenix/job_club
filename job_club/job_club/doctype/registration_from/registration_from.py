@@ -30,6 +30,14 @@ class RegistrationFrom(Document):
             # Save Invitation Acceptance Date (auto-set)
             interview.invitation_acceptance_date = now_datetime()
 
+            # 🔹 Fetch drive_date from Recruitment Drive → set as interview_date
+            try:
+                drive_date = frappe.db.get_value("Recruitment Drive", self.recruitment_drive, "drive_date")
+                if drive_date:
+                    interview.interview_date = drive_date
+            except Exception as e:
+                frappe.log_error(f"Could not fetch drive_date for {self.recruitment_drive}: {e}", "Interview Creation Error")
+
             interview.save()
 
     def before_insert(self):
@@ -70,21 +78,19 @@ class RegistrationFrom(Document):
             frappe.log_error("No email found for Registration From", f"Doc: {self.name}")
             return
 
-        # 🔹 Fetch branch details
+        # 🔹 Fetch interview details from Recruitment Drive
         try:
-            branch = frappe.get_doc("Branch", self.location)
-            branch_details = f"<b>{branch.branch}</b><br/>{branch.address or ''}"
-            if branch.contact_number:
-                branch_details += f"<br/>Call: {branch.contact_number}"
-            if branch.email:
-                branch_details += f"<br/>Email: <a href='mailto:{branch.email}'>{branch.email}</a>"
-            if getattr(branch, "instagram", None):
-                branch_details += f"<br/>Instagram: <a href='{branch.instagram}' target='_blank'>{branch.instagram}</a>"
+            drive = frappe.get_doc("Recruitment Drive", self.recruitment_drive)
+            interview_date = drive.drive_date if drive.drive_date else "Not Scheduled"
+            branch_details = drive.address or "Venue not available"   # ✅ only address, one line
+            branch_link = getattr(drive, "location_link", None)
         except Exception as e:
-            branch_details = f"<b>{self.location}</b> (details not found)"
-            frappe.log_error(f"Branch fetch failed: {e}", "Registration From Email Error")
+            interview_date = "Not Scheduled"
+            branch_details = "Venue details not available"
+            branch_link = None
+            frappe.log_error(f"Drive fetch failed: {e}", "Registration From Email Error")
 
-        # 🔹 Generate QR with verification page URL
+        # 🔹 Generate QR (for attachment only)
         try:
             from frappe.utils import get_url
             import qrcode, io
@@ -99,60 +105,83 @@ class RegistrationFrom(Document):
             qr_bytes = None
             qr_url = None
 
+        refer_page_url = f"{get_url()}/assets/job_club/refer.html?drive={self.recruitment_drive}&branch={self.location}"
+
         # 🔹 Build email
-        subject = f"Your Registration Token - {self.token_number}"
+        subject = f"🎉 Registration Successful - Token {self.token_number}"
 
         message = f"""
         <html>
         <body style="font-family: Arial, sans-serif; background-color: #f8f9fa; padding: 20px;">
-            <div style="max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
-                <div style="text-align: center; margin-bottom: 20px;">
+            <div style="max-width: 600px; margin: auto; background: white; padding: 25px; border-radius: 12px; border: 1px solid #ddd; text-align: center; box-shadow: 0 6px 20px rgba(0,0,0,0.1);">
+                
+                <!-- Logo -->
+                <div style="margin-bottom: 20px;">
                     <img src="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" 
-                        alt="Emporium Logo" style="max-width: 180px;" />
+                        alt="Emporium Logo" style="max-width: 200px;" />
                 </div>
-
-                <p style="font-size: 16px;">Dear <strong>{full_name}</strong>,</p>
-
-                <p style="font-size: 15px; color: #333;">
-                    Thank you for registering with <strong>Emporium</strong>.  
-                    Your Token Number for the Recruitment Drive at <b>{self.location}</b> is:
+                
+                <!-- Greeting -->
+                <p style="font-size:16px; color:#333;">Dear <strong>{full_name}</strong>,</p>
+                
+                <p style="font-size:14px; color:#555; margin: 8px 0;">
+                    Thank you for registering with <strong>Emporium</strong>.
                 </p>
-
-                <div style="text-align: center; margin: 20px 0;">                    
-                    <!-- Token Number -->
-                    <span style="display: inline-block; font-size: 24px; font-weight: bold; background: linear-gradient(to right, #151f6d, #3041e4); color: white; padding: 15px 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(21, 31, 109, 0.3);">
-                        {self.token_number}
+                <p style="font-size:14px; color:#555; margin: 8px 0;">
+                    Your email <strong>{reciever_email}</strong> has been verified successfully.
+                </p>
+                
+                <!-- Token -->
+                <div style="text-align: center; margin: 25px 0;">                    
+                    <span style="display: inline-block; font-size: 22px; font-weight: bold; background: linear-gradient(to right, #151f6d, #3041e4); color: white; padding: 14px 28px; border-radius: 10px; box-shadow: 0 4px 15px rgba(21, 31, 109, 0.3);">
+                        Token: {self.token_number}
                     </span>
                 </div>
 
-                <!-- Verification Link -->
-                <div style="margin: 20px 0; text-align: center;">
+                <!-- Verification Button -->
+                <div style="margin: 20px 0;">
                     <a href="{qr_url}" 
-                    style="display: inline-block; padding: 12px 20px; background: #3041e4; color: white; font-size: 15px; border-radius: 6px; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                    style="display:inline-block; padding: 12px 22px; background: linear-gradient(to right, #43cea2, #185a9d); color:white; font-size:15px; border-radius:8px; text-decoration:none; font-weight:600; box-shadow:0 4px 12px rgba(0,0,0,0.2);">
                     🔍 Verify Candidate Details
                     </a>
                 </div>
 
-                <div style="margin-top: 20px; font-size: 14px; color: #555;">
-                    <p><b>📍 Location Details:</b></p>
-                    <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">
-                        {branch_details}
-                    </div>
+                <!-- Interview Details -->
+                <p style="font-size:15px; margin:15px 0;"><b>Interview date:</b> {interview_date}</p>
+                <p style="font-size:15px; margin:15px 0;"><b>Interview Venue:</b> {branch_details}</p>
+
+                <!-- QR Info -->
+                <div style="margin:20px 0;">
+                    <p style="font-size:14px; color:#555;">Scan QR (attached) for paperless entry</p>
+                    <p style="font-size:12px; color:green; font-weight:bold;">🌲 SAVE PAPER - SAVE TREE</p>
                 </div>
 
-                <!-- Important Instructions -->
-                <div style="margin: 25px 0; padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
-                    <h4 style="margin: 0 0 8px 0; color: #856404; font-size: 16px;">📋 Important Instructions:</h4>
-                    <ul style="margin: 0; padding-left: 20px; color: #856404; font-size: 14px;">
-                        <li>Save the attached QR code image to your phone</li>
-                        <li>Bring both your QR code and Token Number: <strong>{self.token_number}</strong></li>
-                    </ul>
+                <!-- Google Maps Button -->
+                {"<div style='margin:20px 0;'><a href='" + branch_link + "' style='display:inline-block; padding:12px 22px; background: linear-gradient(to right, #8e2de2, #ff6a00); color:white; font-size:15px; border-radius:8px; text-decoration:none; font-weight:600; box-shadow:0 4px 12px rgba(0,0,0,0.2);'>📍 Navigate with Google Maps</a></div>" if branch_link else ""}
+
+                <!-- Refer Friends -->
+                <div style="margin:20px 0;">
+                    <a href="{refer_page_url}" target="_blank"
+                    style="display:inline-block; padding:12px 22px; background: linear-gradient(to right, #00c6ff, #0072ff); color:white; font-size:15px; border-radius:8px; text-decoration:none; font-weight:600; box-shadow:0 4px 12px rgba(0,0,0,0.2);">
+                        📩 Refer Your Friends
+                    </a>
                 </div>
 
-                <p style="margin-top: 25px; font-size: 14px; color: #777; text-align: center;">
+                <!-- Footer -->
+                <p style="margin-top:30px; font-size:14px; color:#777;">
                     Best of luck for your interview!<br/>
                     <strong>Emporium Team</strong>
                 </p>
+
+                <!-- Disclaimer -->
+                <div style="margin-top:30px; padding:15px; font-size:12px; line-height:1.6; color:#666; background:#f1f1f1; border-radius:6px; text-align:justify;">
+                    <b>Disclaimer</b><br/><br/>
+                    This email and any attachments are intended only for the individual or entity to whom it is addressed and may contain confidential and/or privileged information of <strong>Emporium Training & Consultancy Pvt. Ltd.</strong> If you are not the intended recipient, please inform us immediately and delete this email from your system.<br/><br/>
+                    The information provided in this email is for the purpose of admission or recruitment and does not constitute an offer or guarantee of admission, employment, or any contractual relationship. All applications are subject to eligibility criteria, verification of documents, and the company’s policies.<br/><br/>
+                    Emporium Training & Consultancy Pvt. Ltd. is committed to protecting your personal data. By submitting your application or responding to this email, you consent to the collection and processing of your information as per applicable data protection laws and our privacy policy.<br/><br/>
+                    Please be cautious of fraudulent communications impersonating our organization. We recommend sharing sensitive or personal information only through official channels.
+                </div>
+
             </div>
         </body>
         </html>
@@ -164,7 +193,8 @@ class RegistrationFrom(Document):
                 "recipients": [reciever_email],
                 "subject": subject,
                 "message": message,
-                "now": True
+                "now": True,
+                "with_container": False   # 🚀 removes ERPNext default footer
             }
             
             if qr_bytes:
@@ -314,3 +344,23 @@ def get_drive_poster(drive):
         return None
     poster = frappe.db.get_value("Recruitment Drive", drive, "poster")
     return {"poster": poster} if poster else None
+
+import frappe
+
+@frappe.whitelist()
+def get_drive_and_branch_details(drive_name):
+    """Return address from Recruitment Drive and contact/socials from Branch"""
+    try:
+        drive = frappe.get_doc("Recruitment Drive", drive_name)
+        branch = frappe.get_doc("Branch", drive.branch) if drive.branch else None
+
+        return {
+            "address": drive.address or "Venue address not available",
+            "drive_date": drive.drive_date,
+            "contact_number": branch.contact_number if branch else None,
+            "email": branch.email if branch else None,
+            "instagram": branch.instagram if branch else None
+        }
+    except Exception as e:
+        frappe.log_error(f"Error fetching details: {e}", "Drive+Branch Fetch API")
+        return None
