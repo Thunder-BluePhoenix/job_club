@@ -2,11 +2,11 @@ import frappe
 from frappe.model.document import Document
 from frappe.utils import now_datetime
 
-class RegistrationFrom(Document):
 
+class RegistrationFrom(Document):
     def on_update(self):
         interview = frappe.new_doc("Interview")
-        
+
         # Basic details
         interview.full_name = self.full_name
         interview.applicant_name = self.full_name
@@ -27,29 +27,41 @@ class RegistrationFrom(Document):
 
         # 🔹 Fetch drive_date from Recruitment Drive → set as interview_date
         try:
-            drive_date = frappe.db.get_value("Recruitment Drive", self.recruitment_drive, "drive_date")
+            drive_date = frappe.db.get_value(
+                "Recruitment Drive", self.recruitment_drive, "drive_date"
+            )
             if drive_date:
                 interview.interview_date = drive_date
+                # 🔹 Also save interview_date in Registration From
+                self.db_set("interview_date", drive_date)
         except Exception as e:
-            frappe.log_error(f"Could not fetch drive_date for {self.recruitment_drive}: {e}", "Interview Creation Error")
+            frappe.log_error(
+                f"Could not fetch drive_date for {self.recruitment_drive}: {e}",
+                "Interview Creation Error",
+            )
 
         interview.save()
 
     def before_insert(self):
         """Generate branch-wise, drive-wise token before saving"""
         if not self.location or not self.recruitment_drive:
-            frappe.throw("Location (Branch) and Recruitment Drive are required to generate token")
+            frappe.throw(
+                "Location (Branch) and Recruitment Drive are required to generate token"
+            )
 
         # Branch code → take first 3 letters (or make a mapping if needed)
         branch_code = self.location[:3].upper()
 
         # Find last token for this location + drive
-        last_token = frappe.db.sql("""
+        last_token = frappe.db.sql(
+            """
             SELECT token_number
             FROM `tabRegistration From`
             WHERE location=%s AND recruitment_drive=%s
             ORDER BY creation DESC LIMIT 1
-        """, (self.location, self.recruitment_drive))
+        """,
+            (self.location, self.recruitment_drive),
+        )
 
         if last_token and last_token[0][0]:
             try:
@@ -63,27 +75,30 @@ class RegistrationFrom(Document):
         # Format token → e.g. KOL-0001
         self.token_number = f"{branch_code}-{next_num:04d}"
 
-    
     def after_insert(self):
-        """Send confirmation email with QR as attachment only"""
+        """Send confirmation email with QR as attachment + referral link"""
         reciever_email = self.email_id
         full_name = self.full_name or "Candidate"
 
         if not reciever_email:
-            frappe.log_error("No email found for Registration From", f"Doc: {self.name}")
+            frappe.log_error(
+                "No email found for Registration From", f"Doc: {self.name}"
+            )
             return
 
         # 🔹 Fetch interview details from Recruitment Drive
         try:
             drive = frappe.get_doc("Recruitment Drive", self.recruitment_drive)
             interview_date = drive.drive_date if drive.drive_date else "Not Scheduled"
-            branch_details = drive.address or "Venue not available"   # ✅ only address, one line
+            branch_details = drive.address or "Venue not available"
             branch_link = getattr(drive, "location_link", None)
         except Exception as e:
             interview_date = "Not Scheduled"
             branch_details = "Venue details not available"
             branch_link = None
-            frappe.log_error(f"Drive fetch failed: {e}", "Registration From Email Error")
+            frappe.log_error(
+                f"Drive fetch failed: {e}", "Registration From Email Error"
+            )
 
         # 🔹 Generate QR (for attachment only)
         try:
@@ -100,37 +115,72 @@ class RegistrationFrom(Document):
             qr_bytes = None
             qr_url = None
 
+        # 🔹 Build share URL (Always fetch from Recruitment Drive Doc) + ensure branch fallback
+        from urllib.parse import urlencode, quote
+        from frappe.utils import get_url
+
+        base_url = f"{get_url()}/registration-from/new"
+        params = {}
+
+        if self.recruitment_drive:
+            try:
+                drive_doc = frappe.get_doc("Recruitment Drive", self.recruitment_drive)
+
+                # drive name
+                if getattr(drive_doc, "drive_name", None):
+                    params["drive"] = drive_doc.drive_name
+
+                # Try recruitment_drive.branch first, fallback to self.location
+                branch_name = None
+                if getattr(drive_doc, "branch", None):
+                    branch_name = (
+                        frappe.db.get_value("Branch", drive_doc.branch, "branch")
+                        or drive_doc.branch
+                    )
+
+                if not branch_name and getattr(self, "location", None):
+                    branch_name = self.location
+
+                if branch_name:
+                    params["branch"] = branch_name
+                else:
+                    # helpful debug if it ever fails
+                    frappe.log_error(
+                        f"Share URL: no branch resolved. drive_doc.branch={getattr(drive_doc,'branch',None)}, self.location={self.location}",
+                        "Share URL Debug",
+                    )
+
+            except Exception as e:
+                frappe.log_error(
+                    f"Recruitment Drive fetch failed for {self.name}: {e}",
+                    "Share URL Build",
+                )
+
+        share_url = f"{base_url}?{urlencode(params)}" if params else base_url
+
+        # 🔹 Build encoded WhatsApp text so & in share_url doesn't break the outer querystring
+        whatsapp_text = (
+            "📢 Hi! Emporium Recruitment Drive at\n"
+            f"📍 Location: {branch_details}\n"
+            "🔗 Hurry Secure Your Seat Online\n"
+            f"{share_url}"
+        )
+        # quote() encodes &, ?, spaces, parentheses, etc.
+        whatsapp_link = "https://api.whatsapp.com/send?text=" + quote(
+            whatsapp_text, safe=""
+        )
+
+        # optional debug log
+        frappe.log_error(
+            f"Share URL built: {share_url}\nWhatsApp link: {whatsapp_link}",
+            "Share URL Debug",
+        )
+
         # 🔹 Build email
         subject = f"🎉 Registration Successful - Token {self.token_number}"
 
         message = f"""
         <html>
-        <head>
-            <!-- Structured Data for Sharing -->
-            <script type="application/ld+json">
-            {{
-                "@context": "https://schema.org",
-                "@type": "Event",
-                "name": "Emporium Recruitment Drive - Hiring Cabin Crew",
-                "description": "Join our free career counselling and recruitment drive for Cabin Crew positions. Register now to secure your spot and explore exciting career opportunities.",
-                "startDate": "{interview_date}",
-                "location": {{
-                    "@type": "Place",
-                    "name": "Emporium Branch",
-                    "address": "{branch_details}"
-                }},
-                "image": "https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png",
-                "url": "{qr_url}",
-                "offers": {{
-                    "@type": "Offer",
-                    "url": "{qr_url}",
-                    "price": "0",
-                    "priceCurrency": "INR",
-                    "availability": "https://schema.org/InStock"
-                }}
-            }}
-            </script>
-        </head>
         <body style="font-family: Arial, sans-serif; background-color: #f8f9fa; padding: 20px;">
             <div style="max-width: 600px; margin: auto; background: white; padding: 25px; border-radius: 12px; border: 1px solid #ddd; text-align: center; box-shadow: 0 6px 20px rgba(0,0,0,0.1);">
                 
@@ -177,33 +227,15 @@ class RegistrationFrom(Document):
 
                 <!-- Google Maps Button -->
                 {"<div style='margin:20px 0;'><a href='" + branch_link + "' style='display:inline-block; padding:12px 22px; background: linear-gradient(to right, #8e2de2, #ff6a00); color:white; font-size:15px; border-radius:8px; text-decoration:none; font-weight:600; box-shadow:0 4px 12px rgba(0,0,0,0.2);'>📍 Navigate with Google Maps</a></div>" if branch_link else ""}
-
-                <!-- Refer Friends -->
-                <div style="margin:20px 0; text-align: center;">
-                    <p style="font-size:14px; color:#555; margin-bottom: 10px;">Refer a Friend:</p>
-                    <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-                        <a href="mailto:?subject=Emporium Recruitment Drive&body=🔢 Hi! Join me at the Emporium Recruitment Drive!  
-📍 Location: {branch_details}  
-🎫 My Token: {self.token_number}  
-🔗 Register Now: {qr_url}  
-Hurry, secure your spot today!" 
-                           style="display:inline-block; padding: 10px 15px; background: #0078D4; color:white; font-size:14px; border-radius:8px; text-decoration:none; font-weight:600;">
-                           Email
-                        </a>
-                        <a href="https://api.whatsapp.com/send?text=🔢 Hi! Join me at the Emporium Recruitment Drive!  
-📍 Location: {branch_details}  
-🎫 My Token: {self.token_number}  
-🔗 Register Now: {qr_url}  
-Hurry, secure your spot today!" 
-                           style="display:inline-block; padding: 10px 15px; background: #25D366; color:white; font-size:14px; border-radius:8px; text-decoration:none; font-weight:600;">
-                           WhatsApp
-                        </a>
-                        <a href="https://www.facebook.com/sharer/sharer.php?u={qr_url}" 
-                           style="display:inline-block; padding: 10px 15px; background: #3B5998; color:white; font-size:14px; border-radius:8px; text-decoration:none; font-weight:600;">
-                           Facebook
-                        </a>
-                    </div>
-                </div>
+                    
+                <!-- WhatsApp -->
+                <a href="{whatsapp_link}" 
+                style="display:inline-block; padding: 10px 15px; background: #25D366; color:white; font-size:14px; border-radius:8px; text-decoration:none; font-weight:600;"
+                target="_blank" rel="noopener">
+                <img src="https://img.icons8.com/color/24/000000/whatsapp--v1.png" 
+                    alt="WhatsApp" style="vertical-align: middle; margin-right: 6px;" />
+                Refer on WhatsApp
+                </a>
 
                 <!-- Footer -->
                 <p style="margin-top:30px; font-size:14px; color:#777;">
@@ -232,25 +264,28 @@ Hurry, secure your spot today!"
                 "subject": subject,
                 "message": message,
                 "now": True,
-                "with_container": False   # 🚀 removes ERPNext default footer
+                "with_container": False,
             }
-            
+
             if qr_bytes:
-                email_args["attachments"] = [{
-                    "fname": f"{self.token_number}.png",
-                    "fcontent": qr_bytes
-                }]
-            
+                email_args["attachments"] = [
+                    {"fname": f"{self.token_number}.png", "fcontent": qr_bytes}
+                ]
+
             frappe.sendmail(**email_args)
-            
+
         except Exception as e:
-            frappe.log_error(f"Failed to send Token email: {e}", "Registration From Email Error")
+            frappe.log_error(
+                f"Failed to send Token email: {e}", "Registration From Email Error"
+            )
+
 
 @frappe.whitelist(allow_guest=True)
 def get_registration_token(docname):
     """Fetch token for a submitted registration (for webform redirect)"""
     token = frappe.db.get_value("Registration From", docname, "token_number")
     return {"token_number": token}
+
 
 @frappe.whitelist(allow_guest=True)
 def get_candidate_info(token):
@@ -263,12 +298,14 @@ def get_candidate_info(token):
         "candidate_name": doc.full_name,
         "candidate_email": doc.email_id,
         "candidate_phone": doc.mobile_number,
-        "token_number": doc.token_number
+        "token_number": doc.token_number,
     }
+
 
 @frappe.whitelist(allow_guest=True)
 def pre_validate_registration(data):
     import json, re
+
     if isinstance(data, str):
         data = json.loads(data)
     data = frappe._dict(data)
@@ -285,59 +322,79 @@ def pre_validate_registration(data):
         "age": "Age",
         "height": "Height",
         "qualification": "Qualification",
-        "recruitment_drive": "Recruitment Drive"
+        "recruitment_drive": "Recruitment Drive",
     }
     for field, label in required_fields.items():
         if not data.get(field):
             errors.append({"field": field, "message": f"{label} is mandatory."})
 
     # --- Email format ---
-    if data.get("email_id") and not re.fullmatch(r"[^@]+@[^@]+\.[^@]+", str(data.email_id)):
+    if data.get("email_id") and not re.fullmatch(
+        r"[^@]+@[^@]+\.[^@]+", str(data.email_id)
+    ):
         errors.append({"field": "email_id", "message": "Enter a valid email address."})
 
     # --- Mobile number format (+91XXXXXXXXXX or 10 digits) ---
-    if data.get("mobile_number") and not re.fullmatch(r"^(\+91\d{10}|\d{10})$", str(data.mobile_number)):
-        errors.append({
-            "field": "mobile_number",
-            "message": "Enter a valid 10-digit mobile number or +91 followed by 10 digits."
-        })
+    if data.get("mobile_number") and not re.fullmatch(
+        r"^(\+91\d{10}|\d{10})$", str(data.mobile_number)
+    ):
+        errors.append(
+            {
+                "field": "mobile_number",
+                "message": "Enter a valid 10-digit mobile number or +91 followed by 10 digits.",
+            }
+        )
 
     # --- Age ---
     if data.get("age"):
         try:
             age_val = int(data.age)
             if not (18 <= age_val <= 27):
-                errors.append({"field": "age", "message": "Age must be between 18 and 27 years."})
+                errors.append(
+                    {"field": "age", "message": "Age must be between 18 and 27 years."}
+                )
         except Exception:
-            errors.append({"field": "age", "message": "Age must be a number between 18 and 27."})
+            errors.append(
+                {"field": "age", "message": "Age must be a number between 18 and 27."}
+            )
 
     # --- Height ---
     if data.get("height"):
         try:
             height_val = int(data.height)
             if height_val < 155:
-                errors.append({"field": "height", "message": "Minimum height is 155 cm."})
+                errors.append(
+                    {"field": "height", "message": "Minimum height is 155 cm."}
+                )
         except Exception:
-            errors.append({"field": "height", "message": "Height must be a number in cm (e.g., 170)."})
+            errors.append(
+                {
+                    "field": "height",
+                    "message": "Height must be a number in cm (e.g., 170).",
+                }
+            )
 
     # --- Check Recruitment Drive Availability ---
     if data.get("location") and data.get("recruitment_drive"):
         drive = frappe.db.get_value(
             "Recruitment Drive",
             {"name": data.recruitment_drive, "branch": data.location, "status": "Open"},
-            ["name"]
+            ["name"],
         )
         if not drive:
-            errors.append({
-                "field": "recruitment_drive",
-                "message": f"No open recruitment drive available for branch {data.location}."
-            })
+            errors.append(
+                {
+                    "field": "recruitment_drive",
+                    "message": f"No open recruitment drive available for branch {data.location}.",
+                }
+            )
 
     # If errors exist, return them
     if errors:
         return {"status": "error", "errors": errors}
 
     return {"status": "success", "message": "Validation passed."}
+
 
 @frappe.whitelist(allow_guest=True)
 def check_duplicate(fieldname, value, drive):
@@ -349,14 +406,19 @@ def check_duplicate(fieldname, value, drive):
         return {"status": "error", "message": "Invalid field"}
 
     # Check if email exists for the same drive
-    if frappe.db.exists("Registration From", {fieldname: value, "recruitment_drive": drive}):
-        return {"status": "error", "message": f"This {fieldname.replace('_', ' ')} is already registered for this drive."}
+    if frappe.db.exists("Interview", {fieldname: value, "recruitment_drive": drive}):
+        return {
+            "status": "error",
+            "message": f"This {fieldname.replace('_', ' ')} is already registered for this drive.",
+        }
 
     return {"status": "success", "message": "Available"}
+
 
 @frappe.whitelist(allow_guest=True)
 def get_branches():
     return frappe.get_all("Branch", fields=["name", "branch"], limit_page_length=100)
+
 
 @frappe.whitelist(allow_guest=True)
 def get_open_drives(branch):
@@ -367,9 +429,10 @@ def get_open_drives(branch):
     drives = frappe.get_all(
         "Recruitment Drive",
         filters={"status": "Open", "branch": branch},
-        fields=["name", "drive_name"]
+        fields=["name", "drive_name"],
     )
     return drives
+
 
 @frappe.whitelist(allow_guest=True)
 def get_drive_poster(drive):
@@ -379,7 +442,9 @@ def get_drive_poster(drive):
     poster = frappe.db.get_value("Recruitment Drive", drive, "poster")
     return {"poster": poster} if poster else None
 
+
 import frappe
+
 
 @frappe.whitelist()
 def get_drive_and_branch_details(drive_name):
@@ -393,7 +458,7 @@ def get_drive_and_branch_details(drive_name):
             "drive_date": drive.drive_date,
             "contact_number": branch.contact_number if branch else None,
             "email": branch.email if branch else None,
-            "instagram": branch.instagram if branch else None
+            "instagram": branch.instagram if branch else None,
         }
     except Exception as e:
         frappe.log_error(f"Error fetching details: {e}", "Drive+Branch Fetch API")
