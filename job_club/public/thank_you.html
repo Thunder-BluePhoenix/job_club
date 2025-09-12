@@ -433,7 +433,7 @@
         }).catch(err => console.log("Share cancelled:", err));
       } else {
         // For clipboard copy, include the URL
-        const fullMessage = `${shareMessage}\n${shareUrl}`;
+        const fullMessage = shareMessage;
         navigator.clipboard.writeText(fullMessage).then(() => {
           alert("Referral message copied!");
         });
