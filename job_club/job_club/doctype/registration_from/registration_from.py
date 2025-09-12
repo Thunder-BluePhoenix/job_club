@@ -446,7 +446,7 @@ def get_drive_poster(drive):
 import frappe
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_drive_and_branch_details(drive_name):
     """Return address from Recruitment Drive and contact/socials from Branch"""
     try:
