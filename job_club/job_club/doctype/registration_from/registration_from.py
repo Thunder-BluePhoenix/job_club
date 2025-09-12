@@ -230,7 +230,7 @@ class RegistrationFrom(Document):
                     
                 <!-- WhatsApp -->
                 <a href="{whatsapp_link}" 
-                style="display:inline-block; padding: 10px 15px; background: #25D366; color:white; font-size:14px; border-radius:8px; text-decoration:none; font-weight:600;"
+                style="display:inline-block; padding: 10px 15px; background: #267b46; color:white; font-size:14px; border-radius:8px; text-decoration:none; font-weight:600;"
                 target="_blank" rel="noopener">
                 <img src="https://img.icons8.com/color/24/000000/whatsapp--v1.png" 
                     alt="WhatsApp" style="vertical-align: middle; margin-right: 6px;" />
