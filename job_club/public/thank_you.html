@@ -367,8 +367,10 @@
     if (token) {
       document.getElementById("candidate-token").textContent = token;
 
+      const verificationUrl = `${window.location.origin}/assets/job_club/candidate_verification.html?token=${encodeURIComponent(token)}`;
+
       new QRCode(document.getElementById("candidate-qr"), {
-        text: token,
+        text: verificationUrl,
         width: 128,
         height: 128,
       });
