@@ -8,7 +8,7 @@
 
   <!-- Basic Meta Tags -->
   <meta name="description"
-    content="Join our free career counselling and recruitment drive. Register now to secure your spot and explore exciting career opportunities with Emporium." />
+    content="Join our free career counselling and recruitment drive. Register now to secure your spot and explore exciting career opportunities." />
 
   <!-- Open Graph Meta Tags for WhatsApp/Facebook -->
   <meta property="og:title" content="Register Now" />
@@ -317,6 +317,7 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
   <script>
+
     // Set dynamic OG URL based on current URL parameters
     const currentUrl = window.location.href;
     const ogUrlMeta = document.getElementById('dynamic-og-url');
@@ -416,23 +417,29 @@
       const drive = urlParams.get("drive") || "";
       const branchParam = urlParams.get("location") || "Emporium Branch";
 
+      // Build the referral URL
       const shareUrl = drive
         ? `${window.location.origin}/registration-from/new?drive=${encodeURIComponent(drive)}&branch=${encodeURIComponent(branchParam)}`
         : `${window.location.origin}/registration-from/new`;
 
-      const shareMessage = `📢 Hi! Emporium Recruitment Drive at  
-📍 Location: ${fullBranchAddress}  
-🔗 Hurry Secure Your Seat Online  
-${shareUrl}`.trim();
+      // Clean branch address (remove extra line breaks)
+      const cleanAddress = fullBranchAddress.replace(/\s*\n\s*/g, ", ");
+
+      // Build the message WITHOUT duplicating the URL
+      const shareMessage = `📢 Hi! Emporium Recruitment Drive  
+📍 Location: ${cleanAddress}  
+🔗 Hurry, secure your seat online!`;
 
       if (navigator.share) {
+        // Use mobile share API, URL only once
         navigator.share({
           title: "Emporium Recruitment Drive",
           text: shareMessage,
-          url: shareUrl,
+          url: shareUrl, // URL appears once here
         }).catch(err => console.log("Share cancelled:", err));
       } else {
-        // For clipboard copy, include the URL
+        // Clipboard fallback for desktop
+        const fullMessage = `${shareMessage}\n${shareUrl}`;
         navigator.clipboard.writeText(fullMessage).then(() => {
           alert("Referral message copied!");
         });
