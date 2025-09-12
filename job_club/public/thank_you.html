@@ -8,12 +8,12 @@
 
   <!-- Basic Meta Tags -->
   <meta name="description"
-    content="Join our free career counselling and recruitment drive for Cabin Crew positions in Siliguri. Register now to secure your spot and explore exciting career opportunities with Emporium." />
+    content="Join our free career counselling and recruitment drive. Register now to secure your spot and explore exciting career opportunities with Emporium." />
 
   <!-- Open Graph Meta Tags for WhatsApp/Facebook -->
-  <meta property="og:title" content="Register Now — Hiring Cabin Crew - Siliguri (Female Only)" />
+  <meta property="og:title" content="Register Now" />
   <meta property="og:description"
-    content="Join our free career counselling and recruitment drive for Cabin Crew positions. Register now to secure your spot and explore exciting career opportunities." />
+    content="Join our free career counselling and recruitment drive. Register now to secure your spot and explore exciting career opportunities." />
   <meta property="og:image" content="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -23,9 +23,9 @@
 
   <!-- Twitter Card Meta Tags -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Register Now — Hiring Cabin Crew - Siliguri (Female Only)" />
+  <meta name="twitter:title" content="Register Now" />
   <meta name="twitter:description"
-    content="Join our free career counselling and recruitment drive for Cabin Crew positions. Register now to secure your spot and explore exciting career opportunities." />
+    content="Join our free career counselling and recruitment drive. Register now to secure your spot and explore exciting career opportunities." />
   <meta name="twitter:image" content="https://www.emporiumsolutions.com/wp-content/uploads/2025/07/logo-erp.png" />
 
   <!-- Additional Meta Tags for better sharing -->
@@ -421,9 +421,9 @@
         : `${window.location.origin}/registration-from/new`;
 
       const shareMessage = `📢 Hi! Emporium Recruitment Drive at  
-      📍 Location: ${fullBranchAddress}  
-      🔗 Hurry Secure Your Seat Online  
-      ${shareUrl}`.trim();
+📍 Location: ${fullBranchAddress}  
+🔗 Hurry Secure Your Seat Online  
+${shareUrl}`.trim();
 
       if (navigator.share) {
         navigator.share({
@@ -433,7 +433,6 @@
         }).catch(err => console.log("Share cancelled:", err));
       } else {
         // For clipboard copy, include the URL
-        const fullMessage = shareMessage;
         navigator.clipboard.writeText(fullMessage).then(() => {
           alert("Referral message copied!");
         });
