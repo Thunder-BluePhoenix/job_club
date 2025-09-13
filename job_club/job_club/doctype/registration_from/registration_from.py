@@ -177,7 +177,7 @@ class RegistrationFrom(Document):
         )
 
         # 🔹 Build email
-        subject = f"🎉 Registration Successful - Token {self.token_number}"
+        subject = f"🎉 Registration Successful - {drive_doc.drive_name}"
 
         message = f"""
         <html>
