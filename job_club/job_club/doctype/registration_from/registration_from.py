@@ -216,7 +216,7 @@ class RegistrationFrom(Document):
                 </div>
 
                 <!-- Interview Details -->
-                <p style="font-size:15px; margin:15px 0;"><b>Interview date:</b> {interview_date}</p>
+                <p style="font-size:15px; margin:15px 0;"><b>Interview Date:</b> {interview_date}</p>
                 <p style="font-size:15px; margin:15px 0;"><b>Interview Venue:</b> {branch_details}</p>
 
                 <!-- QR Info -->
