@@ -21,6 +21,8 @@ class RegistrationFrom(Document):
         interview.weight = self.weight
         interview.recruitment_drive = self.recruitment_drive
         interview.token_number = self.token_number
+        interview.registration_from = self.name
+
 
         # Save Invitation Acceptance Date (auto-set)
         interview.invitation_acceptance_date = now_datetime()
@@ -56,7 +58,7 @@ class RegistrationFrom(Document):
         last_token = frappe.db.sql(
             """
             SELECT token_number
-            FROM `tabRegistration From`
+            FROM `tabInterview`
             WHERE location=%s AND recruitment_drive=%s
             ORDER BY creation DESC LIMIT 1
         """,
@@ -283,14 +285,18 @@ class RegistrationFrom(Document):
 @frappe.whitelist(allow_guest=True)
 def get_registration_token(docname):
     """Fetch token for a submitted registration (for webform redirect)"""
-    token = frappe.db.get_value("Registration From", docname, "token_number")
+    token = frappe.db.get_value(
+        "Interview",
+        {"registration_from": docname},  # link field in Interview
+        "token_number",
+    )
     return {"token_number": token}
 
 
 @frappe.whitelist(allow_guest=True)
 def get_candidate_info(token):
     """Fetch candidate info by token number"""
-    doc = frappe.get_doc("Registration From", {"token_number": token})
+    doc = frappe.get_doc("Interview", {"token_number": token})
     if not doc:
         return {"error": "Candidate not found"}
 
@@ -389,6 +395,18 @@ def pre_validate_registration(data):
                 }
             )
 
+    # --- Duplicate Email for same drive ---
+    if data.get("email_id") and data.get("recruitment_drive"):
+        exists = frappe.db.exists(
+            "Interview",
+            {"email_id": data.email_id, "recruitment_drive": data.recruitment_drive},
+        )
+        if exists:
+            errors.append({
+                "field": "email_id",
+                "message": "This email is already registered for this recruitment drive."
+            })
+
     # If errors exist, return them
     if errors:
         return {"status": "error", "errors": errors}
@@ -441,9 +459,6 @@ def get_drive_poster(drive):
         return None
     poster = frappe.db.get_value("Recruitment Drive", drive, "poster")
     return {"poster": poster} if poster else None
-
-
-import frappe
 
 
 @frappe.whitelist(allow_guest=True)

@@ -25,7 +25,9 @@
   "column_break_upyh",
   "token_number",
   "section_break_egbw",
-  "naming_series"
+  "naming_series",
+  "column_break_duzt",
+  "registration_from"
  ],
  "fields": [
   {
@@ -107,7 +109,7 @@
    "fieldname": "job_experience",
    "fieldtype": "Select",
    "label": "Job Experience",
-   "options": "Select\nYes\nNo",
+   "options": "Select\nFresher\n0-1 Years\n1-3 Years\n3-5 Years\n5+ Years",
    "reqd": 1
   },
   {
@@ -146,12 +148,23 @@
    "fieldtype": "Datetime",
    "label": "Interview Date",
    "read_only": 1
+  },
+  {
+   "fieldname": "column_break_duzt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "registration_from",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Registration From",
+   "options": "Registration From"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-09-11 11:42:13.275197",
+ "modified": "2025-09-16 12:52:01.167601",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Interview",

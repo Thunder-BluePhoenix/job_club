@@ -93,7 +93,7 @@
    "fieldname": "job_experience",
    "fieldtype": "Select",
    "label": "Job Experience",
-   "options": "Select\nYes\nNo",
+   "options": "Select\nFresher\n0-1 Years\n1-3 Years\n3-5 Years\n5+ Years",
    "reqd": 1
   },
   {
@@ -124,7 +124,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-09-11 11:43:29.312786",
+ "modified": "2025-09-15 19:32:10.181651",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Registration From",

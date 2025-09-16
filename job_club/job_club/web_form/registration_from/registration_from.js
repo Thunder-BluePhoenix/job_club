@@ -425,8 +425,11 @@ frappe.ready(() => {
                     <label>Job Experience</label>
                     <select id="job_experience" required>
                         <option value="">Select</option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
+                        <option value="Fresher">Fresher</option>
+                        <option value="0-1 Years">0-1 Years</option>
+                        <option value="1-3 Years">1-3 Years</option>
+                        <option value="3-5 Years">3-5 Years</option>
+                        <option value="5+ Years">5+ Years</option>
                     </select>
                     <div class="error-msg" id="error-job_experience"></div>
                 </div>
@@ -822,39 +825,52 @@ frappe.ready(() => {
             showFieldError('recruitment_drive', ''); // Clear error if valid
         }
 
-        // Proceed with server-side validation
+        // Step 1: Check duplicate email before pre_validate
         frappe.call({
-            method: 'job_club.job_club.doctype.registration_from.registration_from.pre_validate_registration',
-            args: { data: { full_name, email_id, mobile_number, location, gender, age, height, qualification, weight, job_experience, recruitment_drive } },
-            callback: (r) => {
-                if (r.message && r.message.status === "error") {
-                    document.querySelectorAll(".error-msg").forEach(el => el.textContent = "");
-                    document.querySelectorAll("#registration-form input, #registration-form select")
-                        .forEach(el => el.style.border = "1px solid #ccc");
-
-                    r.message.errors.forEach(err => {
-                        showFieldError(err.field, err.message);
-                    });
-                } else if (r.message && r.message.status === "success") {
-                    otpModalOverlay.style.display = 'flex';
-                    pageContent.style.filter = 'blur(6px)';
-                    showOtpMessage('Sending OTP...', '#666');
-                    frappe.call({
-                        method: 'job_club.job_club.doctype.otp_verification.otp_api.send_otp',
-                        args: { data: { email: email_id, full_name: full_name } },
-                        callback: (otpRes) => {
-                            if (otpRes.message && otpRes.message.status === "success") {
-                                showOtpMessage(otpRes.message.message, '#4caf50');
-                                startCountdown(600);
-                            } else {
-                                showOtpMessage(otpRes.message ? otpRes.message.message : 'Failed to send OTP.');
-                            }
-                        }
-                    });
-                } else {
-                    formError.textContent = 'Something went wrong. Please try again.';
-                    formErrorMobile.textContent = 'Something went wrong. Please try again.';
+            method: 'job_club.job_club.doctype.registration_from.registration_from.check_duplicate',
+            args: { fieldname: "email_id", value: email_id, drive: recruitment_drive },
+            callback: function (dupRes) {
+                if (dupRes.message.status === "error") {
+                    // ❌ Email already registered
+                    showFieldError('email_id', dupRes.message.message);
+                    return; // STOP here → don’t open OTP
                 }
+
+                // ✅ Email is available → proceed with pre_validate
+                frappe.call({
+                    method: 'job_club.job_club.doctype.registration_from.registration_from.pre_validate_registration',
+                    args: { data: { full_name, email_id, mobile_number, location, gender, age, height, qualification, weight, job_experience, recruitment_drive } },
+                    callback: (r) => {
+                        if (r.message && r.message.status === "error") {
+                            document.querySelectorAll(".error-msg").forEach(el => el.textContent = "");
+                            document.querySelectorAll("#registration-form input, #registration-form select")
+                                .forEach(el => el.style.border = "1px solid #ccc");
+
+                            r.message.errors.forEach(err => {
+                                showFieldError(err.field, err.message);
+                            });
+                        } else if (r.message && r.message.status === "success") {
+                            otpModalOverlay.style.display = 'flex';
+                            pageContent.style.filter = 'blur(6px)';
+                            showOtpMessage('Sending OTP...', '#666');
+                            frappe.call({
+                                method: 'job_club.job_club.doctype.otp_verification.otp_api.send_otp',
+                                args: { data: { email: email_id, full_name: full_name } },
+                                callback: (otpRes) => {
+                                    if (otpRes.message && otpRes.message.status === "success") {
+                                        showOtpMessage(otpRes.message.message, '#4caf50');
+                                        startCountdown(600);
+                                    } else {
+                                        showOtpMessage(otpRes.message ? otpRes.message.message : 'Failed to send OTP.');
+                                    }
+                                }
+                            });
+                        } else {
+                            formError.textContent = 'Something went wrong. Please try again.';
+                            formErrorMobile.textContent = 'Something went wrong. Please try again.';
+                        }
+                    }
+                });
             }
         });
     });
