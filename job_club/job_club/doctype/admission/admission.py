@@ -33,7 +33,6 @@ class Admission(Document):
 
             admission.save()
 
-
 @frappe.whitelist(allow_guest=True)
 def pre_validate_admission(data):
     """Validate admission form data before saving"""
@@ -60,10 +59,13 @@ def pre_validate_admission(data):
             errors.append({"field": field, "message": f"{label} is mandatory."})
 
     # --- Email format ---
-    if data.get("email_id") and not re.fullmatch(r"[^@]+@[^@]+\.[^@]+", str(data.email_id)):
-        errors.append({"field": "email_id", "message": "Enter a valid email address."})
+    if data.get("email_id"):
+        if not re.fullmatch(r"[^@]+@[^@]+\.[^@]+", str(data.email_id)):
+            errors.append({"field": "email_id", "message": "Enter a valid email address."})
+        elif frappe.db.exists("Admission", {"email_id": data.email_id}):
+            errors.append({"field": "email_id", "message": "This email is already used in admission."})
 
-    # --- Mobile number format ---
+    # --- Mobile number ---
     if data.get("mobile_number") and not re.fullmatch(r"^(\+91\d{10}|\d{10})$", str(data.mobile_number)):
         errors.append({"field": "mobile_number", "message": "Enter a valid 10-digit mobile number or +91 followed by 10 digits."})
 
@@ -90,18 +92,17 @@ def pre_validate_admission(data):
 
     return {"status": "success", "message": "Validation passed."}
 
-
 @frappe.whitelist(allow_guest=True)
 def check_duplicate_admission(fieldname, value):
-    """Check if email or mobile already exists in Admission Form"""
+    """Check if email already exists in Admission Form"""
     if not fieldname or not value:
         return {"status": "error", "message": "Invalid request"}
 
-    if fieldname not in ["email_id", "mobile_number"]:
+    if fieldname != "email_id":
         return {"status": "error", "message": "Invalid field"}
 
-    if frappe.db.exists("Admission", {fieldname: value}):
-        return {"status": "error", "message": f"This {fieldname.replace('_', ' ')} is already used in admission."}
+    if frappe.db.exists("Admission", {"email_id": value}):
+        return {"status": "error", "message": "This email is already used in admission."}
 
     return {"status": "success", "message": "Available"}
 

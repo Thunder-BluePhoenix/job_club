@@ -409,8 +409,11 @@ frappe.ready(() => {
                     <label>Job Experience</label>
                     <select id="job_experience" required>
                         <option value="">Select</option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
+                        <option value="Fresher">Fresher</option>
+                        <option value="0-1 Years">0-1 Years</option>
+                        <option value="1-3 Years">1-3 Years</option>
+                        <option value="3-5 Years">3-5 Years</option>
+                        <option value="5+ Years">5+ Years</option>
                     </select>
                     <div class="error-msg" id="error-job_experience"></div>
                 </div>
@@ -572,17 +575,7 @@ frappe.ready(() => {
             showFieldError('mobile_number', "Mobile number is required.");
             return;
         } else {
-            frappe.call({
-                method: 'job_club.job_club.doctype.admission.admission.check_duplicate_admission',
-                args: { fieldname: "mobile_number", value: mobile },
-                callback: (r) => {
-                    if (r.message.status === "error") {
-                        showFieldError('mobile_number', r.message.message);
-                    } else {
-                        showFieldError('mobile_number', "");
-                    }
-                }
-            });
+            showFieldError('mobile_number', "");
         }
     });
 
@@ -593,6 +586,7 @@ frappe.ready(() => {
             showFieldError('location', "");
         }
     });
+
     document.getElementById('gender').addEventListener('blur', function () {
         if (!this.value.trim()) {
             showFieldError('gender', "Gender is required.");
@@ -600,6 +594,7 @@ frappe.ready(() => {
             showFieldError('gender', "");
         }
     });
+
     document.getElementById('age').addEventListener('blur', function () {
         const age = parseInt(this.value.trim());
         if (!age) {
@@ -610,6 +605,7 @@ frappe.ready(() => {
             showFieldError('age', "");
         }
     });
+
     document.getElementById('height').addEventListener('blur', function () {
         const height = parseInt(this.value.trim());
         if (!height) {
@@ -620,6 +616,7 @@ frappe.ready(() => {
             showFieldError('height', "");
         }
     });
+
     document.getElementById('weight').addEventListener('blur', function () {
         if (!this.value.trim()) {
             showFieldError('weight', "Weight is required.");
@@ -627,6 +624,7 @@ frappe.ready(() => {
             showFieldError('weight', "");
         }
     });
+    
     document.getElementById('qualification').addEventListener('blur', function () {
         if (!this.value.trim()) {
             showFieldError('qualification', "Qualification is required.");
@@ -634,6 +632,7 @@ frappe.ready(() => {
             showFieldError('qualification', "");
         }
     });
+    
     document.getElementById('job_experience').addEventListener('blur', function () {
         if (!this.value.trim()) {
             showFieldError('job_experience', "Job Experience is required.");
