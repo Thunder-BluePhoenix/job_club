@@ -60,6 +60,17 @@ doc_events = {
     }
 }
 
+scheduler_events = {
+    "cron": {
+        "* * * * *": [
+            "job_club.job_club.doctype.recruitment_drive.recruitment_drive_scheduler.close_expired_drives"
+        ]
+    }
+}
+
+
+
+
 
 
 # Svg Icons

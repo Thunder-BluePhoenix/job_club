@@ -10,9 +10,8 @@
   "branch",
   "address",
   "drive_date",
+  "closing_date",
   "status",
-  "start_date",
-  "end_date",
   "description",
   "naming_series",
   "column_break_pcol",
@@ -41,16 +40,6 @@
    "reqd": 1
   },
   {
-   "fieldname": "start_date",
-   "fieldtype": "Date",
-   "label": "Start Date"
-  },
-  {
-   "fieldname": "end_date",
-   "fieldtype": "Date",
-   "label": "End Date"
-  },
-  {
    "fieldname": "branch",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -66,7 +55,8 @@
   {
    "fieldname": "poster",
    "fieldtype": "Attach Image",
-   "label": "Drive Poster"
+   "label": "Drive Poster",
+   "make_attachment_public": 1
   },
   {
    "fieldname": "qr_code",
@@ -81,6 +71,7 @@
   {
    "fieldname": "naming_series",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Naming Series",
    "options": "KOL-DRIVE-.#####\nSIL-DRIVE-.#####\nIMP-DRIVE-.#####\nSEN-DRIVE-.#####\nSIK-DRIVE-.#####\nGUW-DRIVE-.#####\nSHI-DRIVE-.#####",
    "read_only": 1
@@ -107,12 +98,18 @@
    "fieldname": "map_preview",
    "fieldtype": "HTML",
    "label": "Map Preview"
+  },
+  {
+   "fieldname": "closing_date",
+   "fieldtype": "Datetime",
+   "label": "Closing Date",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-09-11 17:07:15.659909",
+ "modified": "2025-10-14 17:33:05.947506",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Recruitment Drive",
