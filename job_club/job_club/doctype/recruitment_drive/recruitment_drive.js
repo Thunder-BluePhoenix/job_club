@@ -124,7 +124,7 @@ function generate_drive_qr(frm) {
                 ctx.drawImage(img, 10, logoHeight, qrSize - 20, qrSize - 20);
 
                 ctx.fillStyle = "#000000";
-                ctx.font = "bold 16px Arial";
+                ctx.font = "bold 12px Arial";
                 ctx.textAlign = "center";
                 ctx.fillText(`Drive - ${frm.doc.name}`, qrSize / 2, logoHeight + qrSize);
 
