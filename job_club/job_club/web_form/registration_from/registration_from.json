@@ -18,7 +18,8 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2025-08-28 13:17:30.437105",
+ "meta_description": "",
+ "modified": "2025-10-22 12:24:43.341050",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "registration-from",
@@ -28,7 +29,7 @@
  "show_attachments": 0,
  "show_list": 0,
  "show_sidebar": 0,
- "title": "Register Now For Free Career Counselling",
+ "title": "Register Now For Interview",
  "web_form_fields": [
   {
    "allow_read_on_all_link_options": 0,
