@@ -97,7 +97,7 @@ function generate_qr(frm) {
                     ctx.font = 'bold 16px Arial';
                     ctx.fillStyle = '#000000';
                     ctx.textAlign = 'center';
-                    ctx.fillText('Admission Inquiry Form', canvas.width / 2, qrY + qrSize + 25);
+                    ctx.fillText('Inquiry Form', canvas.width / 2, qrY + qrSize + 25);
 
                     // Download
                     const link = document.createElement('a');
