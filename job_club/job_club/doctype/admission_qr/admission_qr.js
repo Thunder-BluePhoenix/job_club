@@ -45,15 +45,18 @@ function generate_qr(frm) {
         height: 200
     });
 
-    // Add download button after QR is rendered
+    // Add buttons after QR is rendered
     setTimeout(() => {
         const qr_img = qr_div.querySelector('img') || qr_div.querySelector('canvas');
         if (!qr_img) return;
 
         const buttonWrapper = document.createElement('div');
-        buttonWrapper.style.textAlign = 'left'; // align button to the left
+        buttonWrapper.style.display = 'flex';
+        buttonWrapper.style.gap = '10px';
+        buttonWrapper.style.justifyContent = 'left';
         buttonWrapper.style.marginTop = '10px';
 
+        // Download Button
         const downloadBtn = document.createElement('button');
         downloadBtn.innerText = 'Download QR';
         downloadBtn.classList.add('btn', 'btn-primary');
@@ -108,7 +111,21 @@ function generate_qr(frm) {
             };
         };
 
+        // Copy Link Button
+        const copyBtn = document.createElement('button');
+        copyBtn.innerText = 'Copy Link';
+        copyBtn.classList.add('btn', 'btn-secondary');
+        copyBtn.onclick = function() {
+            if (frm.doc.qr_link) {
+                navigator.clipboard.writeText(frm.doc.qr_link)
+                    .then(() => frappe.show_alert({ message: __('Link copied to clipboard!'), indicator: 'green' }))
+                    .catch(() => frappe.show_alert({ message: __('Failed to copy link'), indicator: 'red' }));
+            }
+        };
+
+        // Append buttons
         buttonWrapper.appendChild(downloadBtn);
+        buttonWrapper.appendChild(copyBtn);
         wrapper.append(buttonWrapper);
     }, 500);
 }
