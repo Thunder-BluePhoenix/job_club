@@ -1,0 +1,14 @@
+/* Hide Help menu from the top navigation bar (desktop view) */
+.navbar .dropdown-help {
+  display: none !important;
+}
+
+/* Hide Help menu from the mobile navigation menu */
+.dropdown-help.dropdown-mobile {
+  display: none !important;
+}
+
+/* Optional: smooth fallback for any future menu variant */
+li.dropdown-help {
+  display: none !important;
+}
