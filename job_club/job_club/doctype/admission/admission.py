@@ -109,3 +109,63 @@ def check_duplicate_admission(fieldname, value):
 @frappe.whitelist(allow_guest=True)
 def get_branches():
     return frappe.get_all("Branch", fields=["name", "branch"], limit_page_length=100)
+
+@frappe.whitelist()
+def create_student_from_admission(admission_name):
+    """Create a Student record from an Admission record"""
+    
+    # Get the Admission document
+    admission = frappe.get_doc('Admission', admission_name)
+    
+    # Check if student already created
+    if admission.get('student_id'):
+        frappe.throw(frappe._('Student record already exists for this admission'))
+    
+    # Parse the full name
+    name_parts = admission.full_name.strip().split()
+    first_name = name_parts[0] if len(name_parts) > 0 else ''
+    last_name = name_parts[-1] if len(name_parts) > 1 else ''
+    middle_name = ' '.join(name_parts[1:-1]) if len(name_parts) > 2 else ''
+    
+    # Create new Student document
+    student = frappe.new_doc('Student')
+    
+    # Map basic fields
+    student.first_name = first_name
+    student.middle_name = middle_name
+    student.last_name = last_name
+    student.student_name = admission.full_name
+    student.student_email_id = admission.email_id
+    student.student_mobile_number = admission.mobile_number
+    student.branch = admission.location
+    student.gender = admission.gender
+    student.height = admission.height
+    student.weight = admission.weight
+    
+    # Map qualification
+    if admission.qualification and admission.qualification != "Select":
+        student.current_qualification = admission.qualification
+    
+    # Map job experience
+    if admission.job_experience and admission.job_experience != "Select":
+        student.professional_experience = admission.job_experience
+    
+    # Set joining date
+    student.joining_date = admission.form_submission_date or frappe.utils.today()
+    student.enabled = 1
+    
+    # Insert the student record
+    try:
+        student.insert(ignore_permissions=False)
+        
+        # Update admission with student reference
+        admission.db_set('student_id', student.name)
+        admission.db_set('student_created', 1)
+        
+        frappe.db.commit()
+        
+        return student.name
+        
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), 'Student Creation Error')
+        frappe.throw(frappe._('Error creating student: {0}').format(str(e)))

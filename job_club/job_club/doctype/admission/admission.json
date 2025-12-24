@@ -7,6 +7,9 @@
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
+  "section_break_atjt",
+  "student_created",
+  "student_id",
   "section_break_iqdi",
   "full_name",
   "email_id",
@@ -110,13 +113,31 @@
    "label": "Job Experience",
    "options": "Select\nFresher\n0-1 Years\n1-3 Years\n3-5 Years\n5+ Years",
    "reqd": 1
+  },
+  {
+   "fieldname": "section_break_atjt",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "student_created",
+   "fieldtype": "Check",
+   "label": "Student Created",
+   "read_only": 1
+  },
+  {
+   "fieldname": "student_id",
+   "fieldtype": "Link",
+   "label": "Student ID",
+   "options": "Student",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-09-18 11:45:20.225600",
- "modified_by": "admin@gmail.com",
+ "modified": "2025-12-24 16:46:08.653857",
+ "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Admission",
  "naming_rule": "By \"Naming Series\" field",
