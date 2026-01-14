@@ -6,6 +6,8 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "student_created",
+  "student_id",
   "section_break_iqdi",
   "full_name",
   "email_id",
@@ -21,8 +23,9 @@
   "invitation_acceptance_date",
   "section_break_mjai",
   "recruitment_drive",
-  "interview_date",
   "column_break_upyh",
+  "interview_date",
+  "column_break_hjnr",
   "token_number",
   "section_break_egbw",
   "naming_series",
@@ -30,6 +33,20 @@
   "registration_from"
  ],
  "fields": [
+  {
+   "default": "0",
+   "fieldname": "student_created",
+   "fieldtype": "Check",
+   "label": "Student Created",
+   "read_only": 1
+  },
+  {
+   "fieldname": "student_id",
+   "fieldtype": "Link",
+   "label": "Student ID",
+   "options": "Student",
+   "read_only": 1
+  },
   {
    "fieldname": "section_break_iqdi",
    "fieldtype": "Section Break"
@@ -159,12 +176,16 @@
    "hidden": 1,
    "label": "Registration From",
    "options": "Registration From"
+  },
+  {
+   "fieldname": "column_break_hjnr",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-09-16 12:52:01.167601",
+ "modified": "2026-01-14 12:21:30.363785",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Interview",

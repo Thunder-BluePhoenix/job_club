@@ -28,8 +28,9 @@ app_license = "mit"
 # app_include_css = "/assets/job_club/css/job_club.css"
 # app_include_js = "/assets/job_club/js/job_club.js"
 
-app_include_css = "/assets/job_club/css/hide_help.css"
-
+app_include_css = [
+	"/assets/job_club/css/hide_help.css"
+]
 
 # include js, css files in header of web template
 # web_include_css = "/assets/job_club/css/job_club.css"
@@ -46,7 +47,6 @@ app_include_css = "/assets/job_club/css/hide_help.css"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-doctype_js = {"Lead" : "public/js/lead.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -71,11 +71,6 @@ scheduler_events = {
     }
 }
 
-
-
-
-
-
 # Svg Icons
 # ------------------
 # include app icons in desk
@@ -88,9 +83,9 @@ scheduler_events = {
 # home_page = "login"
 
 # website user home page (by Role)
-# role_home_page = {
-# 	"Role": "home_page"
-# }
+role_home_page = {
+	"Student": "student-dashboard"
+}
 
 # Generators
 # ----------
@@ -269,7 +264,3 @@ scheduler_events = {
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
-
-
-
-

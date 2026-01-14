@@ -72,7 +72,7 @@
  "icon": "fa fa-code-fork",
  "idx": 1,
  "links": [],
- "modified": "2025-10-29 10:35:58.842731",
+ "modified": "2026-01-11 22:47:08.985519",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Branch",
@@ -108,6 +108,15 @@
    "read": 1,
    "report": 1,
    "role": "Guest",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Student",
    "share": 1
   }
  ],

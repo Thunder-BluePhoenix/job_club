@@ -1,0 +1,20 @@
+{
+    "creation": "2026-01-11 19:04:00.000000",
+    "doctype": "Page",
+    "icon": "icon-money",
+    "idx": 0,
+    "modified": "2026-01-11 19:04:00.000000",
+    "modified_by": "Administrator",
+    "module": "Job Club",
+    "name": "fees-portal",
+    "owner": "Administrator",
+    "page_name": "Fees Portal",
+    "roles": [
+        {
+            "role": "Student"
+        }
+    ],
+    "standard": "Yes",
+    "system_page": 0,
+    "title": "My Fees"
+}

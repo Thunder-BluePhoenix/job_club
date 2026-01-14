@@ -1,0 +1,242 @@
+/* Global Student Portal Styles - Scoped to .student-portal-wrapper */
+
+.student-portal-wrapper {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --success-gradient: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    --danger-gradient: linear-gradient(135deg, #FF4B2B 0%, #FF416C 100%);
+    --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    --blue-gradient: linear-gradient(135deg, #3182ce 0%, #63b3ed 100%);
+    --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+
+    --primary-color: #667eea;
+    --primary-dark: #764ba2;
+    --success-color: #10B981;
+    --danger-color: #EF4444;
+    --warning-color: #F59E0B;
+
+    --text-primary: #1a202c;
+    --text-secondary: #718096;
+    --text-muted: #a0aec0;
+
+    --bg-light: #f7fafc;
+    --bg-white: #ffffff;
+    --border-color: #e2e8f0;
+
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+}
+
+/* Utility Classes */
+.student-portal-wrapper .text-gradient {
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.student-portal-wrapper .card-shadow {
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.3s ease;
+}
+
+.student-portal-wrapper .card-shadow:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.student-portal-wrapper .smooth-transition {
+    transition: all 0.3s ease;
+}
+
+/* Badge Styles */
+.student-portal-wrapper .badge {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.student-portal-wrapper .badge-primary {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.student-portal-wrapper .badge-success {
+    background: var(--success-gradient);
+    color: white;
+}
+
+.student-portal-wrapper .badge-warning {
+    background: var(--warning-gradient);
+    color: white;
+}
+
+.student-portal-wrapper .badge-danger {
+    background: var(--danger-gradient);
+    color: white;
+}
+
+.student-portal-wrapper .badge-secondary {
+    background: #e2e8f0;
+    color: var(--text-secondary);
+}
+
+/* Progress Bar Styles */
+.student-portal-wrapper .progress {
+    background: #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.student-portal-wrapper .progress-bar {
+    border-radius: 10px;
+    transition: width 0.6s ease;
+}
+
+.student-portal-wrapper .progress-bar.bg-success {
+    background: var(--success-gradient);
+}
+
+.student-portal-wrapper .progress-bar.bg-warning {
+    background: var(--warning-gradient);
+}
+
+.student-portal-wrapper .progress-bar.bg-danger {
+    background: var(--danger-gradient);
+}
+
+/* Button Enhancements */
+.student-portal-wrapper .btn-primary {
+    background: var(--primary-gradient);
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.student-portal-wrapper .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Text Utilities */
+.student-portal-wrapper .text-success {
+    color: var(--success-color) !important;
+}
+
+.student-portal-wrapper .text-danger {
+    color: var(--danger-color) !important;
+}
+
+.student-portal-wrapper .text-warning {
+    color: var(--warning-color) !important;
+}
+
+.student-portal-wrapper .text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Responsive Utilities */
+@media (max-width: 768px) {
+    .student-portal-wrapper .hide-mobile {
+        display: none !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .student-portal-wrapper .show-mobile {
+        display: none !important;
+    }
+}
+
+/* Chart.js Integration */
+.student-portal-wrapper canvas {
+    max-width: 100%;
+    height: auto !important;
+}
+
+/* Smooth Scrolling */
+.student-portal-wrapper {
+    scroll-behavior: smooth;
+}
+
+/* Loading Spinner Enhancement */
+.student-portal-wrapper .loader-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 0;
+    width: 100%;
+}
+
+.student-portal-wrapper .premium-loader {
+    width: 40px;
+    height: 40px;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.student-portal-wrapper .premium-loader:before,
+.student-portal-wrapper .premium-loader:after {
+    content: "";
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    opacity: 0.6;
+    animation: loader-pulse 2.0s infinite ease-in-out;
+}
+
+.student-portal-wrapper .premium-loader:after {
+    animation-delay: -1.0s;
+}
+
+@keyframes loader-pulse {
+
+    0%,
+    100% {
+        transform: scale(0.0);
+    }
+
+    50% {
+        transform: scale(1.0);
+    }
+}
+
+.student-portal-wrapper .loader-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--primary-color);
+    letter-spacing: 0.5px;
+    animation: loader-fade 1.5s infinite;
+}
+
+@keyframes loader-fade {
+
+    0%,
+    100% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+.student-portal-wrapper .spinner-border {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-width: 0.25em;
+}
+
+.student-portal-wrapper .spinner-border.text-primary {
+    border-color: var(--primary-color);
+    border-right-color: transparent;
+}
