@@ -21,7 +21,7 @@ def get_student_dashboard_data():
         "fee_status": get_fee_status(student),
         "courses": get_course_progress(student),
         "upcoming_events": get_upcoming_events(student),
-        "recent_announcements": get_recent_announcements()
+
     }
 
 
@@ -66,9 +66,22 @@ def get_student_profile(student=None):
             )
             if batch_record:
                 batch_name = batch_record
+
+        # 3. Get Specific Course Name (Preferred over Program Name)
+        # We look for the first course in the enrollment
+        course_name = ""
+        enrolled_courses = frappe.get_all(
+            "Program Enrollment Course",
+            filters={"parent": enrollment.name},
+            fields=["course_name", "course"],
+            limit=1
+        )
+        if enrolled_courses:
+             course_name = enrolled_courses[0].course_name or enrolled_courses[0].course
         
         enrollment_info = {
             "program_name": program.program_name,
+            "course_name": course_name, # Added field
             "program": enrollment.program,
             "academic_year": enrollment.academic_year,
             "branch": enrollment.branch,
@@ -205,11 +218,38 @@ def get_fee_status(student=None):
     for fee in fees_records:
         if fee.docstatus == 1:
             paid_amount = fee.grand_total - fee.outstanding_amount
+            
+            # Try to get course name from program enrollment to replace Program Name
+            # This is a bit expensive in a loop but robust given the structure
+            course_name = fee.program
+            try:
+                enrollment = frappe.get_all("Program Enrollment", 
+                    filters={"student": student, "program": fee.program, "docstatus": 1},
+                    fields=["name"], limit=1)
+                if enrollment:
+                    pec = frappe.get_all("Program Enrollment Course", 
+                         filters={"parent": enrollment[0].name}, 
+                         fields=["course_name", "course"], limit=1)
+                    if pec:
+                         course_name = pec[0].course_name or pec[0].course
+            except:
+                pass
+
+            # Fetch Fee Category from child table (Fee Component)
+            # A Fees record can have multiple components, we'll take the first one's category as the primary label
+            fee_category = ""
+            components = frappe.get_all("Fee Component", 
+                filters={"parent": fee.name}, 
+                fields=["fees_category"], limit=1)
+            if components:
+                fee_category = components[0].fees_category
+
             payment_history.append({
                 "name": fee.name,
                 "date": fee.posting_date,
                 "due_date": fee.due_date,
-                "program": fee.program,
+                "program": course_name, 
+                "fee_category": fee_category, # Added field
                 "academic_year": fee.academic_year,
                 "total": fee.grand_total,
                 "paid": paid_amount,
@@ -271,24 +311,32 @@ def get_course_progress(student=None):
             present = len([a for a in course_attendance if a.status == "Present"])
             attendance_pct = (present / total * 100) if total > 0 else 0
             
-            # Try to find the specific batch for this course
-            batch_for_course = frappe.db.sql("""
-                SELECT parent 
+            # Try to find the specific batch for this course and fetch details
+            batch_details = frappe.db.sql("""
+                SELECT sb.name, sb.batch_start_time, sb.batch_end_time, sb.status, sb.branch
                 FROM `tabStudent Batch Student` sbs
                 JOIN `tabStudent Batch` sb ON sb.name = sbs.parent
                 WHERE sbs.student = %s AND sb.course = %s AND sbs.active = 1
                 LIMIT 1
-            """, (student, ec.course))
+            """, (student, ec.course), as_dict=1)
             
-            batch_name = batch_for_course[0][0] if batch_for_course else ""
+            batch_info = batch_details[0] if batch_details else {}
+            
+            # Fetch course duration
+            course_duration = frappe.db.get_value("Course", ec.course, "course_duration")
             
             courses.append({
                 "course": ec.course,
                 "course_name": ec.course_name or ec.course,
-                "batch": batch_name,
+                "batch": batch_info.get("name") or "",
+                "batch_start": str(batch_info.get("batch_start_time")) if batch_info.get("batch_start_time") else "",
+                "batch_end": str(batch_info.get("batch_end_time")) if batch_info.get("batch_end_time") else "",
+                "batch_status": batch_info.get("status") or "",
+                "branch": batch_info.get("branch") or "",
                 "program": enrollment.program,
                 "academic_year": enrollment.academic_year,
                 "attendance_percentage": round(attendance_pct, 1),
+                "course_duration": course_duration,
                 "total_classes": total
             })
     
@@ -332,12 +380,7 @@ def get_upcoming_events(student=None):
     return events[:10]  # Return top 10 upcoming events
 
 
-@frappe.whitelist()
-def get_recent_announcements():
-    """Get recent announcements (can be customized based on your needs)"""
-    # This is a placeholder - you can customize based on your announcement system
-    # For now, returning empty list
-    return []
+
 
 
 # Helper functions

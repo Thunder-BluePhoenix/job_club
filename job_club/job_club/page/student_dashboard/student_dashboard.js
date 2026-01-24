@@ -1,547 +1,402 @@
 frappe.pages['student-dashboard'].on_page_load = function (wrapper) {
-	frappe.require('assets/job_club/css/student_portal.css');
-	var page = frappe.ui.make_app_page({
-		parent: wrapper,
-		title: 'Student Dashboard',
-		single_column: true
-	});
+    var page = frappe.ui.make_app_page({
+        parent: wrapper,
+        title: 'Student Dashboard',
+        single_column: true
+    });
 
-	new StudentDashboard(page);
+    new StudentDashboard(page);
 }
 
 class StudentDashboard {
-	constructor(page) {
-		this.page = page;
-		this.wrapper = $(this.page.body);
-		this.setup();
-	}
+    constructor(page) {
+        this.page = page;
+        this.wrapper = $(this.page.body);
+        this.setup();
+    }
 
-	setup() {
-		this.wrapper.html(`
-			<div class="student-dashboard-container student-portal-wrapper">
-				<div class="loader-container">
-					<div class="premium-loader"></div>
-					<div class="loader-text">Preparing your dashboard...</div>
+    setup() {
+        // Load the shared CSS for basic structure and FOUC prevention
+        frappe.require('/assets/job_club/css/student_portal.css')
+            .then(() => {
+                this.initialize_page();
+            });
+    }
+
+    initialize_page() {
+        // Initial Loader HTML
+        this.wrapper.html(`
+			<div class="sp-container sp-loading">
+				<div class="sp-loader-container">
+					<div class="sp-spinner"></div>
+                    <div style="margin-top: 12px; font-weight: 500;">Loading Dashboard...</div>
 				</div>
 			</div>
 		`);
 
-		this.load_dashboard_data();
-	}
+        // Force Tailwind Re-injection/Check
+        this.ensure_tailwind(() => {
+            this.load_dashboard_data();
+        });
+    }
 
-	load_dashboard_data() {
-		frappe.call({
-			method: 'job_club.api.student_portal_api.get_student_dashboard_data',
-			callback: (r) => {
-				if (r.message) {
-					this.data = r.message;
-					this.render_dashboard();
-				} else {
-					this.show_error("Unable to load dashboard data");
-				}
-			},
-			error: (r) => {
-				this.show_error("Error loading dashboard. Please ensure you have a student record.");
-			}
-		});
-	}
+    ensure_tailwind(callback) {
+        const load_chartjs = () => {
+            if (window.Chart) {
+                callback();
+            } else {
+                const script = document.createElement('script');
+                script.src = "https://cdn.jsdelivr.net/npm/chart.js";
+                script.onload = callback;
+                document.head.appendChild(script);
+            }
+        };
 
-	render_dashboard() {
-		const data = this.data;
-		const student = data.student_info;
-		const stats = data.quick_stats;
+        if (window.tailwind) {
+            this.configure_tailwind();
+            load_chartjs();
+        } else {
+            const script = document.createElement('script');
+            script.src = "https://cdn.tailwindcss.com";
+            script.onload = () => {
+                this.configure_tailwind();
+                load_chartjs();
+            };
+            document.head.appendChild(script);
+        }
+    }
 
-		this.wrapper.html(`
-			<div class="student-dashboard-container student-portal-wrapper">
-				<!-- Welcome Header -->
-				<div class="welcome-header">
-					<div class="welcome-content">
-						<div class="student-avatar">
-							${student.image ?
-				`<img src="${student.image}" alt="${student.student_name}">` :
-				`<div class="avatar-placeholder">${this.get_initials(student.student_name)}</div>`
-			}
-						</div>
-						<div class="welcome-text">
-							<h1>Welcome back, ${student.first_name}!👋</h1>
-							<div class="student-meta">
-								<p class="subtitle"><i class="fa fa-graduation-cap"></i> ${student.enrollment.program_name || 'Student Portal'}</p>
-								<div class="meta-badges">
-									${student.enrollment.branch ? `<span class="meta-badge branch-badge"><i class="fa fa-building"></i> ${student.enrollment.branch}</span>` : ''}
-									${student.enrollment.batch ? `<span class="meta-badge batch-badge"><i class="fa fa-users"></i> ${student.enrollment.batch}</span>` : ''}
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="header-actions">
-						<a href="/mark-attendance" class="btn btn-primary btn-mark-attendance">
-							<i class="fa fa-check-square-o"></i> Mark Attendance
-						</a>
-					</div>
-				</div>
-				
-				<!-- Quick Stats Cards -->
-				<div class="stats-grid">
-					<div class="stat-card attendance-card">
-						<div class="stat-icon">
-							<i class="fa fa-calendar-check-o"></i>
-						</div>
-						<div class="stat-content">
-							<div class="stat-value">${stats.attendance_percentage}%</div>
-							<div class="stat-label">Attendance</div>
-							<div class="stat-progress">
-								<div class="progress">
-									<div class="progress-bar ${this.get_attendance_class(stats.attendance_percentage)}" 
-										style="width: ${stats.attendance_percentage}%"></div>
-								</div>
-							</div>
-						</div>
-					</div>
-					
-					<div class="stat-card courses-card">
-						<div class="stat-icon">
-							<i class="fa fa-book"></i>
-						</div>
-						<div class="stat-content">
-							<div class="stat-value">${stats.courses_enrolled}</div>
-							<div class="stat-label">Courses Enrolled</div>
-							<a href="#" class="stat-link" onclick="window.scrollTo({top: document.querySelector('.courses-section').offsetTop - 100, behavior: 'smooth'}); return false;">
-								View Courses →
-							</a>
-						</div>
-					</div>
-					
-					<div class="stat-card fees-card">
-						<div class="stat-icon">
-							<i class="fa fa-money"></i>
-						</div>
-						<div class="stat-content">
-							<div class="stat-value">₹${this.format_currency(stats.pending_fees)}</div>
-							<div class="stat-label">Pending Fees</div>
-							${stats.pending_fees > 0 ?
-				'<span class="badge badge-warning">Payment Due</span>' :
-				'<span class="badge badge-success">All Clear</span>'
-			}
-						</div>
-					</div>
-				</div>
-				
-				<!-- Main Content Grid -->
-				<div class="dashboard-grid">
-					<!-- Left Column -->
-					<div class="dashboard-left">
-						<!-- Courses Section -->
-						<div class="dashboard-card courses-section">
-							<div class="card-header">
-								<h3><i class="fa fa-book"></i> My Courses</h3>
-							</div>
-							<div class="card-body">
-								${this.render_courses(data.courses)}
-							</div>
-						</div>
+    configure_tailwind() {
+        if (window.tailwind) {
+            window.tailwind.config = {
+                theme: {
+                    extend: {
+                        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+                        colors: {
+                            border: "hsl(240 5.9% 90%)",
+                            background: "hsl(0 0% 100%)",
+                            foreground: "hsl(240 10% 3.9%)",
+                            muted: "hsl(240 4.8% 95.9%)",
+                            "muted-fg": "hsl(240 3.8% 46.1%)",
+                        }
+                    },
+                },
+            };
+        }
+    }
 
-						<!-- Attendance Widget -->
-						<div class="dashboard-card attendance-widget">
-							<div class="card-header">
-								<h3><i class="fa fa-calendar"></i> Attendance Overview</h3>
-								<a href="/app/attendance-view" class="btn btn-sm btn-default">View Details</a>
-							</div>
-							<div class="card-body">
-								${this.render_attendance_chart(data.attendance_summary)}
-							</div>
-						</div>
-					</div>
-					
-					<!-- Right Column -->
-					<div class="dashboard-right">
-						<!-- Upcoming Events -->
-						<div class="dashboard-card events-widget">
-							<div class="card-header">
-								<h3><i class="fa fa-bell"></i> Upcoming Events</h3>
-							</div>
-							<div class="card-body">
-								${this.render_events(data.upcoming_events)}
-							</div>
-						</div>
-						
-						<!-- Fee Status -->
-						<div class="dashboard-card fee-widget">
-							<div class="card-header">
-								<h3><i class="fa fa-money"></i> Fee Status</h3>
-								<a href="/app/fees-portal" class="btn btn-sm btn-default">View All</a>
-							</div>
-							<div class="card-body">
-								${this.render_fee_summary(data.fee_status)}
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+    load_dashboard_data() {
+        frappe.call({
+            method: 'job_club.api.student_portal_api.get_student_dashboard_data',
+            callback: (r) => {
+                if (r.message) {
+                    this.data = r.message;
+                    this.render_dashboard();
+                    // Reveal content after a short delay to allow Tailwind to parse
+                    setTimeout(() => {
+                        this.wrapper.find('.sp-container').removeClass('sp-loading').addClass('sp-loaded');
+                    }, 100);
+                } else {
+                    this.show_error("Unable to load dashboard data");
+                }
+            },
+            error: (r) => {
+                this.show_error("Error loading dashboard. Please ensure you have a student record.");
+            }
+        });
+    }
+
+    render_dashboard() {
+        const data = this.data;
+        const student = data.student_info;
+        const stats = data.quick_stats;
+
+        // Helper for initials
+        const get_initials = (name) => name ? name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'SP';
+
+        // Helper for currency
+        const format_currency = (amount) => parseFloat(amount || 0).toLocaleString('en-IN');
+
+        this.wrapper.html(`
+			<div class="sp-container sp-loading">
+                <div class="mx-auto max-w-6xl p-4 md:p-8 space-y-6">
+                    <div class="bg-white border p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+                        <header class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                            <div class="flex flex-col md:flex-row md:items-center gap-3">
+                                <div class="h-12 w-12 rounded-full bg-muted border flex items-center justify-center text-[11px] font-medium overflow-hidden">
+                                     ${student.image ? `<img src="${student.image}" alt="${student.student_name}" class="h-full w-full object-cover">` : get_initials(student.student_name)}
+                                </div>
+                                <div class="space-y-1">
+                                    <h2 class="text-lg font-semibold tracking-tight">Welcome Back! ${student.first_name} 👋</h2>
+                                    <p class="text-xs text-muted-fg flex flex-col md:flex-row md:items-center gap-2 font-medium">
+                                        ${student.enrollment.batch ? `<span class="bg-black text-white px-1.5 py-0.5 rounded-[4px] text-[10px] max-w-fit">${student.enrollment.batch}</span>` : ''}
+                                        ${student.enrollment.course_name || student.enrollment.program_name || 'Student Portal'}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="bg-black text-white text-xs font-medium px-4 py-2 rounded-md hover:bg-neutral-800 transition-all shadow-sm active:scale-95 btn-mark-attendance">
+                                    Mark Attendance
+                                </button>
+                                <button class="border border-neutral-200 text-black text-xs font-medium px-4 py-2 rounded-md hover:bg-neutral-50 transition-all shadow-sm active:scale-95 btn-leave-application">
+                                    Leave Application
+                                </button>
+                            </div>
+                        </header>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="bg-white border p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] cursor-pointer hover:border-black transition-colors" onclick="frappe.set_route('attendance-view')">
+                            <p class="text-[11px] font-bold text-muted-fg uppercase tracking-widest mb-1">Attendance</p>
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-xl font-bold tracking-tight">${stats.attendance_percentage}%</span>
+                                <span class="text-[10px] ${stats.attendance_percentage < 75 ? 'text-red-500' : 'text-emerald-500'} font-medium leading-none">${stats.attendance_percentage < 75 ? 'Below Target' : 'On Track'}</span>
+                            </div>
+                        </div>
+                        <div class="bg-white border p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] cursor-pointer hover:border-black transition-colors" onclick="frappe.set_route('course-details')">
+                            <p class="text-[11px] font-bold text-muted-fg uppercase tracking-widest mb-1">Courses Enrolled</p>
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-xl font-bold tracking-tight">${String(stats.courses_enrolled).padStart(2, '0')}</span>
+                                <span class="text-[10px] text-muted-fg font-medium leading-none">Active Course</span>
+                            </div>
+                        </div>
+                        <div class="bg-white border p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] relative overflow-hidden cursor-pointer hover:border-black transition-colors" onclick="frappe.set_route('fees-portal')">
+                            <p class="text-[11px] font-bold text-muted-fg uppercase tracking-widest mb-1">Outstanding Fees</p>
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-xl font-bold tracking-tight">₹${format_currency(stats.pending_fees)}</span>
+                                ${stats.pending_fees > 0 ?
+                '<div class="absolute top-0 right-0 bg-neutral-100 text-neutral-600 px-3 py-1 text-[10px] font-bold rounded-bl-lg">Payment DUE</div>' :
+                '<div class="absolute top-0 right-0 bg-emerald-100 text-emerald-600 px-3 py-1 text-[10px] font-bold rounded-bl-lg">All Clear</div>'}
+                            </div>
+                        </div>
+                    </div>
+
+                    <main class="grid gap-6 lg:grid-cols-3">
+                        
+                        <div class="lg:col-span-2 space-y-8">
+                            
+                            <section class="bg-white border rounded-xl overflow-hidden courses-section cursor-pointer hover:shadow-md transition-all duration-300" onclick="frappe.set_route('course-details')">
+                                <div class="px-4 py-3 border-b flex items-center justify-between bg-neutral-50/50">
+                                    <h3 class="text-xs font-bold uppercase tracking-wider">Learning Journey</h3>
+                                </div>
+                                <div class="p-4">
+                                    ${this.render_courses(data.courses)}
+                                </div>
+                            </section>
+
+                            <section class="bg-white border rounded-xl p-4 cursor-pointer hover:shadow-md transition-all duration-300" onclick="frappe.set_route('attendance-view')">
+                                <div class="px-0 pb-4 border-b flex items-center justify-between bg-neutral-50/50">
+                                    <h3 class="text-xs font-bold uppercase tracking-wider">Attendance Overview</h3>
+                                    <span class="text-[11px] font-bold border px-2 py-0.5 rounded text-muted-fg bg-neutral-50 hover:text-neutral-900 hover:bg-neutral-100 transition-all">View Details</span>
+                                </div>
+                                <div class="mt-8 flex justify-center">
+                                     <div class="w-full max-w-[280px]">
+                                         <canvas id="attendance-donut-chart"></canvas>
+                                     </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="space-y-6">
+                            
+                            <section class="bg-black text-white rounded-xl p-4 shadow-lg cursor-pointer hover:opacity-95 transition-opacity" onclick="frappe.set_route('fees-portal')">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h3 class="text-xs font-bold uppercase tracking-widest text-white/95">Payment Summary</h3>
+                                    <span class="text-[12px] font-medium hover:text-emerald-500/100 text-white/90 cursor-pointer">View Details</span>
+                                </div>
+                                
+                                ${this.render_fee_summary(data.fee_status)}
+                            </section>
+                        </div>
+                    </main>
+                </div>
+            </div>
 		`);
 
-		// Initialize charts after DOM is ready
-		setTimeout(() => {
-			this.setup_charts(data);
-		}, 100);
-	}
+        // Bind interactions
+        // Bind interactions
+        this.wrapper.find('.btn-mark-attendance').click((e) => {
+            e.preventDefault();
+            window.location.href = '/mark-attendance';
+        });
 
-	setup_charts(data) {
-		if (!data.attendance_summary) return;
+        this.wrapper.find('.btn-leave-application').click((e) => {
+            e.preventDefault();
+            frappe.new_doc('Student Leave Application', {
+                student: this.data.student_info.name,
+                student_batch: this.data.student_info.enrollment.batch
+            });
+        });
 
-		const attendance = data.attendance_summary;
+        // Helper for onclick
+        window.click_view_courses = () => {
+            const el = document.querySelector('.courses-section');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
 
-		// Create custom donut chart
-		this.create_donut_chart(attendance);
+        this.render_attendance_chart(data.attendance_summary);
+    }
 
-		// Create custom bar chart
-		this.create_bar_chart(attendance);
-	}
+    format_duration(seconds) {
+        if (!seconds) return 'N/A';
+        const total_hours = Math.floor(seconds / 3600);
+        const days = Math.floor(total_hours / 24);
+        const hours = total_hours % 24;
 
-	create_donut_chart(attendance) {
-		const present = attendance.present_days || 0;
-		const absent = attendance.absent_days || 0;
-		const leave = attendance.leave_days || 0;
-		const total = present + absent + leave || 1;
+        let result = '';
+        if (days > 0) result += `${days} Days `;
+        result += `${hours} Hours`;
+        return result.trim();
+    }
 
-		const presentPercent = (present / total * 100).toFixed(1);
-		const absentPercent = (absent / total * 100).toFixed(1);
-		const leavePercent = (leave / total * 100).toFixed(1);
+    render_courses(courses) {
+        if (!courses || courses.length === 0) {
+            return '<p class="text-muted text-center text-xs py-10 opacity-60">No enrolled courses discovered in your journey.</p>';
+        }
 
-		// Calculate angles for SVG arc
-		const presentAngle = (present / total) * 360;
-		const absentAngle = (absent / total) * 360;
-		const leaveAngle = (leave / total) * 360;
+        return courses.map(course => `
+            <div class="group relative bg-white border border-neutral-200/60 rounded-2xl p-4 transition-all duration-500 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.07)] hover:border-black/10 mb-4 last:mb-0">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div class="flex-1 space-y-4">
+                        <div class="flex items-start justify-between md:justify-start md:gap-4">
+                            <div class="space-y-1">
+                                <h4 class="text-base font-bold tracking-tight text-neutral-900 group-hover:text-black transition-colors">${course.course_name}</h4>
+                                <div class="flex flex-wrap gap-2">
+                                     ${course.batch ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-neutral-100 text-neutral-600 border border-neutral-200/50 uppercase tracking-tight">${course.batch}</span>` : ''}
+                                     ${course.branch ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-600 border border-blue-100/50 uppercase tracking-tight">${course.branch}</span>` : ''}
+                                     ${course.batch_status ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100/50 uppercase tracking-tight">${course.batch_status}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
 
-		// Create SVG paths
-		const radius = 80;
-		const innerRadius = 50;
-		const centerX = 100;
-		const centerY = 100;
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                            ${course.batch_start ? `
+                            <div class="flex flex-col p-3 rounded-xl bg-neutral-50/50 border border-neutral-100 group-hover:bg-white transition-colors duration-500 min-w-0">
+                                <p class="text-[9px] font-bold text-neutral-400 uppercase tracking-widest leading-none mb-1">Batch Timing</p>
+                                <span class="text-xs font-bold text-neutral-800 truncate">${course.batch_start.split(':').slice(0, 2).join(':')} - ${course.batch_end ? course.batch_end.split(':').slice(0, 2).join(':') : 'End'}</span>
+                            </div>` : ''}
 
-		// Helper function to create arc path
-		const createArc = (startAngle, endAngle, color) => {
-			const start = this.polarToCartesian(centerX, centerY, radius, endAngle);
-			const end = this.polarToCartesian(centerX, centerY, radius, startAngle);
-			const innerStart = this.polarToCartesian(centerX, centerY, innerRadius, endAngle);
-			const innerEnd = this.polarToCartesian(centerX, centerY, innerRadius, startAngle);
+                            <div class="flex flex-col p-3 rounded-xl bg-neutral-50/50 border border-neutral-100 group-hover:bg-white transition-colors duration-500 min-w-0">
+                                <p class="text-[9px] font-bold text-neutral-400 uppercase tracking-widest leading-none mb-1">Duration</p>
+                                <span class="text-xs font-bold text-neutral-800 truncate">${this.format_duration(course.course_duration)}</span>
+                            </div>
+                            
+                            <div class="flex flex-col p-3 rounded-xl bg-neutral-50/50 border border-neutral-100 group-hover:bg-white transition-colors duration-500 min-w-0">
+                                <p class="text-[9px] font-bold text-neutral-400 uppercase tracking-widest leading-none mb-1">Academic Year</p>
+                                <span class="text-xs font-bold text-neutral-800 truncate">${course.academic_year || 'Ongoing'}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full md:w-auto px-6 py-3 rounded-xl bg-neutral-900 text-white text-[12px] font-bold hover:bg-black hover:shadow-lg active:scale-95 transition-all duration-300 shrink-0" onclick="frappe.set_route('course-details', '${course.course_name}')">
+                        Course Details
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
 
-			const largeArc = endAngle - startAngle <= 180 ? 0 : 1;
+    render_attendance_chart(attendance) {
+        const ctx = document.getElementById('attendance-donut-chart');
+        if (!ctx || !attendance || attendance.total_days === 0) {
+            if (ctx) ctx.parentElement.innerHTML = '<div class="flex items-center justify-center py-10 text-xs text-muted-fg">No attendance data available</div>';
+            return;
+        }
 
-			return `
-				<path d="M ${start.x} ${start.y}
-					A ${radius} ${radius} 0 ${largeArc} 0 ${end.x} ${end.y}
-					L ${innerEnd.x} ${innerEnd.y}
-					A ${innerRadius} ${innerRadius} 0 ${largeArc} 1 ${innerStart.x} ${innerStart.y}
-					Z"
-					fill="${color}"
-					stroke="white"
-					stroke-width="2"
-					opacity="0.9"
-					style="transition: opacity 0.3s ease;"
-					onmouseover="this.style.opacity='1'"
-					onmouseout="this.style.opacity='0.9'"
-				/>
-			`;
-		};
+        if (this.donut_chart) {
+            this.donut_chart.destroy();
+        }
 
-		let currentAngle = 0;
-		const arcs = [];
+        this.donut_chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ["Present", "Absent", "Leave"],
+                datasets: [{
+                    data: [attendance.present_days || 0, attendance.absent_days || 0, attendance.leave_days || 0],
+                    backgroundColor: ['#10b981', '#f43f5e', '#0ea5e9'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        align: 'center',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: {
+                                size: 11,
+                                weight: '500',
+                                family: "'Inter', sans-serif"
+                            }
+                        }
+                    },
+                    tooltip: {
+                        enabled: true,
+                        callbacks: {
+                            label: function (item) {
+                                return ` ${item.label}: ${item.raw} days`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
 
-		if (present > 0) {
-			arcs.push(createArc(currentAngle, currentAngle + presentAngle, '#10B981'));
-			currentAngle += presentAngle;
-		}
-		if (absent > 0) {
-			arcs.push(createArc(currentAngle, currentAngle + absentAngle, '#EF4444'));
-			currentAngle += absentAngle;
-		}
-		if (leave > 0) {
-			arcs.push(createArc(currentAngle, currentAngle + leaveAngle, '#3182ce'));
-		}
 
-		const svg = `
-			<svg viewBox="0 0 200 200" style="width: 100%; height: 100%;">
-				${arcs.join('')}
-			</svg>
+
+    render_fee_summary(fee_status) {
+        if (!fee_status) {
+            return '<p class="text-xs text-white/60">No fee records found</p>';
+        }
+
+        const format = (amt) => parseFloat(amt).toLocaleString('en-IN');
+
+        return `
+            <div class="space-y-3 mb-6">
+                <div class="flex justify-between text-xs">
+                    <span class="opacity-60">Total Program Fee</span>
+                    <span>₹${format(fee_status.total_fees)}</span>
+                </div>
+                <div class="flex justify-between text-xs">
+                    <span class="opacity-60">Paid to date</span>
+                    <span class="text-emerald-400 font-bold">₹${format(fee_status.total_paid)}</span>
+                </div>
+                <div class="h-px bg-white/20 w-full my-2"></div>
+                <div class="flex justify-between text-sm font-bold">
+                    <span>Balance Due</span>
+                    <span>₹${format(fee_status.total_outstanding)}</span>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                ${fee_status.payment_history ? fee_status.payment_history.slice(0, 2).map(pay => `
+                   <div class="bg-white/10 rounded-md p-2 flex flex-col gap-1 text-[10px]">
+                       <div class="flex items-center justify-between">
+                           <span class="font-medium opacity-90">${pay.program || 'Installment'}</span>
+                           <span class="${pay.status === 'Paid' ? 'bg-emerald-500 text-black' : 'bg-white text-black'} text-[8px] px-1 rounded uppercase font-black">${pay.status}</span>
+                       </div>
+                       ${pay.fee_category ? `<span class="text-[9px] text-white/40 font-bold uppercase tracking-wider">${pay.fee_category}</span>` : ''}
+                   </div>
+                `).join('') : ''}
+            </div>
 		`;
+    }
 
-		const chartEl = this.wrapper.find('.custom-donut-chart');
-		if (chartEl.length) {
-			chartEl.html(svg);
-		}
-	}
-
-	create_bar_chart(attendance) {
-		const days = Array.from({ length: 31 }, (_, i) => i + 1);
-		const dayData = {};
-
-		// Process calendar data
-		if (attendance.calendar_data && Array.isArray(attendance.calendar_data)) {
-			attendance.calendar_data.forEach(item => {
-				try {
-					const date_parts = item.date.split('-');
-					const day = parseInt(date_parts[2]);
-					if (day >= 1 && day <= 31) {
-						dayData[day] = item.status;
-					}
-				} catch (e) {
-					console.warn('Error processing date:', e);
-				}
-			});
-		}
-
-		// Create bars HTML
-		const barsHtml = days.map(day => {
-			const status = dayData[day];
-			let barClass = '';
-			let height = '8px';
-			let tooltip = 'No record';
-
-			if (status === 'Present') {
-				barClass = 'has-data';
-				height = '100%';
-				tooltip = 'Present';
-			} else if (status === 'Absent') {
-				barClass = 'absent';
-				height = '85%';
-				tooltip = 'Absent';
-			} else if (status === 'Leave') {
-				barClass = 'leave';
-				height = '70%';
-				tooltip = 'On Leave';
-			}
-
-			return `
-				<div class="bar-item">
-					<div class="bar-container">
-						<div class="bar ${barClass}" style="height: ${height};">
-							<div class="bar-tooltip">${tooltip}</div>
-						</div>
-					</div>
-					<div class="bar-day">${day}</div>
-				</div>
-			`;
-		}).join('');
-
-		const chartEl = this.wrapper.find('.custom-bar-chart');
-		if (chartEl.length) {
-			chartEl.html(barsHtml);
-		}
-	}
-
-	polarToCartesian(centerX, centerY, radius, angleInDegrees) {
-		const angleInRadians = (angleInDegrees - 90) * Math.PI / 180;
-		return {
-			x: centerX + (radius * Math.cos(angleInRadians)),
-			y: centerY + (radius * Math.sin(angleInRadians))
-		};
-	}
-
-	render_attendance_chart(attendance) {
-		if (!attendance || attendance.total_days === 0) {
-			return '<p class="text-muted">No attendance records found</p>';
-		}
-
-		const total = (attendance.present_days || 0) + (attendance.absent_days || 0) + (attendance.leave_days || 0);
-		const attendancePercent = total > 0 ? ((attendance.present_days || 0) / total * 100).toFixed(1) : 0;
-
-		// Get current month name
-		const currentMonth = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
-
-		return `
-			<div class="attendance-dashboard-section">
-				<!-- Donut Chart Section -->
-				<div class="attendance-chart-section">
-					<div class="custom-donut-chart">
-						<!-- SVG will be inserted here by JS -->
-						<div class="donut-center-text">
-							<div class="percentage">${attendancePercent}%</div>
-							<div class="label">Attendance</div>
-						</div>
-					</div>
-					<div class="attendance-legend">
-						<div class="legend-item present">
-							<div class="legend-left">
-								<span class="dot"></span>
-								<span class="label">Present</span>
-							</div>
-							<span class="value">${attendance.present_days || 0} <small>days</small></span>
-						</div>
-						<div class="legend-item absent">
-							<div class="legend-left">
-								<span class="dot"></span>
-								<span class="label">Absent</span>
-							</div>
-							<span class="value">${attendance.absent_days || 0} <small>days</small></span>
-						</div>
-						<div class="legend-item leave">
-							<div class="legend-left">
-								<span class="dot"></span>
-								<span class="label">Leave</span>
-							</div>
-							<span class="value">${attendance.leave_days || 0} <small>days</small></span>
-						</div>
-					</div>
-				</div>
-
-				<!-- Bar Chart Section -->
-				<div class="attendance-timeline-section">
-					<div class="timeline-header">
-						<div class="timeline-title">Monthly Attendance</div>
-						<div class="timeline-period">${currentMonth}</div>
-					</div>
-					<div class="custom-bar-chart">
-						<!-- Bars will be inserted here by JS -->
-					</div>
-					<div class="timeline-legend">
-						<div class="timeline-legend-item present">
-							<span class="legend-dot"></span>
-							<span>Present</span>
-						</div>
-						<div class="timeline-legend-item absent">
-							<span class="legend-dot"></span>
-							<span>Absent</span>
-						</div>
-						<div class="timeline-legend-item leave">
-							<span class="legend-dot"></span>
-							<span>Leave</span>
-						</div>
-					</div>
-				</div>
+    show_error(message) {
+        this.wrapper.html(`
+            <div class="mx-auto max-w-6xl p-8">
+                <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
+                    <strong class="font-bold">Error:</strong>
+                    <span class="block sm:inline">${message}</span>
+                </div>
 			</div>
-		`;
-	}
-
-	render_courses(courses) {
-		if (!courses || courses.length === 0) {
-			return '<p class="text-muted">No courses enrolled</p>';
-		}
-
-		return `
-			<div class="courses-list">
-				${courses.map(course => `
-					<div class="course-item">
-						<div class="course-info">
-							<h4>${course.course_name}</h4>
-							<p class="text-muted">
-								<span><i class="fa fa-graduation-cap"></i> ${course.program}</span>
-								${course.batch ? `<span class="course-batch-label"><i class="fa fa-users"></i> ${course.batch}</span>` : ''}
-							</p>
-						</div>
-						<div class="course-stats">
-							<div class="course-attendance">
-								<div class="attendance-label-row">
-									<span class="label">Attendance</span>
-									<span class="percentage-value">${course.attendance_percentage}%</span>
-								</div>
-								<div class="progress">
-									<div class="progress-bar ${this.get_attendance_class(course.attendance_percentage)}" 
-										style="width: ${course.attendance_percentage}%">
-									</div>
-								</div>
-							</div>
-							<span class="badge ${course.required ? 'badge-primary' : 'badge-secondary'}">
-								${course.required ? 'Required' : 'Elective'}
-							</span>
-						</div>
-					</div>
-				`).join('')}
-			</div>
-		`;
-	}
-
-	render_events(events) {
-		if (!events || events.length === 0) {
-			return '<p class="text-muted">No upcoming events</p>';
-		}
-
-		return `
-			<div class="events-timeline">
-				${events.slice(0, 5).map(event => {
-			const event_date = frappe.datetime.str_to_obj(event.date);
-			return `
-						<div class="event-item ${event.type}">
-							<div class="event-date">
-								<span class="day">${event_date.getDate()}</span>
-								<span class="month">${event_date.toLocaleString('default', { month: 'short' })}</span>
-							</div>
-							<div class="event-content">
-								<h4>${event.title}</h4>
-								<p>${event.description}</p>
-							</div>
-						</div>
-					`;
-		}).join('')}
-			</div>
-		`;
-	}
-
-	render_fee_summary(fee_status) {
-		if (!fee_status) {
-			return '<p class="text-muted">No fee records found</p>';
-		}
-
-		return `
-			<div class="fee-summary">
-				<div class="fee-overview">
-					<div class="fee-stat">
-						<span class="label">Total Fees</span>
-						<span class="value">₹${this.format_currency(fee_status.total_fees)}</span>
-					</div>
-					<div class="fee-stat">
-						<span class="label">Paid</span>
-						<span class="value text-success">₹${this.format_currency(fee_status.total_paid)}</span>
-					</div>
-					<div class="fee-stat">
-						<span class="label">Outstanding</span>
-						<span class="value text-danger">₹${this.format_currency(fee_status.total_outstanding)}</span>
-					</div>
-				</div>
-				${fee_status.payment_history && fee_status.payment_history.length > 0 ? `
-					<div class="recent-payments">
-						<h4>Recent Payments</h4>
-						${fee_status.payment_history.slice(0, 3).map(payment => `
-							<div class="payment-item">
-								<div class="payment-info">
-									<span class="payment-program">${payment.program}</span>
-									<span class="payment-date">${frappe.datetime.str_to_user(payment.date)}</span>
-								</div>
-								<span class="badge ${payment.status === 'Paid' ? 'badge-success' : 'badge-warning'}">
-									${payment.status}
-								</span>
-							</div>
-						`).join('')}
-					</div>
-				` : ''}
-			</div>
-		`;
-	}
-
-	// Helper methods
-	get_initials(name) {
-		return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-	}
-
-	get_attendance_class(percentage) {
-		if (percentage >= 75) return 'bg-success';
-		if (percentage >= 60) return 'bg-warning';
-		return 'bg-danger';
-	}
-
-	format_currency(amount) {
-		return parseFloat(amount || 0).toLocaleString('en-IN', {
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2
-		});
-	}
-
-	show_error(message) {
-		this.wrapper.html(`
-			<div class="student-dashboard-container">
-				<div class="alert alert-danger">
-					<strong>Error:</strong> ${message}
-				</div>
-			</div>
-		`);
-	}
+        `);
+    }
 }
