@@ -1,5 +1,5 @@
 frappe.ui.form.on('Registration QR', {
-    onload: function(frm) {
+    onload: function (frm) {
         // Load QRCode.js dynamically
         if (!window.QRCode) {
             const script = document.createElement("script");
@@ -11,17 +11,17 @@ frappe.ui.form.on('Registration QR', {
         }
     },
 
-    refresh: function(frm) {
+    refresh: function (frm) {
         // Regenerate QR when refreshing
         if (window.QRCode) {
             generate_qr(frm);
         }
     },
-    qr_link: function(frm) {
-    if (window.QRCode) {
-        generate_qr(frm);
+    qr_link: function (frm) {
+        if (window.QRCode) {
+            generate_qr(frm);
+        }
     }
-}
 
 });
 

@@ -1,5 +1,5 @@
 frappe.ui.form.on('Admission QR', {
-    onload: function(frm) {
+    onload: function (frm) {
         // Load QRCode.js dynamically if not already loaded
         if (!window.QRCode) {
             const script = document.createElement("script");
@@ -11,13 +11,13 @@ frappe.ui.form.on('Admission QR', {
         }
     },
 
-    refresh: function(frm) {
+    refresh: function (frm) {
         if (window.QRCode) {
             generate_qr(frm);
         }
     },
 
-    qr_link: function(frm) {
+    qr_link: function (frm) {
         if (window.QRCode) {
             generate_qr(frm);
         }
@@ -58,15 +58,37 @@ function generate_qr(frm) {
 
         // Download Button
         const downloadBtn = document.createElement('button');
-        downloadBtn.innerText = 'Download QR';
-        downloadBtn.classList.add('btn', 'btn-primary');
-        downloadBtn.onclick = function() {
+        downloadBtn.innerText = '⬇️ Download QR';
+        downloadBtn.style.cssText = `
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+            transition: all 0.3s ease;
+        `;
+
+        downloadBtn.onmouseover = function () {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 6px 20px rgba(40, 167, 69, 0.6)';
+        };
+
+        downloadBtn.onmouseout = function () {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 4px 15px rgba(40, 167, 69, 0.4)';
+        };
+
+        downloadBtn.onclick = function () {
             const logoSrc = '/assets/job_club/images/logo-es.png';
             const logo = new Image();
             logo.crossOrigin = 'anonymous';
             logo.src = logoSrc;
 
-            logo.onload = function() {
+            logo.onload = function () {
                 const qrSize = 200;
                 const padding = 20;
                 const logoHeight = 50;
@@ -91,7 +113,7 @@ function generate_qr(frm) {
                 qrImage.crossOrigin = 'anonymous';
                 qrImage.src = qr_img.src || qr_img.toDataURL('image/png');
 
-                qrImage.onload = function() {
+                qrImage.onload = function () {
                     const qrX = padding;
                     const qrY = padding * 2 + logoHeight;
                     ctx.drawImage(qrImage, qrX, qrY, qrSize, qrSize);
@@ -111,11 +133,33 @@ function generate_qr(frm) {
             };
         };
 
-        // Copy Link Button
+        // Copy Link Button with colorful styling
         const copyBtn = document.createElement('button');
-        copyBtn.innerText = 'Copy Link';
-        copyBtn.classList.add('btn', 'btn-secondary');
-        copyBtn.onclick = function() {
+        copyBtn.innerText = '📋 Copy Link';
+        copyBtn.style.cssText = `
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+            transition: all 0.3s ease;
+        `;
+
+        copyBtn.onmouseover = function () {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 6px 20px rgba(0, 123, 255, 0.6)';
+        };
+
+        copyBtn.onmouseout = function () {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 4px 15px rgba(0, 123, 255, 0.4)';
+        };
+
+        copyBtn.onclick = function () {
             if (frm.doc.qr_link) {
                 navigator.clipboard.writeText(frm.doc.qr_link)
                     .then(() => frappe.show_alert({ message: __('Link copied to clipboard!'), indicator: 'green' }))
