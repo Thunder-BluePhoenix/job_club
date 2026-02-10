@@ -60,9 +60,11 @@
 
         if (typeof frappe !== 'undefined' && frappe.session && frappe.session.user) {
             const roles = frappe.session.user_roles || frappe.user_roles || [];
-            const isStudent = roles.includes('Student');
+            const hasStudentRole = roles.includes('Student');
+            const hasAdminRoles = roles.some(role => ['System Manager', 'Administrator'].includes(role));
 
-            if (isStudent) {
+            // Only redirect to student dashboard if user has Student role and is not an admin
+            if (hasStudentRole && !hasAdminRoles) {
                 targetUrl = '/app/student-dashboard';
                 targetRoute = 'student-dashboard';
             }
