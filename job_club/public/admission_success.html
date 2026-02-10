@@ -310,13 +310,8 @@
       button.disabled = true;
       button.innerText = "Confirmed 🎉";
 
-      // Auto-hide popup after 4s then redirect
-      setTimeout(() => {
-        mainWrapper.classList.remove("blurred");
-        overlay.classList.remove("blurred");
-        popup.style.display = "none";
-        window.location.href = "/admission-form/new";
-      }, 4000);
+      // Keep popup visible - no redirect
+      // User can manually close the tab/page when done
     });
   </script>
 </body>
