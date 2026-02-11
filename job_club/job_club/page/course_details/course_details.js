@@ -165,7 +165,7 @@ class CourseDetails {
                              <h1 class="text-xl font-semibold text-neutral-900">My Courses</h1>
                         </div>
 
-                        <div class="bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 p-4 rounded-xl shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between relative overflow-hidden group">
+                        <div class="bg-gradient-to-br from-indigo-100 to-white border border-indigo-200 p-4 rounded-xl shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between relative overflow-hidden group">
                             <!-- Decorative accent -->
                             <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
 
@@ -175,8 +175,8 @@ class CourseDetails {
                             </div>
                             
                             <div class="flex flex-row gap-3 w-full md:w-auto relative z-10">
-                                 <div class="bg-white/60 backdrop-blur-md border border-indigo-100 px-3 py-2 rounded-lg flex items-center gap-2 shadow-sm flex-1 md:flex-none min-w-[110px]">
-                                    <div class="h-8 w-8 rounded-md bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0">
+                                 <div class="bg-white/60 backdrop-blur-md border border-indigo-200 px-3 py-2 rounded-lg flex items-center gap-2 shadow-sm flex-1 md:flex-none min-w-[110px]">
+                                    <div class="h-8 w-8 rounded-md bg-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                                     </div>
                                     <div>
@@ -185,8 +185,8 @@ class CourseDetails {
                                     </div>
                                 </div>
 
-                                <div class="bg-white/60 backdrop-blur-md border border-blue-100 px-3 py-2 rounded-lg flex items-center gap-2 shadow-sm flex-1 md:flex-none min-w-[90px]">
-                                    <div class="h-8 w-8 rounded-md bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                                <div class="bg-white/60 backdrop-blur-md border border-blue-200 px-3 py-2 rounded-lg flex items-center gap-2 shadow-sm flex-1 md:flex-none min-w-[90px]">
+                                    <div class="h-8 w-8 rounded-md bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
                                     </div>
                                     <div>
@@ -235,7 +235,7 @@ class CourseDetails {
 
         return topics.map((topic, index) => {
             return `
-              <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-3 shadow-sm hover:bg-indigo-100 hover:border-indigo-300 transition-all group cursor-default">
+              <div class="bg-indigo-100 border border-indigo-200 rounded-xl p-3 shadow-sm hover:bg-indigo-200 hover:border-indigo-300 transition-all group cursor-default">
                 <div class="flex items-start gap-4">
                   <div class="h-8 w-8 rounded-full bg-white border border-indigo-200 flex items-center justify-center text-[10px] font-black shrink-0 text-indigo-600 group-hover:scale-110 transition-transform">
                     ${String(index + 1).padStart(2, '0')}

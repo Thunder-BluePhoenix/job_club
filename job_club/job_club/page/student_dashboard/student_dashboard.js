@@ -127,7 +127,7 @@ class StudentDashboard {
                         </button>
                     </div>
 
-                    <div class="bg-indigo-50 border border-indigo-100 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+                    <div class="bg-indigo-100 border border-indigo-200 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
                         <header class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                             <div class="flex flex-col md:flex-row md:items-center gap-3">
                                 <div class="h-12 w-12 rounded-full bg-white border border-indigo-200 flex items-center justify-center text-[11px] font-medium overflow-hidden text-indigo-700">
@@ -153,21 +153,21 @@ class StudentDashboard {
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div class="bg-emerald-50 border border-emerald-100 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] cursor-pointer hover:border-emerald-300 transition-colors" onclick="frappe.set_route('attendance-view')">
+                        <div class="bg-emerald-100 border border-emerald-200 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] cursor-pointer hover:border-emerald-300 transition-colors" onclick="frappe.set_route('attendance-view')">
                             <p class="text-[11px] font-bold text-emerald-600/80 uppercase tracking-widest mb-1">Attendance</p>
                             <div class="flex items-baseline gap-2">
                                 <span class="text-xl font-bold tracking-tight text-emerald-900">${stats.attendance_percentage}%</span>
                                 <span class="text-[10px] ${stats.attendance_percentage < 75 ? 'text-red-600' : 'text-emerald-600'} font-medium leading-none">${stats.attendance_percentage < 75 ? 'Below Target' : 'On Track'}</span>
                             </div>
                         </div>
-                        <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] cursor-pointer hover:border-blue-300 transition-colors" onclick="frappe.set_route('course-details')">
+                        <div class="bg-blue-100 border border-blue-200 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] cursor-pointer hover:border-blue-300 transition-colors" onclick="frappe.set_route('course-details')">
                             <p class="text-[11px] font-bold text-blue-600/80 uppercase tracking-widest mb-1">Courses Enrolled</p>
                             <div class="flex items-baseline gap-2">
                                 <span class="text-xl font-bold tracking-tight text-blue-900">${String(stats.courses_enrolled).padStart(2, '0')}</span>
                                 <span class="text-[10px] text-blue-600 font-medium leading-none">Active Course</span>
                             </div>
                         </div>
-                        <div class="bg-amber-50 border border-amber-100 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] relative overflow-hidden cursor-pointer hover:border-amber-300 transition-colors" onclick="frappe.set_route('fees-portal')">
+                        <div class="bg-amber-100 border border-amber-200 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] relative overflow-hidden cursor-pointer hover:border-amber-300 transition-colors" onclick="frappe.set_route('fees-portal')">
                             <p class="text-[11px] font-bold text-amber-600/80 uppercase tracking-widest mb-1">Outstanding Fees</p>
                             <div class="flex items-baseline gap-2">
                                 <span class="text-xl font-bold tracking-tight text-amber-900">₹${format_currency(stats.pending_fees)}</span>
@@ -182,17 +182,17 @@ class StudentDashboard {
                         
                         <div class="lg:col-span-2 space-y-8">
                             
-                            <section class="bg-indigo-50/50 border border-indigo-100 rounded-xl overflow-hidden courses-section cursor-pointer hover:shadow-md transition-all duration-300" onclick="frappe.set_route('course-details')">
-                                <div class="px-4 py-3 border-b border-indigo-100 flex items-center justify-between bg-white/50">
-                                    <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-900">Learning Journey</h3>
+                            <section class="bg-violet-100 border border-violet-200 rounded-xl overflow-hidden courses-section cursor-pointer hover:shadow-md transition-all duration-300" onclick="frappe.set_route('course-details')">
+                                <div class="px-4 py-3 border-b border-violet-200 flex items-center justify-between bg-white/50">
+                                    <h3 class="text-xs font-bold uppercase tracking-wider text-violet-900">Learning Journey</h3>
                                 </div>
                                 <div class="p-4">
                                     ${this.render_courses(data.courses)}
                                 </div>
                             </section>
 
-                            <section class="bg-purple-50 border border-purple-100 rounded-xl p-4 cursor-pointer hover:shadow-md transition-all duration-300" onclick="frappe.set_route('attendance-view')">
-                                <div class="px-0 pb-4 border-b border-purple-100 flex items-center justify-between">
+                            <section class="bg-purple-100 border border-purple-200 rounded-xl p-4 cursor-pointer hover:shadow-md transition-all duration-300" onclick="frappe.set_route('attendance-view')">
+                                <div class="px-0 pb-4 border-b border-purple-200 flex items-center justify-between">
                                     <h3 class="text-xs font-bold uppercase tracking-wider text-purple-900">Attendance Overview</h3>
                                     <span class="text-[11px] font-bold border border-purple-200 px-2 py-0.5 rounded text-purple-600 bg-white hover:text-purple-900 hover:bg-purple-100 transition-all">View Details</span>
                                 </div>
@@ -206,7 +206,7 @@ class StudentDashboard {
 
                         <div class="space-y-6">
                             
-                            <section class="bg-rose-50/50 border border-rose-100 rounded-xl p-4 shadow-sm cursor-pointer hover:shadow-md transition-all duration-300" onclick="frappe.set_route('fees-portal')">
+                            <section class="bg-rose-100 border border-rose-200 rounded-xl p-4 shadow-sm cursor-pointer hover:shadow-md transition-all duration-300" onclick="frappe.set_route('fees-portal')">
                                 <div class="flex justify-between items-center mb-6">
                                     <h3 class="text-xs font-bold uppercase tracking-widest text-rose-900">Payment Summary</h3>
                                     <span class="text-[12px] font-medium text-rose-700/80 hover:text-rose-900 transition-colors cursor-pointer">View Details</span>
@@ -272,15 +272,15 @@ class StudentDashboard {
         }
 
         return courses.map(course => `
-            <div class="group relative bg-white border border-indigo-100 rounded-2xl p-4 transition-all duration-500 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.07)] hover:border-indigo-300 mb-4 last:mb-0">
+            <div class="group relative bg-white border border-violet-100 rounded-2xl p-4 transition-all duration-500 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.07)] hover:border-violet-300 mb-4 last:mb-0">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div class="flex-1 space-y-4">
                         <div class="flex items-start justify-between md:justify-start md:gap-4">
                             <div class="space-y-1">
-                                <h4 class="text-base font-bold tracking-tight text-indigo-950 group-hover:text-indigo-600 transition-colors">${course.course_name}</h4>
+                                <h4 class="text-base font-bold tracking-tight text-violet-950 group-hover:text-violet-600 transition-colors">${course.course_name}</h4>
                                 <div class="flex flex-wrap gap-2">
-                                     ${course.batch ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100/50 uppercase tracking-tight">${course.batch}</span>` : ''}
-                                     ${course.branch ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-600 border border-blue-100/50 uppercase tracking-tight">${course.branch}</span>` : ''}
+                                     ${course.batch ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-violet-50 text-violet-600 border border-violet-100/50 uppercase tracking-tight">${course.batch}</span>` : ''}
+                                     ${course.branch ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-cyan-50 text-cyan-600 border border-cyan-100/50 uppercase tracking-tight">${course.branch}</span>` : ''}
                                      ${course.batch_status ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100/50 uppercase tracking-tight">${course.batch_status}</span>` : ''}
                                 </div>
                             </div>
@@ -288,24 +288,24 @@ class StudentDashboard {
 
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
                             ${course.batch_start ? `
-                            <div class="flex flex-col p-3 rounded-xl bg-indigo-50/30 border border-indigo-50 group-hover:bg-indigo-50 transition-colors duration-500 min-w-0">
-                                <p class="text-[9px] font-bold text-indigo-400 uppercase tracking-widest leading-none mb-1">Batch Timing</p>
-                                <span class="text-xs font-bold text-indigo-900 truncate">${course.batch_start.split(':').slice(0, 2).join(':')} - ${course.batch_end ? course.batch_end.split(':').slice(0, 2).join(':') : 'End'}</span>
+                            <div class="flex flex-col p-3 rounded-xl bg-violet-50/30 border border-violet-50 group-hover:bg-violet-50 transition-colors duration-500 min-w-0">
+                                <p class="text-[9px] font-bold text-violet-400 uppercase tracking-widest leading-none mb-1">Batch Timing</p>
+                                <span class="text-xs font-bold text-violet-900 truncate">${course.batch_start.split(':').slice(0, 2).join(':')} - ${course.batch_end ? course.batch_end.split(':').slice(0, 2).join(':') : 'End'}</span>
                             </div>` : ''}
 
-                            <div class="flex flex-col p-3 rounded-xl bg-indigo-50/30 border border-indigo-50 group-hover:bg-indigo-50 transition-colors duration-500 min-w-0">
-                                <p class="text-[9px] font-bold text-indigo-400 uppercase tracking-widest leading-none mb-1">Duration</p>
-                                <span class="text-xs font-bold text-indigo-900 truncate">${this.format_duration(course.course_duration)}</span>
+                            <div class="flex flex-col p-3 rounded-xl bg-violet-50/30 border border-violet-50 group-hover:bg-violet-50 transition-colors duration-500 min-w-0">
+                                <p class="text-[9px] font-bold text-violet-400 uppercase tracking-widest leading-none mb-1">Duration</p>
+                                <span class="text-xs font-bold text-violet-900 truncate">${this.format_duration(course.course_duration)}</span>
                             </div>
                             
-                            <div class="flex flex-col p-3 rounded-xl bg-indigo-50/30 border border-indigo-50 group-hover:bg-indigo-50 transition-colors duration-500 min-w-0">
-                                <p class="text-[9px] font-bold text-indigo-400 uppercase tracking-widest leading-none mb-1">Academic Year</p>
-                                <span class="text-xs font-bold text-indigo-900 truncate">${course.academic_year || 'Ongoing'}</span>
+                            <div class="flex flex-col p-3 rounded-xl bg-violet-50/30 border border-violet-50 group-hover:bg-violet-50 transition-colors duration-500 min-w-0">
+                                <p class="text-[9px] font-bold text-violet-400 uppercase tracking-widest leading-none mb-1">Academic Year</p>
+                                <span class="text-xs font-bold text-violet-900 truncate">${course.academic_year || 'Ongoing'}</span>
                             </div>
                         </div>
                     </div>
                     
-                    <button class="w-full md:w-auto px-6 py-3 rounded-xl bg-indigo-900 text-white text-[12px] font-bold hover:bg-indigo-950 hover:shadow-lg active:scale-95 transition-all duration-300 shrink-0" onclick="frappe.set_route('course-details', '${course.course_name}')">
+                    <button class="w-full md:w-auto px-6 py-3 rounded-xl bg-indigo-900 text-white text-[12px] font-bold hover:bg-indigo-800 hover:shadow-lg active:scale-95 transition-all duration-300 shrink-0" onclick="frappe.set_route('course-details', '${course.course_name}')">
                         Course Details
                     </button>
                 </div>

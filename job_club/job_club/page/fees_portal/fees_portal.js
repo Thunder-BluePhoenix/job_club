@@ -115,29 +115,29 @@ class FeesPortal {
                         </div>
                        
                         <div class="grid md:grid-cols-3 gap-4">
-                            <div class="bg-indigo-50 border border-indigo-100 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center justify-between group hover:border-indigo-200 transition-all">
+                            <div class="bg-indigo-100 border border-indigo-200 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center justify-between group hover:border-indigo-300 transition-all">
                             <div><p class="text-[11px] font-bold text-indigo-400 uppercase tracking-widest mb-1">Total Fees</p><p class="text-xl font-bold tracking-tight text-indigo-900">₹${this.format_currency(data.total_fees)}</p></div>
-                            <div class="h-8 w-8 bg-indigo-100 rounded flex items-center justify-center text-indigo-600 font-bold group-hover:scale-110 transition-transform">₹</div>
+                            <div class="h-8 w-8 bg-indigo-200 rounded flex items-center justify-center text-indigo-600 font-bold group-hover:scale-110 transition-transform">₹</div>
                             </div>
-                            <div class="bg-emerald-50 border border-emerald-100 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center justify-between group hover:border-emerald-200 transition-all">
+                            <div class="bg-emerald-100 border border-emerald-200 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center justify-between group hover:border-emerald-300 transition-all">
                             <div><p class="text-[11px] font-bold text-emerald-500 uppercase tracking-widest mb-1">Amount Paid</p><p class="text-xl font-bold tracking-tight text-emerald-900">₹${this.format_currency(data.total_paid)}</p></div>
-                            <div class="h-8 w-8 bg-emerald-100 rounded flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform">✓</div>
+                            <div class="h-8 w-8 bg-emerald-200 rounded flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform">✓</div>
                             </div>
-                            <div class="bg-rose-50 border border-rose-100 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center justify-between border-l-4 border-l-rose-500 group hover:border-rose-200 transition-all">
+                            <div class="bg-rose-100 border border-rose-200 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center justify-between border-l-4 border-l-rose-500 group hover:border-rose-300 transition-all">
                             <div><p class="text-[11px] font-bold text-rose-500 uppercase tracking-widest mb-1">Outstanding</p><p class="text-xl font-bold tracking-tight text-rose-900">₹${this.format_currency(data.total_outstanding)}</p></div>
-                            <div class="h-8 w-8 bg-rose-100 rounded flex items-center justify-center text-rose-500 group-hover:scale-110 transition-transform">!</div>
+                            <div class="h-8 w-8 bg-rose-200 rounded flex items-center justify-center text-rose-500 group-hover:scale-110 transition-transform">!</div>
                             </div>
                         </div>
 
-                        <div class="bg-rose-50/50 border border-rose-100 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] space-y-3">
-                            <div class="flex justify-between items-center text-xs font-bold uppercase tracking-wider text-rose-900">
+                        <div class="bg-slate-100 border border-slate-200 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] space-y-3">
+                            <div class="flex justify-between items-center text-xs font-bold uppercase tracking-wider text-slate-900">
                             <span>Payment Progress</span>
                             <span>${percent.toFixed(1)}%</span>
                             </div>
-                            <div class="h-2 w-full bg-rose-100 rounded-full overflow-hidden">
+                            <div class="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
                             <div class="h-full bg-emerald-500 transition-all duration-1000 shadow-[0_0_10px_rgba(16,185,129,0.3)]" style="width: ${percent}%"></div>
                             </div>
-                            <div class="flex justify-between text-[11px] text-rose-600/80 font-bold uppercase tracking-tight">
+                            <div class="flex justify-between text-[11px] text-slate-600/80 font-bold uppercase tracking-tight">
                             <span>PAID: ₹${this.format_currency(data.total_paid)}</span>
                             <span>REMAINING: ₹${this.format_currency(data.total_outstanding)}</span>
                             </div>
@@ -177,7 +177,7 @@ class FeesPortal {
             const borderClass = isPaid ? 'border-l-emerald-500' : 'border-l-amber-500';
 
             return `
-            <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] shadow-sm border-l-4 ${borderClass} flex flex-col md:flex-row md:items-center justify-between gap-4 hover:shadow-md transition-all">
+            <div class="bg-blue-100 border border-blue-200 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] shadow-sm border-l-4 ${borderClass} flex flex-col md:flex-row md:items-center justify-between gap-4 hover:shadow-md transition-all">
               <div class="space-y-1">
                 <div class="flex items-center gap-2">
                   <span class="text-xs font-bold text-neutral-900">${payment.program || 'Fee Installment'}</span>
