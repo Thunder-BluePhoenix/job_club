@@ -9,11 +9,11 @@ frappe.ui.form.on('Employee Attendance Tool', {
 			.appendTo(frm.fields_dict.employees_html.wrapper);
 	},
 
-	onload: function(frm) {
+	onload: function (frm) {
 		frm.set_value("month", moment().format("MMMM"));
 		frm.set_value("year", moment().format("YYYY"));
 
-		frm.set_query("department", function() {
+		frm.set_query("department", function () {
 			return {
 				"filters": {
 					"is_group": 0
@@ -22,17 +22,16 @@ frappe.ui.form.on('Employee Attendance Tool', {
 		});
 	},
 
-	refresh: function(frm) {
+	refresh: function (frm) {
 		frm.disable_save();
 	},
 
-	branch: function(frm) {
-		frm.set_value("department", "");
+	branch: function (frm) {
 		frm.trigger("department");
 	},
 
-	department: function(frm) {
-		if (frm.doc.department && frm.doc.month && frm.doc.year) {
+	department: function (frm) {
+		if ((frm.doc.department || frm.doc.branch) && frm.doc.month && frm.doc.year) {
 			frm.employees_area.html(
 				`<div class="text-center" style="padding: 2rem; font-size: 18px; color: #666;">
 					<i class="fa fa-spinner fa-spin"></i> Fetching Attendance Data...
@@ -47,7 +46,7 @@ frappe.ui.form.on('Employee Attendance Tool', {
 					month: frm.doc.month,
 					year: frm.doc.year
 				},
-				callback: function(r) {
+				callback: function (r) {
 					frm.events.get_employees(frm, r.message);
 				}
 			});
@@ -56,15 +55,15 @@ frappe.ui.form.on('Employee Attendance Tool', {
 		}
 	},
 
-	month: function(frm) {
+	month: function (frm) {
 		frm.trigger("department");
 	},
 
-	year: function(frm) {
+	year: function (frm) {
 		frm.trigger("department");
 	},
 
-	get_employees: function(frm, data) {
+	get_employees: function (frm, data) {
 		if (data && data.employees && data.employees.length > 0) {
 			frm.employees_editor = new job_club.EmployeesEditor(frm, frm.employees_area, data);
 		} else {
@@ -103,66 +102,66 @@ job_club.EmployeesEditor = class EmployeesEditor {
 						<th style="min-width:120px; padding:12px; position:sticky; left:0; z-index:10; background:#1e40af;">Employee ID</th>
 						<th style="min-width:180px; padding:12px; position:sticky; left:120px; z-index:10; background:#1e40af;">Employee Name</th>
 						<th style="min-width:120px; padding:12px; position:sticky; left:300px; z-index:10; background:#1e40af;">Department</th>
-						${Array.from({length:data.num_days},(_,i)=>{
-							let d=i+1;
-							let weekday = moment(`${year}-${month_num}-${d}`,"YYYY-M-D").format("ddd");
-							let is_holiday = data.holidays.includes(d);
-							let header_bg = is_holiday ? 'background:#f59e0b;' : 'background:#1e40af;';
-							return `<th style="${header_bg} min-width:80px; padding:8px;">${d}<br><span style="font-size:11px; color:#eee;">${weekday}</span></th>`;
-						}).join('')}
+						${Array.from({ length: data.num_days }, (_, i) => {
+			let d = i + 1;
+			let weekday = moment(`${year}-${month_num}-${d}`, "YYYY-M-D").format("ddd");
+			let is_holiday = data.holidays.includes(d);
+			let header_bg = is_holiday ? 'background:#f59e0b;' : 'background:#1e40af;';
+			return `<th style="${header_bg} min-width:80px; padding:8px;">${d}<br><span style="font-size:11px; color:#eee;">${weekday}</span></th>`;
+		}).join('')}
 					</tr>
 				</thead>
 				<tbody>
-					${data.employees.map(e=>`
+					${data.employees.map(e => `
 						<tr data-employee="${e.employee}" data-employee-name="${e.employee_name}">
-							<td style="font-weight:600; background:#f9fafc; padding:10px; min-width:120px; position:sticky; left:0; z-index:5;">${e.employee||''}</td>
+							<td style="font-weight:600; background:#f9fafc; padding:10px; min-width:120px; position:sticky; left:0; z-index:5;">${e.employee || ''}</td>
 							<td style="background:#f9fafc; padding:10px; min-width:180px; position:sticky; left:120px; z-index:5;">${e.employee_name}</td>
-							<td style="background:#f9fafc; font-size:14px; padding:10px; min-width:120px; position:sticky; left:300px; z-index:5;">${e.department||''}</td>
-							${Array.from({length:data.num_days},(_,i)=>{
-								let d=i+1;
-								let att=e.attendance?.[d]||{status:'',remarks:''};
-								let status=att.status||'';
-								let remarks=att.remarks||'';
-								let is_holiday = data.holidays.includes(d);
+							<td style="background:#f9fafc; font-size:14px; padding:10px; min-width:120px; position:sticky; left:300px; z-index:5;">${e.department || ''}</td>
+							${Array.from({ length: data.num_days }, (_, i) => {
+			let d = i + 1;
+			let att = e.attendance?.[d] || { status: '', remarks: '' };
+			let status = att.status || '';
+			let remarks = att.remarks || '';
+			let is_holiday = data.holidays.includes(d);
 
-								// Get today
-								let current_date = moment(frappe.datetime.get_today());
-								let today_day = current_date.date();
-								let today_month = current_date.month() + 1;
-								let today_year = current_date.year();
-								let is_today = (d===today_day && month_num===today_month && year===today_year);
+			// Get today
+			let current_date = moment(frappe.datetime.get_today());
+			let today_day = current_date.date();
+			let today_month = current_date.month() + 1;
+			let today_year = current_date.year();
+			let is_today = (d === today_day && month_num === today_month && year === today_year);
 
-								let bg=this.get_status_color(status, is_holiday);
+			let bg = this.get_status_color(status, is_holiday);
 
-								if(is_today && !is_holiday){
-									// Today → Editable (unless holiday)
-									return `
+			if (is_today && !is_holiday) {
+				// Today → Editable (unless holiday)
+				return `
 									<td style="padding:8px; vertical-align:top; background:${bg}; min-width:80px;">
 										<select class="form-control att-select" data-day="${d}" 
 												style="width:100%; max-width:70px; margin:0 auto 4px; border-radius:6px; text-align:center; font-size:13px; padding:4px;">
-											<option value="" ${status==""?"selected":""}></option>
-											<option value="Present" ${status=="Present"?"selected":""}>Present</option>
-											<option value="Absent" ${status=="Absent"?"selected":""}>Absent</option>
-											<option value="Leave" ${status=="Leave"?"selected":""}>Leave</option>
+											<option value="" ${status == "" ? "selected" : ""}></option>
+											<option value="Present" ${status == "Present" ? "selected" : ""}>Present</option>
+											<option value="Absent" ${status == "Absent" ? "selected" : ""}>Absent</option>
+											<option value="Leave" ${status == "Leave" ? "selected" : ""}>Leave</option>
 										</select>
 										<input type="text" class="form-control remarks" data-day="${d}" 
 											style="font-size:11px; padding:4px; border-radius:6px; text-align:center; width:100%; max-width:70px; margin:0 auto;" 
 											placeholder="Note" value="${remarks}">
 									</td>`;
-								} else {
-									// Other days or holidays → Display only
-									let display = '';
-									if(is_holiday) {
-										display = '<div style="font-size:20px;">🏖️</div>';
-									} else if(status) {
-										display = `<div style="font-size:14px; font-weight:600;">${status.charAt(0)}</div>`;
-									}
-									let remark_display = remarks ? `<div style="font-size:10px; color:#555; margin-top:4px;">${remarks}</div>` : '';
-									return `<td style="padding:8px; vertical-align:middle; background:${bg}; min-width:80px;">
+			} else {
+				// Other days or holidays → Display only
+				let display = '';
+				if (is_holiday) {
+					display = '<div style="font-size:20px;">🏖️</div>';
+				} else if (status) {
+					display = `<div style="font-size:14px; font-weight:600;">${status.charAt(0)}</div>`;
+				}
+				let remark_display = remarks ? `<div style="font-size:10px; color:#555; margin-top:4px;">${remarks}</div>` : '';
+				return `<td style="padding:8px; vertical-align:middle; background:${bg}; min-width:80px;">
 												${display}${remark_display}
 											</td>`;
-								}
-							}).join('')}
+			}
+		}).join('')}
 						</tr>
 					`).join('')}
 				</tbody>
@@ -172,7 +171,7 @@ job_club.EmployeesEditor = class EmployeesEditor {
 		$(`<div class="employee-attendance-checks">${html}</div>`).appendTo(me.wrapper);
 
 		// Status change = immediate background update
-		$(me.wrapper).find('.att-select').on('change', function() {
+		$(me.wrapper).find('.att-select').on('change', function () {
 			let status = $(this).val();
 			let bg = me.get_status_color(status, false);
 			$(this).closest('td').css('background', bg);
@@ -187,49 +186,49 @@ job_club.EmployeesEditor = class EmployeesEditor {
 
 		// Add hover effect
 		save_button.hover(
-			function() { $(this).css("background-color", "#1e3a8a"); },
-			function() { $(this).css("background-color", "#1e40af"); }
+			function () { $(this).css("background-color", "#1e3a8a"); },
+			function () { $(this).css("background-color", "#1e40af"); }
 		);
 
-		save_button.on("click", function() {
+		save_button.on("click", function () {
 			$(save_button).attr("disabled", true);
 			let employees_present = [], employees_absent = [], employees_leave = [];
 
-			$(me.wrapper).find('tr[data-employee]').each(function(_,row){
-				let $row=$(row);
-				let employee=$row.data('employee');
-				let employee_name=$row.data('employee-name');
+			$(me.wrapper).find('tr[data-employee]').each(function (_, row) {
+				let $row = $(row);
+				let employee = $row.data('employee');
+				let employee_name = $row.data('employee-name');
 
-				$row.find('.att-select').each(function(){
-					let day=$(this).data('day');
-					let status=$(this).val();
-					let remarks=$row.find(`.remarks[data-day='${day}']`).val()||'';
+				$row.find('.att-select').each(function () {
+					let day = $(this).data('day');
+					let status = $(this).val();
+					let remarks = $row.find(`.remarks[data-day='${day}']`).val() || '';
 
-					if(status){
-						let entry={employee,employee_name,remarks};
-						if(status=="Present") employees_present.push(entry);
-						if(status=="Absent") employees_absent.push(entry);
-						if(status=="Leave") employees_leave.push(entry);
+					if (status) {
+						let entry = { employee, employee_name, remarks };
+						if (status == "Present") employees_present.push(entry);
+						if (status == "Absent") employees_absent.push(entry);
+						if (status == "Leave") employees_leave.push(entry);
 					}
 				});
 			});
 
 			frappe.call({
-				method:"job_club.api.employee_attendance_tool.mark_employee_attendance_tool",
-				freeze:true,
-				freeze_message:__("Marking attendance"),
-				args:{
-					employees_present:JSON.stringify(employees_present),
-					employees_absent:JSON.stringify(employees_absent),
-					employees_leave:JSON.stringify(employees_leave),
-					department:frm.doc.department,
-					branch:frm.doc.branch || null,
-					date:frappe.datetime.get_today()
+				method: "job_club.api.employee_attendance_tool.mark_employee_attendance_tool",
+				freeze: true,
+				freeze_message: __("Marking attendance"),
+				args: {
+					employees_present: JSON.stringify(employees_present),
+					employees_absent: JSON.stringify(employees_absent),
+					employees_leave: JSON.stringify(employees_leave),
+					department: frm.doc.department,
+					branch: frm.doc.branch || null,
+					date: frappe.datetime.get_today()
 				},
-				callback:function(r){
-					$(save_button).attr("disabled",false);
-					if(r.message){
-						frappe.msgprint(__("Attendance saved for {0} employees.",[r.message.count]));
+				callback: function (r) {
+					$(save_button).attr("disabled", false);
+					if (r.message) {
+						frappe.msgprint(__("Attendance saved for {0} employees.", [r.message.count]));
 					}
 					frm.trigger("department");
 				}
@@ -261,15 +260,15 @@ job_club.EmployeesEditor = class EmployeesEditor {
 		$(this.wrapper).append(legend);
 	}
 
-	get_status_color(status, is_holiday){
-		if(is_holiday) return "#fbbf24";        // yellow for holidays
-		if(status=="Present") return "#2f8b1e80";   // green
-		if(status=="Absent") return "#a24a4ab3";    // red
-		if(status=="Leave") return "#9dc0dd";     // blue
+	get_status_color(status, is_holiday) {
+		if (is_holiday) return "#fbbf24";        // yellow for holidays
+		if (status == "Present") return "#2f8b1e80";   // green
+		if (status == "Absent") return "#a24a4ab3";    // red
+		if (status == "Leave") return "#9dc0dd";     // blue
 		return "#fafafa"; // default neutral
 	}
 
-	show_empty_state(){
+	show_empty_state() {
 		$(this.wrapper).html(
 			`<div class="text-center text-muted" 
 				style="line-height: 100px; font-size: 16px; border: 1px dashed #ccc; border-radius: 5px; margin: 20px 0;">

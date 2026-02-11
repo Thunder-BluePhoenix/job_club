@@ -18,7 +18,7 @@ def get_employee_attendance_records(month=None, year=None, department=None, bran
     """
     employee_list = []
 
-    if month and year and department:
+    if month and year and (department or branch):
         # Monthly mode
         month_num = list(calendar.month_name).index(month)
         year = int(year)
@@ -57,9 +57,11 @@ def get_employee_attendance_records(month=None, year=None, department=None, bran
 
         # Build filters for employees
         filters = {
-            "status": "Active",
-            "department": department
+            "status": "Active"
         }
+        
+        if department:
+            filters["department"] = department
         
         if branch:
             filters["branch"] = branch
@@ -77,7 +79,7 @@ def get_employee_attendance_records(month=None, year=None, department=None, bran
         
         if employee_names:
             attendance_list = frappe.db.sql("""
-                SELECT employee, date, status, remarks
+                SELECT employee, date, status
                 FROM `tabEmployee Attendance`
                 WHERE employee IN ({})
                   AND DATE(date) BETWEEN %s AND %s
@@ -95,7 +97,7 @@ def get_employee_attendance_records(month=None, year=None, department=None, bran
             att_map.setdefault(a.employee, {})
             if day not in att_map[a.employee]:
                 # Take latest modified (first in DESC)
-                att_map[a.employee][day] = {"status": a.status, "remarks": a.remarks or ""}
+                att_map[a.employee][day] = {"status": a.status, "remarks": ""}
 
         # Attach attendance data to employees
         for e in employee_list:

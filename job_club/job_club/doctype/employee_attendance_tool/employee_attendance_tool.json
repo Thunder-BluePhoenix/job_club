@@ -7,8 +7,9 @@
  "engine": "InnoDB",
  "field_order": [
   "month",
-  "year",
   "column_break_odwj",
+  "year",
+  "column_break_qctu",
   "branch",
   "department",
   "attendance",
@@ -18,10 +19,10 @@
   {
    "fieldname": "department",
    "fieldtype": "Link",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Department",
-   "options": "Department",
-   "reqd": 1
+   "options": "Department"
   },
   {
    "fieldname": "branch",
@@ -59,12 +60,16 @@
   {
    "fieldname": "column_break_odwj",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_qctu",
+   "fieldtype": "Column Break"
   }
  ],
  "hide_toolbar": 1,
  "issingle": 1,
  "links": [],
- "modified": "2026-01-06 00:27:35.826932",
+ "modified": "2026-02-11 13:42:33.756745",
  "modified_by": "Administrator",
  "module": "Job Club",
  "name": "Employee Attendance Tool",
