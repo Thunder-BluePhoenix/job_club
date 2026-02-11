@@ -147,31 +147,60 @@ class CourseDetails {
 
         this.wrapper.html(`
 			<div class="sp-container sp-loading">
-                <div class="mx-auto max-w-6xl p-4 md:p-8 space-y-6">
+                <div class="w-full p-4 md:p-8 space-y-6">
                     
-                    <nav class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-muted-fg mb-6">
-                        <span class="cursor-pointer hover:text-black transition-colors" onclick="frappe.set_route('student-dashboard')">Dashboard</span> 
-                        <span class="text-neutral-300">/</span> 
-                        <span class="text-black">Course Details</span>
-                    </nav>
+                    <div class="flex items-center justify-between mb-2">
+                        <nav class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-muted-fg">
+                            <span class="cursor-pointer hover:text-black transition-colors" onclick="frappe.set_route('student-dashboard')">Dashboard</span> 
+                            <span class="text-neutral-300">/</span> 
+                            <span class="text-black">My Courses</span>
+                        </nav>
+                        <button class="text-[10px] font-bold text-red-600 bg-red-50 border border-red-100 px-3 py-1.5 rounded-lg hover:bg-red-100 transition-colors btn-logout">
+                            Logout
+                        </button>
+                    </div>
 
-                    <header class="bg-white border p-4 rounded-xl shadow-sm space-y-4">
-                        <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                            <div>
-                                <h1 class="text-2xl font-bold tracking-tight mb-2">${course.course_name}</h1>
-                                ${course.description ? `<p class="text-sm text-muted-fg leading-relaxed max-w-2xl">${course.description}</p>` : ''}
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                             <h1 class="text-xl font-semibold text-neutral-900">My Courses</h1>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 p-4 rounded-xl shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between relative overflow-hidden group">
+                            <!-- Decorative accent -->
+                            <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
+
+                            <div class="flex-1 space-y-1 relative z-10 pl-3">
+                                <h2 class="text-lg font-bold text-indigo-950 leading-tight">${course.course_name}</h2>
+                                ${course.description ? `<p class="text-[11px] text-indigo-700/70 leading-relaxed font-medium max-w-2xl line-clamp-1">${course.description}</p>` : ''}
                             </div>
-                            <div class="bg-neutral-50 border px-3 py-2 rounded-lg text-center min-w-[100px]">
-                                <p class="text-[10px] font-bold uppercase tracking-widest text-muted-fg mb-1">Duration</p>
-                                <p class="text-lg font-bold">${format_duration(course.course_duration)}</p>
+                            
+                            <div class="flex flex-row gap-3 w-full md:w-auto relative z-10">
+                                 <div class="bg-white/60 backdrop-blur-md border border-indigo-100 px-3 py-2 rounded-lg flex items-center gap-2 shadow-sm flex-1 md:flex-none min-w-[110px]">
+                                    <div class="h-8 w-8 rounded-md bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-[9px] font-bold text-indigo-400 uppercase tracking-widest leading-none mb-0.5">Duration</p>
+                                        <p class="text-xs font-bold tracking-tight text-indigo-950 whitespace-nowrap">${format_duration(course.course_duration)}</p>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white/60 backdrop-blur-md border border-blue-100 px-3 py-2 rounded-lg flex items-center gap-2 shadow-sm flex-1 md:flex-none min-w-[90px]">
+                                    <div class="h-8 w-8 rounded-md bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-[9px] font-bold text-blue-400 uppercase tracking-widest leading-none mb-0.5">Modules</p>
+                                        <p class="text-xs font-bold tracking-tight text-blue-950">${topics.length}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </header>
+                    </div>
 
                     <main class="space-y-6">
                         <div class="flex items-center justify-between px-1">
                             <h3 class="text-xs font-bold uppercase tracking-widest text-muted-fg">Course Topics</h3>
-                            <span class="text-[11px] font-bold text-black border px-2 py-0.5 rounded bg-neutral-100">${topics.length} Modules</span>
                         </div>
 
                         <div class="space-y-3">
@@ -180,13 +209,23 @@ class CourseDetails {
                     </main>
                     
                     <div class="pt-8 flex justify-center">
-                        <button class="px-5 py-2 rounded-md bg-black text-white hover:bg-neutral-800 transition-all text-sm font-medium shadow-sm hover:shadow-md active:scale-95" onclick="frappe.set_route('student-dashboard')">
+                        <button class="px-6 py-3 rounded-xl bg-indigo-900 text-white hover:bg-indigo-950 transition-all text-sm font-bold shadow-sm hover:shadow-md active:scale-95" onclick="frappe.set_route('student-dashboard')">
                             Back to Dashboard
                         </button>
                     </div>
                 </div>
             </div>
 		`);
+
+        this.wrapper.find('.btn-logout').click((e) => {
+            e.preventDefault();
+            frappe.call({
+                method: 'logout',
+                callback: () => {
+                    window.location.replace('/login');
+                }
+            });
+        });
     }
 
     render_modules(topics) {
@@ -196,13 +235,13 @@ class CourseDetails {
 
         return topics.map((topic, index) => {
             return `
-              <div class="bg-white border rounded-xl p-3 shadow-sm hover:border-black transition-all group cursor-default">
+              <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-3 shadow-sm hover:bg-indigo-100 hover:border-indigo-300 transition-all group cursor-default">
                 <div class="flex items-start gap-4">
-                  <div class="h-8 w-8 rounded-full bg-neutral-100 flex items-center justify-center text-[10px] font-black shrink-0 text-muted-fg group-hover:bg-black group-hover:text-white transition-colors">
+                  <div class="h-8 w-8 rounded-full bg-white border border-indigo-200 flex items-center justify-center text-[10px] font-black shrink-0 text-indigo-600 group-hover:scale-110 transition-transform">
                     ${String(index + 1).padStart(2, '0')}
                   </div>
                   <div class="space-y-1 flex-1">
-                    <h4 class="text-sm font-bold group-hover:text-blue-600 transition-colors">${topic.topic}</h4>
+                    <h4 class="text-sm font-bold text-indigo-950 group-hover:text-indigo-800 transition-colors">${topic.topic}</h4>
                     <!-- Description from Topic link could be fetched if needed, keeping it simple for now -->
                   </div>
                 </div>
@@ -213,27 +252,27 @@ class CourseDetails {
 
     show_no_course() {
         this.wrapper.html(`
-			<div class="mx-auto max-w-4xl p-8 py-20 text-center">
+                <div class="mx-auto max-w-4xl p-8 py-20 text-center">
 				<h2 class="text-lg font-bold">No Course Found</h2>
 				<p class="text-muted-fg mt-2">Could not find the specified course details.</p>
-				<button onclick="frappe.set_route('student-dashboard')" class="inline-block mt-6 px-4 py-2 bg-black text-white rounded-md text-xs font-bold hover:opacity-80">
+				<button onclick="frappe.set_route('student-dashboard')" class="inline-block mt-6 px-6 py-3 bg-indigo-900 text-white rounded-xl text-xs font-bold hover:bg-indigo-950 transition-all shadow-sm hover:shadow-md active:scale-95">
 					Back to Dashboard
 				</button>
-			</div>
-		`);
+			</div >
+                `);
     }
 
     show_error(message) {
         this.wrapper.html(`
-			<div class="mx-auto max-w-6xl p-8">
-				<div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
-					<strong class="font-bold">Error:</strong>
-					<span class="block sm:inline">${message}</span>
-                    <div class="mt-4">
-                         <button onclick="frappe.set_route('student-dashboard')" class="text-xs underline font-bold">Return to Dashboard</button>
+                < div class="mx-auto max-w-6xl p-8" >
+                    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
+                        <strong class="font-bold">Error:</strong>
+                        <span class="block sm:inline">${message}</span>
+                        <div class="mt-4">
+                            <button onclick="frappe.set_route('student-dashboard')" class="text-xs underline font-bold">Return to Dashboard</button>
+                        </div>
                     </div>
-				</div>
-			</div>
-		`);
+			</div >
+                `);
     }
 }

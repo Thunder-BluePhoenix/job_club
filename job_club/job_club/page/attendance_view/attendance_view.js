@@ -117,65 +117,70 @@ class AttendanceView {
                     .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
                     .calendar-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 11px; border: 1px solid transparent; }
                 </style>
-                <div class="mx-auto max-w-6xl p-4 md:p-8 space-y-6">
+                <div class="w-full p-4 md:p-8 space-y-6">
                     
-                    <nav class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-muted-fg mb-2">
-                        <span class="cursor-pointer hover:text-black transition-colors" onclick="frappe.set_route('student-dashboard')">Dashboard</span> 
-                        <span class="text-neutral-300">/</span> 
-                        <span class="text-black">Attendance</span>
-                    </nav>
+                    <div class="flex items-center justify-between mb-2">
+                        <nav class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-muted-fg">
+                            <span class="cursor-pointer hover:text-black transition-colors" onclick="frappe.set_route('student-dashboard')">Dashboard</span> 
+                            <span class="text-neutral-300">/</span> 
+                            <span class="text-black">Attendance</span>
+                        </nav>
+                        <button class="text-[10px] font-bold text-red-600 bg-red-50 border border-red-100 px-3 py-1.5 rounded-lg hover:bg-red-100 transition-colors btn-logout">
+                            Logout
+                        </button>
+                    </div>
 
                     <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-3 ">
                         <h1 class="text-xl font-semibold text-neutral-900">My Attendance</h1>
                         <div class="flex gap-2">
                             <button class="px-3 py-1.5 rounded-md border hover:bg-neutral-200 transition-all text-[12px] font-medium hover:text-black opacity-80 cursor-pointer" id="btn-prev-month">Previous Month</button>
                             <button class="px-3 py-1.5 rounded-md border hover:bg-neutral-200 transition-all text-[12px] font-medium hover:text-black opacity-80 cursor-pointer" id="btn-next-month">Next Month</button>
-                            <button class="px-3 py-1.5 rounded-md border hover:bg-neutral-900 transition-all text-[12px] bg-black text-white font-medium opacity-80 cursor-pointer" id="btn-today">Today</button>
+                            <button class="px-3 py-1.5 rounded-md border hover:bg-indigo-950 transition-all text-[12px] bg-indigo-900 text-white font-medium cursor-pointer" id="btn-today">Today</button>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-                        <div class="bg-white border p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center gap-3">
-                            <div class="h-10 w-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                        <div class="bg-indigo-50 border border-indigo-100 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center gap-3">
+                            <div class="h-10 w-10 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                             </div>
                             <div>
-                                <p class="text-[11px] font-bold text-muted-fg uppercase tracking-widest mb-1">Total Days</p>
-                                <p class="text-2xl font-bold tracking-tight text-neutral-900">${data.total_days}</p>
+                                <p class="text-[11px] font-bold text-indigo-500 uppercase tracking-widest mb-1">Total Days</p>
+                                <p class="text-2xl font-bold tracking-tight text-indigo-950">${data.total_days}</p>
                             </div>
                         </div>
-                        <div class="bg-white border p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center gap-3">
-                            <div class="h-10 w-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+                        <div class="bg-emerald-50 border border-emerald-100 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center gap-3">
+                            <div class="h-10 w-10 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                             </div>
                             <div>
-                                <p class="text-[11px] font-bold text-muted-fg uppercase tracking-widest mb-1">Present</p>
-                                <p class="text-2xl font-bold tracking-tight text-neutral-900">${data.present_days}</p>
+                                <p class="text-[11px] font-bold text-emerald-500 uppercase tracking-widest mb-1">Present</p>
+                                <p class="text-2xl font-bold tracking-tight text-emerald-950">${data.present_days}</p>
                             </div>
                         </div>
-                        <div class="bg-white border p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center gap-3">
-                            <div class="h-10 w-10 rounded-lg bg-red-50 flex items-center justify-center text-red-600">
+                        <div class="bg-rose-50 border border-rose-100 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center gap-3">
+                            <div class="h-10 w-10 rounded-lg bg-rose-100 flex items-center justify-center text-rose-600">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
                             </div>
                             <div>
-                                <p class="text-[11px] font-bold text-muted-fg uppercase tracking-widest mb-1">Absent</p>
-                                <p class="text-2xl font-bold tracking-tight text-neutral-900">${data.absent_days}</p>
+                                <p class="text-[11px] font-bold text-rose-500 uppercase tracking-widest mb-1">Absent</p>
+                                <p class="text-2xl font-bold tracking-tight text-rose-950">${data.absent_days}</p>
                             </div>
                         </div>
-                        <div class="bg-white border p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center gap-3">
-                            <div class="h-10 w-10 rounded-lg bg-sky-50 flex items-center justify-center text-sky-600">
+                        <div class="bg-sky-50 border border-sky-100 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center gap-3">
+                            <div class="h-10 w-10 rounded-lg bg-sky-100 flex items-center justify-center text-sky-600">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>
                             </div>
                             <div>
-                                <p class="text-[11px] font-bold text-muted-fg uppercase tracking-widest mb-1">Leave</p>
-                                <p class="text-2xl font-bold tracking-tight text-neutral-900">${data.leave_days}</p>
+                                <p class="text-[11px] font-bold text-sky-500 uppercase tracking-widest mb-1">Leave</p>
+                                <p class="text-2xl font-bold tracking-tight text-sky-950">${data.leave_days}</p>
                             </div>
                         </div>
-                        <div class="bg-white border p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center gap-3">
-                            <div class="h-10 w-10 rounded-lg bg-violet-50 flex items-center justify-center text-violet-600 font-bold text-xs group-hover:scale-110 transition-transform">%</div>
+                        <div class="bg-violet-50 border border-violet-100 p-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center gap-3">
+                            <div class="h-10 w-10 rounded-lg bg-violet-100 flex items-center justify-center text-violet-600 font-bold text-xs group-hover:scale-110 transition-transform">%</div>
                             <div>
-                                <p class="text-[11px] font-bold text-neutral-400 uppercase tracking-widest mb-0.5">Rate</p>
-                                <p class="text-2xl font-bold tracking-tight text-neutral-900">${data.percentage.toFixed(1)}%</p>
+                                <p class="text-[11px] font-bold text-violet-400 uppercase tracking-widest mb-0.5">Rate</p>
+                                <p class="text-2xl font-bold tracking-tight text-violet-950">${data.percentage.toFixed(1)}%</p>
                             </div>
                         </div>
                     </div>
@@ -228,9 +233,17 @@ class AttendanceView {
             this.current_month.setMonth(this.current_month.getMonth() + 1);
             this.render_calendar();
         });
-        this.wrapper.find('#btn-today').click(() => {
-            this.current_month = new Date();
-            this.render_calendar();
+        this.current_month = new Date();
+        this.render_calendar();
+
+        this.wrapper.find('.btn-logout').click((e) => {
+            e.preventDefault();
+            frappe.call({
+                method: 'logout',
+                callback: () => {
+                    window.location.replace('/login');
+                }
+            });
         });
     }
 
