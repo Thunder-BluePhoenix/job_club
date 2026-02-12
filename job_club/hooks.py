@@ -58,10 +58,7 @@ app_include_js = [
 doc_events = {
     "Branch": {
         "after_insert": "job_club.overrides.branch_hooks.create_drive_series"
-    }
-}
-
-doc_events = {
+    },
     "Interview": {
         "before_insert": "job_club.overrides.interview_autoname.set_interview_name"
     }

@@ -233,8 +233,10 @@ class AttendanceView {
             this.current_month.setMonth(this.current_month.getMonth() + 1);
             this.render_calendar();
         });
-        this.current_month = new Date();
-        this.render_calendar();
+        this.wrapper.find('#btn-today').click(() => {
+            this.current_month = new Date();
+            this.render_calendar();
+        });
 
         this.wrapper.find('.btn-logout').click((e) => {
             e.preventDefault();
