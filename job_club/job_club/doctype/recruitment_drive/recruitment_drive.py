@@ -40,7 +40,12 @@ def get_embed_map_url(location_link):
             lat, lng = match.groups()
 
     if lat and lng:
-        embed_url = f"https://www.google.com/maps/embed/v1/place?key=AIzaSyAROSZNTxgAeR_GoPnt_7weSnuuph8e2-c&q={lat},{lng}"
+        api_key = frappe.db.get_single_value("Job Club Settings", "google_api_key")
+        
+        if not api_key:
+            return None
+
+        embed_url = f"https://www.google.com/maps/embed/v1/place?key={api_key}&q={lat},{lng}"
         return {
             "embed_url": embed_url,
             "lat": lat,

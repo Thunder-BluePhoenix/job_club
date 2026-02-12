@@ -1,0 +1,60 @@
+{
+    "actions": [],
+    "allow_rename": 1,
+    "creation": "2025-02-12 13:45:00.000000",
+    "doctype": "DocType",
+    "engine": "InnoDB",
+    "field_order": [
+        "google_maps_section",
+        "google_api_key",
+        "attendance_section",
+        "attendance_radius"
+    ],
+    "fields": [
+        {
+            "fieldname": "google_maps_section",
+            "fieldtype": "Section Break",
+            "label": "Google Maps"
+        },
+        {
+            "fieldname": "google_api_key",
+            "fieldtype": "Data",
+            "label": "Google Maps API Key",
+            "description": "API Key for Google Maps Embed and Geocoding APIs"
+        },
+        {
+            "fieldname": "attendance_section",
+            "fieldtype": "Section Break",
+            "label": "Attendance Settings"
+        },
+        {
+            "default": "200",
+            "fieldname": "attendance_radius",
+            "fieldtype": "Int",
+            "label": "Attendance Radius (meters)",
+            "description": "Maximum allowed distance from branch/campus to mark attendance"
+        }
+    ],
+    "issingle": 1,
+    "links": [],
+    "modified": "2025-02-12 13:45:00.000000",
+    "modified_by": "Administrator",
+    "module": "Job Club",
+    "name": "Job Club Settings",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "print": 1,
+            "read": 1,
+            "role": "System Manager",
+            "share": 1,
+            "write": 1
+        }
+    ],
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "states": []
+}

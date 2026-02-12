@@ -1,14 +1,14 @@
-frappe.ready(function() {
-    let employeeData = null;
-    let branchCoords = null;
-    let userLocation = null;
-    let distance = null;
-    let watchId = null; // For continuous GPS tracking
-    let employeeDepartment = null;
+frappe.ready(function () {
+  let employeeData = null;
+  let branchCoords = null;
+  let userLocation = null;
+  let distance = null;
+  let watchId = null; // For continuous GPS tracking
+  let employeeDepartment = null;
 
-    // Inject custom styles
-    const style = document.createElement('style');
-    style.textContent = `
+  // Inject custom styles
+  const style = document.createElement('style');
+  style.textContent = `
     body {
       background: linear-gradient(135deg, #1e40af 0%, #7c3aed 50%, #db2777 100%) !important;
       min-height: 100vh;
@@ -330,12 +330,12 @@ frappe.ready(function() {
       }
     }
   `;
-    document.head.appendChild(style);
+  document.head.appendChild(style);
 
-    // Create UI
-    const container = document.createElement('div');
-    container.className = 'attendance-container';
-    container.innerHTML = `
+  // Create UI
+  const container = document.createElement('div');
+  container.className = 'attendance-container';
+  container.innerHTML = `
     <div class="attendance-card">
       <div class="attendance-header">
         <h1>Employee Attendance</h1>
@@ -396,11 +396,11 @@ frappe.ready(function() {
     </div>
   `;
 
-    // Create popup
-    const popup = document.createElement('div');
-    popup.className = 'attendance-popup-overlay';
-    popup.id = 'attendancePopup';
-    popup.innerHTML = `
+  // Create popup
+  const popup = document.createElement('div');
+  popup.className = 'attendance-popup-overlay';
+  popup.id = 'attendancePopup';
+  popup.innerHTML = `
     <div class="attendance-popup-content">
       <div id="popupIcon"></div>
       <h2 class="attendance-popup-title" id="popupTitle"></h2>
@@ -409,410 +409,413 @@ frappe.ready(function() {
     </div>
   `;
 
-    // Replace form content
-    document.body.innerHTML = '';
-    document.body.appendChild(container);
-    document.body.appendChild(popup);
+  // Replace form content
+  document.body.innerHTML = '';
+  document.body.appendChild(container);
+  document.body.appendChild(popup);
 
-    // Update clock
-    function updateClock() {
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
-        const dateStr = now.toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+  // Update clock
+  function updateClock() {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+    const dateStr = now.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
 
-        document.getElementById('currentTime').textContent = timeStr;
-        document.getElementById('currentDate').textContent = dateStr;
-    }
+    document.getElementById('currentTime').textContent = timeStr;
+    document.getElementById('currentDate').textContent = dateStr;
+  }
 
-    updateClock();
-    setInterval(updateClock, 1000);
+  updateClock();
+  setInterval(updateClock, 1000);
 
-    // Check if attendance already marked today
-    function checkTodayAttendance(employee) {
-        frappe.call({
-            method: 'job_club.api.employee_attendance.check_today_attendance',
-            args: {
-                employee: employee
-            },
-            callback: (r) => {
-                if (r.message && r.message.already_marked) {
-                    showAlreadyMarked(r.message);
-                }
-            },
-            error: (err) => {
-                console.error('Error checking attendance:', err);
-            }
-        });
-    }
-
-    // Fetch employee department
-    function fetchEmployeeDepartment(employee) {
-        frappe.call({
-            method: 'job_club.api.employee_attendance.get_employee_department',
-            args: {
-                employee: employee
-            },
-            callback: (r) => {
-                if (r.message && r.message.department) {
-                    employeeDepartment = r.message.department;
-                    document.getElementById('employeeDept').textContent = employeeDepartment;
-                } else {
-                    document.getElementById('employeeDept').textContent = 'Not Assigned';
-                }
-            },
-            error: (err) => {
-                console.error('Error fetching department:', err);
-                document.getElementById('employeeDept').textContent = 'Error';
-            }
-        });
-    }
-
-    // Fetch employee and branch
-    setTimeout(() => {
-        frappe.call({
-            method: 'job_club.api.employee_attendance.get_employee_branch',
-            callback: (r) => {
-                if (r.message && !r.message.error) {
-                    employeeData = r.message;
-                    document.getElementById('employeeID').textContent = employeeData.employee;
-                    document.getElementById('branchName').textContent = employeeData.branch;
-
-                    fetchBranchCoordinates(employeeData.branch);
-                    fetchEmployeeDepartment(employeeData.employee);
-                    checkTodayAttendance(employeeData.employee);
-                } else {
-                    showError(r.message?.error || 'Unable to fetch employee/branch.');
-                }
-            },
-            error: (err) => {
-                console.error('Error:', err);
-                showError('Error fetching employee/branch data.');
-            }
-        });
-
-        // Start location capture immediately in parallel
-        captureLocation();
-    }, 300);
-
-    function fetchBranchCoordinates(branch) {
-        console.log('📍 Fetching branch coordinates for:', branch);
-
-        frappe.call({
-            method: 'job_club.api.employee_attendance.get_branch_coordinates',
-            args: {
-                branch_name: branch
-            },
-            callback: (r) => {
-                if (r.message && !r.message.error) {
-                    branchCoords = {
-                        latitude: parseFloat(r.message.latitude),
-                        longitude: parseFloat(r.message.longitude)
-                    };
-
-                    // Validate coordinates
-                    if (isNaN(branchCoords.latitude) || isNaN(branchCoords.longitude)) {
-                        console.error('❌ Invalid branch coordinates:', r.message);
-                        showError('Invalid branch coordinates received.');
-                        return;
-                    }
-
-                    console.log('✓ Branch coordinates:', branchCoords);
-
-                    // If user location already captured, calculate immediately
-                    if (userLocation) {
-                        console.log('✓ User location already available, calculating...');
-                        calculateDistance();
-                        enableSubmitButton();
-                    } else {
-                        console.log('⏳ Waiting for user location...');
-                    }
-                } else {
-                    showError(r.message?.error || 'Unable to fetch branch coordinates.');
-                }
-            },
-            error: (err) => {
-                console.error('❌ API Error:', err);
-                showError('Failed to fetch branch coordinates.');
-            }
-        });
-    }
-
-    function captureLocation() {
-        if (!navigator.geolocation) {
-            showError('Geolocation is not supported by your browser.');
-            return;
+  // Check if attendance already marked today
+  function checkTodayAttendance(employee) {
+    frappe.call({
+      method: 'job_club.api.employee_attendance.check_today_attendance',
+      args: {
+        employee: employee
+      },
+      callback: (r) => {
+        if (r.message && r.message.already_marked) {
+          showAlreadyMarked(r.message);
         }
+      },
+      error: (err) => {
+        console.error('Error checking attendance:', err);
+      }
+    });
+  }
 
-        // Show loading immediately
-        document.getElementById('submitBtn').innerHTML = '<div class="attendance-spinner"></div><span>Getting GPS Location...</span>';
-
-        // First, get initial position quickly
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                updateLocation(position);
-                console.log('✓ Initial location captured');
-
-                // Then start continuous watching
-                startContinuousTracking();
-            },
-            (error) => {
-                console.error('❌ Initial geolocation error:', error);
-                // Even if initial fails, try continuous tracking
-                startContinuousTracking();
-            }, {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 0
-            }
-        );
-    }
-
-    function startContinuousTracking() {
-        console.log('🔄 Starting continuous GPS tracking...');
-
-        // Watch position continuously - updates every time GPS changes
-        watchId = navigator.geolocation.watchPosition(
-            (position) => {
-                updateLocation(position);
-            },
-            (error) => {
-                console.error('❌ GPS tracking error:', error);
-                let errorMsg = 'GPS tracking error. Please check your location settings.';
-
-                switch (error.code) {
-                    case error.PERMISSION_DENIED:
-                        errorMsg = 'Location permission denied. Please enable location access.';
-                        if (watchId) navigator.geolocation.clearWatch(watchId);
-                        showError(errorMsg);
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        errorMsg = 'Location unavailable. Retrying...';
-                        console.warn('⚠️', errorMsg);
-                        break;
-                    case error.TIMEOUT:
-                        console.warn('⚠️ GPS timeout, continuing to track...');
-                        break;
-                }
-            }, {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 0 // Always fresh data
-            }
-        );
-    }
-
-    function updateLocation(position) {
-        const newLocation = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            accuracy: position.coords.accuracy
-        };
-
-        // Only update if location actually changed or first time
-        const hasChanged = !userLocation ||
-            Math.abs(userLocation.latitude - newLocation.latitude) > 0.000001 ||
-            Math.abs(userLocation.longitude - newLocation.longitude) > 0.000001;
-
-        if (hasChanged) {
-            userLocation = newLocation;
-            console.log('📍 Location updated:', {
-                lat: userLocation.latitude.toFixed(6),
-                lng: userLocation.longitude.toFixed(6),
-                accuracy: '±' + Math.round(userLocation.accuracy) + 'm',
-                time: new Date().toLocaleTimeString()
-            });
-
-            // Calculate distance immediately if branch coords available
-            if (branchCoords) {
-                calculateDistance();
-                enableSubmitButton();
-            } else {
-                console.log('⏳ Waiting for branch coordinates...');
-            }
-        }
-    }
-
-    function calculateDistance() {
-        // Validate both coordinates exist
-        if (!userLocation || !branchCoords) {
-            console.warn('⚠️ Missing coordinates for calculation');
-            return;
-        }
-
-        if (isNaN(userLocation.latitude) || isNaN(userLocation.longitude) ||
-            isNaN(branchCoords.latitude) || isNaN(branchCoords.longitude)) {
-            console.error('❌ Invalid coordinates for calculation');
-            showError('Invalid location data. Please refresh and try again.');
-            return;
-        }
-
-        const R = 6371000; // Earth radius in meters
-        const toRad = (deg) => deg * (Math.PI / 180);
-
-        const lat1 = userLocation.latitude;
-        const lon1 = userLocation.longitude;
-        const lat2 = branchCoords.latitude;
-        const lon2 = branchCoords.longitude;
-
-        const dLat = toRad(lat2 - lat1);
-        const dLon = toRad(lon2 - lon1);
-
-        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2);
-
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        distance = R * c;
-
-        console.log('📏 Distance Calculation:');
-        console.log('  User Location:', lat1.toFixed(6), lon1.toFixed(6));
-        console.log('  Branch Location:', lat2.toFixed(6), lon2.toFixed(6));
-        console.log('  Calculated Distance:', distance.toFixed(2), 'meters');
-        console.log('  GPS Accuracy: ±' + Math.round(userLocation.accuracy) + 'm');
-
-        const statusBadge = document.getElementById('statusBadge');
-        const restrictionText = document.getElementById('restrictionText');
-
-        statusBadge.classList.remove('attendance-hidden');
-
-        const isWithinZone = distance <= 200;
-
-        if (isWithinZone) {
-            statusBadge.className = 'attendance-status-badge success';
-            statusBadge.innerHTML = '<svg style="width:20px;height:20px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Within Office Zone';
-            restrictionText.classList.add('attendance-hidden');
-            console.log('✓ Status: Within Office Zone - Attendance allowed');
+  // Fetch employee department
+  function fetchEmployeeDepartment(employee) {
+    frappe.call({
+      method: 'job_club.api.employee_attendance.get_employee_department',
+      args: {
+        employee: employee
+      },
+      callback: (r) => {
+        if (r.message && r.message.department) {
+          employeeDepartment = r.message.department;
+          document.getElementById('employeeDept').textContent = employeeDepartment;
         } else {
-            statusBadge.className = 'attendance-status-badge warning';
-            statusBadge.innerHTML = '<svg style="width:20px;height:20px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg> Outside Office Zone';
-            restrictionText.classList.remove('attendance-hidden');
-            console.log('⚠️ Status: Outside Office Zone - Attendance blocked');
+          document.getElementById('employeeDept').textContent = 'Not Assigned';
         }
+      },
+      error: (err) => {
+        console.error('Error fetching department:', err);
+        document.getElementById('employeeDept').textContent = 'Error';
+      }
+    });
+  }
 
-        // Update button state based on zone
-        updateButtonState(isWithinZone);
-    }
+  // Fetch employee and branch
+  setTimeout(() => {
+    frappe.call({
+      method: 'job_club.api.employee_attendance.get_employee_branch',
+      callback: (r) => {
+        if (r.message && !r.message.error) {
+          employeeData = r.message;
+          document.getElementById('employeeID').textContent = employeeData.employee;
+          document.getElementById('branchName').textContent = employeeData.branch;
 
-    function updateButtonState(isWithinZone) {
-        const btn = document.getElementById('submitBtn');
-
-        if (isWithinZone) {
-            btn.disabled = false;
-            btn.style.opacity = '1';
-            btn.style.cursor = 'pointer';
+          fetchBranchCoordinates(employeeData.branch);
+          fetchEmployeeDepartment(employeeData.employee);
+          checkTodayAttendance(employeeData.employee);
         } else {
-            btn.disabled = true;
-            btn.style.opacity = '0.5';
-            btn.style.cursor = 'not-allowed';
+          showError(r.message?.error || 'Unable to fetch employee/branch.');
         }
-    }
+      },
+      error: (err) => {
+        console.error('Error:', err);
+        showError('Error fetching employee/branch data.');
+      }
+    });
 
-    function enableSubmitButton() {
-        const btn = document.getElementById('submitBtn');
-        const isWithinZone = distance <= 200;
+    // Start location capture immediately in parallel
+    captureLocation();
+  }, 300);
 
-        btn.innerHTML = '<svg style="width:24px;height:24px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span>Mark My Attendance</span>';
-        btn.onclick = submitAttendance;
+  function fetchBranchCoordinates(branch) {
+    console.log('📍 Fetching branch coordinates for:', branch);
 
-        // Only enable if within zone
-        if (isWithinZone) {
-            btn.disabled = false;
-            btn.style.opacity = '1';
-            btn.style.cursor = 'pointer';
-        } else {
-            btn.disabled = true;
-            btn.style.opacity = '0.5';
-            btn.style.cursor = 'not-allowed';
-        }
-    }
+    frappe.call({
+      method: 'job_club.api.employee_attendance.get_branch_coordinates',
+      args: {
+        branch_name: branch
+      },
+      callback: (r) => {
+        if (r.message && !r.message.error) {
+          branchCoords = {
+            latitude: parseFloat(r.message.latitude),
+            longitude: parseFloat(r.message.longitude)
+          };
 
-    function submitAttendance() {
-        // Double-check zone restriction before submitting
-        if (distance > 200) {
-            showError('You must be within office zone to mark attendance.');
+          // Validate coordinates
+          if (isNaN(branchCoords.latitude) || isNaN(branchCoords.longitude)) {
+            console.error('❌ Invalid branch coordinates:', r.message);
+            showError('Invalid branch coordinates received.');
             return;
+          }
+
+          console.log('✓ Branch coordinates:', branchCoords);
+
+          // If user location already captured, calculate immediately
+          if (userLocation) {
+            console.log('✓ User location already available, calculating...');
+            calculateDistance();
+            enableSubmitButton();
+          } else {
+            console.log('⏳ Waiting for user location...');
+          }
+        } else {
+          showError(r.message?.error || 'Unable to fetch branch coordinates.');
         }
+      },
+      error: (err) => {
+        console.error('❌ API Error:', err);
+        showError('Failed to fetch branch coordinates.');
+      }
+    });
+  }
 
-        const btn = document.getElementById('submitBtn');
-        btn.disabled = true;
-        btn.innerHTML = '<div class="attendance-spinner"></div><span>Submitting...</span>';
-
-        // Stop GPS tracking when submitting
-        if (watchId) {
-            navigator.geolocation.clearWatch(watchId);
-            console.log('🛑 GPS tracking stopped for submission');
-        }
-
-        frappe.call({
-            method: 'job_club.api.employee_attendance.mark_attendance',
-            args: {
-                latitude: userLocation.latitude,
-                longitude: userLocation.longitude,
-                employee: employeeData.employee,
-                branch: employeeData.branch,
-                distance: distance ? distance.toFixed(2) : null
-            },
-            callback: (r) => {
-                if (r.message && !r.message.error && !r.message.outside_zone) {
-                    if (r.message.already_marked) {
-                        showAlreadyMarked(r.message);
-                    } else {
-                        showSuccess(r.message);
-                    }
-                } else {
-                    showError(r.message?.error || r.message || 'Failed to mark attendance.');
-                }
-            },
-            error: (err) => {
-                console.error('Submission error:', err);
-                showError('Failed to mark attendance. Please try again.');
-            }
-        });
+  function captureLocation() {
+    if (!navigator.geolocation) {
+      showError('Geolocation is not supported by your browser.');
+      return;
     }
 
-    function showSuccess(data) {
-        const popupEl = document.getElementById('attendancePopup');
-        const icon = document.getElementById('popupIcon');
-        const title = document.getElementById('popupTitle');
-        const details = document.getElementById('popupDetails');
-        const btn = document.getElementById('popupBtn');
+    // Show loading immediately
+    document.getElementById('submitBtn').innerHTML = '<div class="attendance-spinner"></div><span>Getting GPS Location...</span>';
 
-        icon.innerHTML = '<svg class="attendance-popup-icon" fill="none" stroke="#10b981" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
-        title.textContent = 'Attendance Marked!';
+    // First, get initial position quickly
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        updateLocation(position);
+        console.log('✓ Initial location captured');
 
-        const status = data.status || 'Present';
-        const statusClass = 'present';
+        // Then start continuous watching
+        startContinuousTracking();
+      },
+      (error) => {
+        console.error('❌ Initial geolocation error:', error);
+        // Even if initial fails, try continuous tracking
+        startContinuousTracking();
+      }, {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
+    }
+    );
+  }
 
-        // Format time nicely
-        let displayTime = new Date().toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
+  function startContinuousTracking() {
+    console.log('🔄 Starting continuous GPS tracking...');
 
-        // If backend sends time, use it
-        if (data.time) {
-            const timeParts = data.time.split(':');
-            if (timeParts.length >= 3) {
-                const hour = parseInt(timeParts[0]);
-                const minute = timeParts[1];
-                const second = timeParts[2].split('.')[0]; // Remove microseconds if present
-                const ampm = hour >= 12 ? 'PM' : 'AM';
-                const hour12 = hour % 12 || 12;
-                displayTime = `${hour12}:${minute}:${second} ${ampm}`;
-            }
+    // Watch position continuously - updates every time GPS changes
+    watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        updateLocation(position);
+      },
+      (error) => {
+        console.error('❌ GPS tracking error:', error);
+        let errorMsg = 'GPS tracking error. Please check your location settings.';
+
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMsg = 'Location permission denied. Please enable location access.';
+            if (watchId) navigator.geolocation.clearWatch(watchId);
+            showError(errorMsg);
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMsg = 'Location unavailable. Retrying...';
+            console.warn('⚠️', errorMsg);
+            break;
+          case error.TIMEOUT:
+            console.warn('⚠️ GPS timeout, continuing to track...');
+            break;
         }
+      }, {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0 // Always fresh data
+    }
+    );
+  }
 
-        details.innerHTML = `
+  function updateLocation(position) {
+    const newLocation = {
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude,
+      accuracy: position.coords.accuracy
+    };
+
+    // Only update if location actually changed or first time
+    const hasChanged = !userLocation ||
+      Math.abs(userLocation.latitude - newLocation.latitude) > 0.000001 ||
+      Math.abs(userLocation.longitude - newLocation.longitude) > 0.000001;
+
+    if (hasChanged) {
+      userLocation = newLocation;
+      console.log('📍 Location updated:', {
+        lat: userLocation.latitude.toFixed(6),
+        lng: userLocation.longitude.toFixed(6),
+        accuracy: '±' + Math.round(userLocation.accuracy) + 'm',
+        time: new Date().toLocaleTimeString()
+      });
+
+      // Calculate distance immediately if branch coords available
+      if (branchCoords) {
+        calculateDistance();
+        enableSubmitButton();
+      } else {
+        console.log('⏳ Waiting for branch coordinates...');
+      }
+    }
+  }
+
+  function calculateDistance() {
+    // Validate both coordinates exist
+    if (!userLocation || !branchCoords) {
+      console.warn('⚠️ Missing coordinates for calculation');
+      return;
+    }
+
+    if (isNaN(userLocation.latitude) || isNaN(userLocation.longitude) ||
+      isNaN(branchCoords.latitude) || isNaN(branchCoords.longitude)) {
+      console.error('❌ Invalid coordinates for calculation');
+      showError('Invalid location data. Please refresh and try again.');
+      return;
+    }
+
+    const R = 6371000; // Earth radius in meters
+    const toRad = (deg) => deg * (Math.PI / 180);
+
+    const lat1 = userLocation.latitude;
+    const lon1 = userLocation.longitude;
+    const lat2 = branchCoords.latitude;
+    const lon2 = branchCoords.longitude;
+
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    distance = R * c;
+
+    console.log('📏 Distance Calculation:');
+    console.log('  User Location:', lat1.toFixed(6), lon1.toFixed(6));
+    console.log('  Branch Location:', lat2.toFixed(6), lon2.toFixed(6));
+    console.log('  Calculated Distance:', distance.toFixed(2), 'meters');
+    console.log('  GPS Accuracy: ±' + Math.round(userLocation.accuracy) + 'm');
+
+    const statusBadge = document.getElementById('statusBadge');
+    const restrictionText = document.getElementById('restrictionText');
+
+    statusBadge.classList.remove('attendance-hidden');
+
+    const zoneRadius = employeeData?.attendance_radius || 200;
+    const isWithinZone = distance <= zoneRadius;
+
+    if (isWithinZone) {
+      statusBadge.className = 'attendance-status-badge success';
+      statusBadge.innerHTML = '<svg style="width:20px;height:20px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Within Office Zone';
+      restrictionText.classList.add('attendance-hidden');
+      console.log('✓ Status: Within Office Zone - Attendance allowed');
+    } else {
+      statusBadge.className = 'attendance-status-badge warning';
+      statusBadge.innerHTML = '<svg style="width:20px;height:20px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg> Outside Office Zone';
+      restrictionText.classList.remove('attendance-hidden');
+      console.log('⚠️ Status: Outside Office Zone - Attendance blocked');
+    }
+
+    // Update button state based on zone
+    updateButtonState(isWithinZone);
+  }
+
+  function updateButtonState(isWithinZone) {
+    const btn = document.getElementById('submitBtn');
+
+    if (isWithinZone) {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.style.cursor = 'pointer';
+    } else {
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+      btn.style.cursor = 'not-allowed';
+    }
+  }
+
+  function enableSubmitButton() {
+    const btn = document.getElementById('submitBtn');
+    const zoneRadius = employeeData?.attendance_radius || 200;
+    const isWithinZone = distance <= zoneRadius;
+
+    btn.innerHTML = '<svg style="width:24px;height:24px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span>Mark My Attendance</span>';
+    btn.onclick = submitAttendance;
+
+    // Only enable if within zone
+    if (isWithinZone) {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.style.cursor = 'pointer';
+    } else {
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+      btn.style.cursor = 'not-allowed';
+    }
+  }
+
+  function submitAttendance() {
+    // Double-check zone restriction before submitting
+    const zoneRadius = employeeData?.attendance_radius || 200;
+    if (distance > zoneRadius) {
+      showError('You must be within office zone to mark attendance.');
+      return;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<div class="attendance-spinner"></div><span>Submitting...</span>';
+
+    // Stop GPS tracking when submitting
+    if (watchId) {
+      navigator.geolocation.clearWatch(watchId);
+      console.log('🛑 GPS tracking stopped for submission');
+    }
+
+    frappe.call({
+      method: 'job_club.api.employee_attendance.mark_attendance',
+      args: {
+        latitude: userLocation.latitude,
+        longitude: userLocation.longitude,
+        employee: employeeData.employee,
+        branch: employeeData.branch,
+        distance: distance ? distance.toFixed(2) : null
+      },
+      callback: (r) => {
+        if (r.message && !r.message.error && !r.message.outside_zone) {
+          if (r.message.already_marked) {
+            showAlreadyMarked(r.message);
+          } else {
+            showSuccess(r.message);
+          }
+        } else {
+          showError(r.message?.error || r.message || 'Failed to mark attendance.');
+        }
+      },
+      error: (err) => {
+        console.error('Submission error:', err);
+        showError('Failed to mark attendance. Please try again.');
+      }
+    });
+  }
+
+  function showSuccess(data) {
+    const popupEl = document.getElementById('attendancePopup');
+    const icon = document.getElementById('popupIcon');
+    const title = document.getElementById('popupTitle');
+    const details = document.getElementById('popupDetails');
+    const btn = document.getElementById('popupBtn');
+
+    icon.innerHTML = '<svg class="attendance-popup-icon" fill="none" stroke="#10b981" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+    title.textContent = 'Attendance Marked!';
+
+    const status = data.status || 'Present';
+    const statusClass = 'present';
+
+    // Format time nicely
+    let displayTime = new Date().toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+
+    // If backend sends time, use it
+    if (data.time) {
+      const timeParts = data.time.split(':');
+      if (timeParts.length >= 3) {
+        const hour = parseInt(timeParts[0]);
+        const minute = timeParts[1];
+        const second = timeParts[2].split('.')[0]; // Remove microseconds if present
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const hour12 = hour % 12 || 12;
+        displayTime = `${hour12}:${minute}:${second} ${ampm}`;
+      }
+    }
+
+    details.innerHTML = `
       <div class="attendance-popup-detail">
         <div class="attendance-popup-status ${statusClass}">${status}</div>
       </div>
@@ -826,46 +829,46 @@ frappe.ready(function() {
       </div>
     `;
 
-        btn.className = 'attendance-popup-btn success';
-        btn.onclick = () => window.location.reload();
+    btn.className = 'attendance-popup-btn success';
+    btn.onclick = () => window.location.reload();
 
-        popupEl.classList.remove('error');
-        popupEl.classList.remove('info');
-        popupEl.classList.add('show');
+    popupEl.classList.remove('error');
+    popupEl.classList.remove('info');
+    popupEl.classList.add('show');
+  }
+
+  function showAlreadyMarked(data) {
+    const popupEl = document.getElementById('attendancePopup');
+    const icon = document.getElementById('popupIcon');
+    const title = document.getElementById('popupTitle');
+    const details = document.getElementById('popupDetails');
+    const btn = document.getElementById('popupBtn');
+
+    icon.innerHTML = '<svg class="attendance-popup-icon" fill="none" stroke="#3b82f6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+    title.textContent = 'Already Marked!';
+
+    const status = data.status || 'Present';
+    const statusClass = status === 'Present' ? 'present' : 'outside';
+
+    // Format time nicely
+    let displayTime = 'Earlier today';
+    if (data.time) {
+      const timeStr = data.time.toString();
+      const timeParts = timeStr.split(':');
+      if (timeParts.length >= 3) {
+        const hour = parseInt(timeParts[0]);
+        const minute = timeParts[1];
+        const second = timeParts[2].split('.')[0]; // Remove microseconds if present
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const hour12 = hour % 12 || 12;
+        displayTime = `${hour12}:${minute}:${second} ${ampm}`;
+      }
     }
 
-    function showAlreadyMarked(data) {
-        const popupEl = document.getElementById('attendancePopup');
-        const icon = document.getElementById('popupIcon');
-        const title = document.getElementById('popupTitle');
-        const details = document.getElementById('popupDetails');
-        const btn = document.getElementById('popupBtn');
+    // Determine location status
+    const locationStatus = status === 'Present' ? 'Within Office Zone' : 'Outside Office Zone';
 
-        icon.innerHTML = '<svg class="attendance-popup-icon" fill="none" stroke="#3b82f6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
-        title.textContent = 'Already Marked!';
-
-        const status = data.status || 'Present';
-        const statusClass = status === 'Present' ? 'present' : 'outside';
-
-        // Format time nicely
-        let displayTime = 'Earlier today';
-        if (data.time) {
-            const timeStr = data.time.toString();
-            const timeParts = timeStr.split(':');
-            if (timeParts.length >= 3) {
-                const hour = parseInt(timeParts[0]);
-                const minute = timeParts[1];
-                const second = timeParts[2].split('.')[0]; // Remove microseconds if present
-                const ampm = hour >= 12 ? 'PM' : 'AM';
-                const hour12 = hour % 12 || 12;
-                displayTime = `${hour12}:${minute}:${second} ${ampm}`;
-            }
-        }
-
-        // Determine location status
-        const locationStatus = status === 'Present' ? 'Within Office Zone' : 'Outside Office Zone';
-
-        details.innerHTML = `
+    details.innerHTML = `
       <div class="attendance-popup-detail" style="color:#6b7280;font-size:1.1rem">
         Attendance already marked for today
       </div>
@@ -882,32 +885,32 @@ frappe.ready(function() {
       </div>
     `;
 
-        btn.className = 'attendance-popup-btn info';
-        btn.textContent = 'OK';
-        btn.onclick = () => window.location.reload();
+    btn.className = 'attendance-popup-btn info';
+    btn.textContent = 'OK';
+    btn.onclick = () => window.location.reload();
 
-        popupEl.classList.remove('error');
-        popupEl.classList.add('info');
-        popupEl.classList.add('show');
-    }
+    popupEl.classList.remove('error');
+    popupEl.classList.add('info');
+    popupEl.classList.add('show');
+  }
 
-    function showError(message) {
-        const popupEl = document.getElementById('attendancePopup');
-        const icon = document.getElementById('popupIcon');
-        const title = document.getElementById('popupTitle');
-        const details = document.getElementById('popupDetails');
-        const btn = document.getElementById('popupBtn');
+  function showError(message) {
+    const popupEl = document.getElementById('attendancePopup');
+    const icon = document.getElementById('popupIcon');
+    const title = document.getElementById('popupTitle');
+    const details = document.getElementById('popupDetails');
+    const btn = document.getElementById('popupBtn');
 
-        icon.innerHTML = '<svg class="attendance-popup-icon" fill="none" stroke="#ef4444" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
-        title.textContent = 'Oops!';
-        details.innerHTML = `<div class="attendance-popup-detail" style="color:#6b7280;font-size:1.1rem">${message}</div>`;
+    icon.innerHTML = '<svg class="attendance-popup-icon" fill="none" stroke="#ef4444" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+    title.textContent = 'Oops!';
+    details.innerHTML = `<div class="attendance-popup-detail" style="color:#6b7280;font-size:1.1rem">${message}</div>`;
 
-        btn.className = 'attendance-popup-btn error';
-        btn.textContent = 'Try Again';
-        btn.onclick = () => window.location.reload();
+    btn.className = 'attendance-popup-btn error';
+    btn.textContent = 'Try Again';
+    btn.onclick = () => window.location.reload();
 
-        popupEl.classList.remove('info');
-        popupEl.classList.add('error');
-        popupEl.classList.add('show');
-    }
+    popupEl.classList.remove('info');
+    popupEl.classList.add('error');
+    popupEl.classList.add('show');
+  }
 });

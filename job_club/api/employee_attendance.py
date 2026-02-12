@@ -30,7 +30,8 @@ def get_employee_branch():
     if not employee.branch:
         return {"error": _("Branch not set for this employee.")}
 
-    return {"employee": employee.name, "branch": employee.branch}
+    radius = frappe.db.get_single_value("Job Club Settings", "attendance_radius") or 200
+    return {"employee": employee.name, "branch": employee.branch, "attendance_radius": radius}
 
 
 @frappe.whitelist()
@@ -235,8 +236,8 @@ def mark_attendance(latitude, longitude, employee=None, branch=None, distance=No
         float(branch_data.branch_longitude)
     )
 
-    # CRITICAL: Zone restriction - must be within 200 meters
-    ZONE_RADIUS = 200  # meters
+    # CRITICAL: Zone restriction
+    ZONE_RADIUS = frappe.db.get_single_value("Job Club Settings", "attendance_radius") or 200  # meters
     
     if calculated_distance > ZONE_RADIUS:
         # Log the attempt for security/audit purposes
