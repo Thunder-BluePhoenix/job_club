@@ -174,7 +174,7 @@ class CourseDetails {
                                 ${course.description ? `<p class="text-[11px] text-indigo-700/70 leading-relaxed font-medium max-w-2xl line-clamp-1">${course.description}</p>` : ''}
                             </div>
                             
-                            <div class="flex flex-row gap-3 w-full md:w-auto relative z-10">
+                            <div class="flex flex-col md:flex-row gap-3 w-full md:w-auto relative z-10">
                                  <div class="bg-white/60 backdrop-blur-md border border-indigo-200 px-3 py-2 rounded-lg flex items-center gap-2 shadow-sm flex-1 md:flex-none min-w-[110px]">
                                     <div class="h-8 w-8 rounded-md bg-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
