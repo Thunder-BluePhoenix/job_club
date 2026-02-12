@@ -141,11 +141,11 @@ class StudentDashboard {
                                     </p>
                                 </div>
                             </div>
-                            <div class="flex flex-wrap gap-2">
-                                <button class="bg-indigo-900 text-white text-xs font-medium px-4 py-2 rounded-xl hover:bg-indigo-800 transition-all shadow-sm active:scale-95 btn-mark-attendance">
+                            <div class="grid grid-cols-2 gap-2 w-full md:flex md:w-auto">
+                                <button class="bg-indigo-900 text-white text-[10px] sm:text-xs font-medium px-2 sm:px-4 py-2 rounded-xl hover:bg-indigo-800 transition-all shadow-sm active:scale-95 btn-mark-attendance whitespace-nowrap">
                                     Mark Attendance
                                 </button>
-                                <button class="border border-indigo-200 bg-white text-indigo-900 text-xs font-medium px-4 py-2 rounded-xl hover:bg-indigo-50 transition-all shadow-sm active:scale-95 btn-leave-application">
+                                <button class="border border-indigo-200 bg-white text-indigo-900 text-[10px] sm:text-xs font-medium px-2 sm:px-4 py-2 rounded-xl hover:bg-indigo-50 transition-all shadow-sm active:scale-95 btn-leave-application whitespace-nowrap">
                                     Leave Application
                                 </button>
                             </div>
