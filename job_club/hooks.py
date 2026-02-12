@@ -33,7 +33,8 @@ app_include_css = [
 ]
 
 app_include_js = [
-	"/assets/job_club/js/override_desk.js"
+	"/assets/job_club/js/override_desk.js",
+    "/assets/job_club/js/admin_dashboard_workspace.js"
 ]
 
 # include js, css files in header of web template
