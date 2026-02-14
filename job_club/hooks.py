@@ -73,6 +73,25 @@ scheduler_events = {
     }
 }
 
+fixtures = [
+    {
+        "doctype": "Workspace",
+        "filters": [
+            ["name", "in", [
+                "Admin Dashboard",
+                "Admission Management",
+                "Fees Management",
+                "Attendance Management",
+                "Courses",
+                "Branches",
+                "Recruitment",
+                "User & Permissions"
+            ]]
+        ]
+    },
+    "Custom HTML Block"
+]
+
 # Svg Icons
 # ------------------
 # include app icons in desk

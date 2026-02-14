@@ -17,21 +17,26 @@ def get_employee_branch():
     if user == "Guest":
         frappe.throw(_("Please login to mark attendance."))
     
-    employee = frappe.db.get_value(
+    employee_data = frappe.db.get_value(
         "Employee",
         {"user_id": user},
-        ["name", "branch"],
+        ["name", "branch", "employee_name"],
         as_dict=True,
     )
 
-    if not employee:
+    if not employee_data:
         return {"error": _("No employee linked with this user.")}
 
-    if not employee.branch:
+    if not employee_data.branch:
         return {"error": _("Branch not set for this employee.")}
 
     radius = frappe.db.get_single_value("Job Club Settings", "attendance_radius") or 200
-    return {"employee": employee.name, "branch": employee.branch, "attendance_radius": radius}
+    return {
+        "employee": employee_data.name, 
+        "employee_name": employee_data.employee_name,
+        "branch": employee_data.branch, 
+        "attendance_radius": radius
+    }
 
 
 @frappe.whitelist()
@@ -270,7 +275,10 @@ def mark_attendance(latitude, longitude, employee=None, branch=None, distance=No
             "employee": employee,
             "branch": branch,
             "date": today,
+            "date": today,
             "time": current_time_str,
+            "in_time": current_time_str,
+            "out_time": "",
             "latitude": latitude,
             "longitude": longitude,
             "distance": round(calculated_distance, 2),
@@ -278,7 +286,7 @@ def mark_attendance(latitude, longitude, employee=None, branch=None, distance=No
             "auto_marked": 0
         })
         att.insert(ignore_permissions=True)
-        att.submit()  # Submit the document to finalize it
+        # att.submit()  # Submit deferred to check-out
         frappe.db.commit()
         
         return {

@@ -4,7 +4,7 @@ frappe.ready(function () {
   let userLocation = null;
   let distance = null;
   let watchId = null; // For continuous GPS tracking
-  let employeeDepartment = null;
+
 
   // Inject custom styles
   const style = document.createElement('style');
@@ -352,20 +352,14 @@ frappe.ready(function () {
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
           </svg>
           <div class="attendance-info-content">
-            <div class="attendance-info-label">Employee ID</div>
-            <div class="attendance-info-value" id="employeeID">---</div>
+            <div class="attendance-info-label">Employee Name</div>
+            <div class="attendance-info-value" id="employeeNameDisplay">---</div>
+            <div class="attendance-info-label" style="margin-top: 8px;">Employee ID</div>
+            <div class="attendance-info-value" style="font-size: 0.9em; opacity: 0.9;" id="employeeIDDisplay">---</div>
           </div>
         </div>
 
-        <div class="attendance-info-item">
-          <svg class="attendance-info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-          </svg>
-          <div class="attendance-info-content">
-            <div class="attendance-info-label">Department</div>
-            <div class="attendance-info-value" id="employeeDept">---</div>
-          </div>
-        </div>
+
 
         <div class="attendance-info-item">
           <svg class="attendance-info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -455,26 +449,7 @@ frappe.ready(function () {
   }
 
   // Fetch employee department
-  function fetchEmployeeDepartment(employee) {
-    frappe.call({
-      method: 'job_club.api.employee_attendance.get_employee_department',
-      args: {
-        employee: employee
-      },
-      callback: (r) => {
-        if (r.message && r.message.department) {
-          employeeDepartment = r.message.department;
-          document.getElementById('employeeDept').textContent = employeeDepartment;
-        } else {
-          document.getElementById('employeeDept').textContent = 'Not Assigned';
-        }
-      },
-      error: (err) => {
-        console.error('Error fetching department:', err);
-        document.getElementById('employeeDept').textContent = 'Error';
-      }
-    });
-  }
+
 
   // Fetch employee and branch
   setTimeout(() => {
@@ -483,11 +458,11 @@ frappe.ready(function () {
       callback: (r) => {
         if (r.message && !r.message.error) {
           employeeData = r.message;
-          document.getElementById('employeeID').textContent = employeeData.employee;
+          document.getElementById('employeeNameDisplay').textContent = employeeData.employee_name;
+          document.getElementById('employeeIDDisplay').textContent = employeeData.employee;
           document.getElementById('branchName').textContent = employeeData.branch;
 
           fetchBranchCoordinates(employeeData.branch);
-          fetchEmployeeDepartment(employeeData.employee);
           checkTodayAttendance(employeeData.employee);
         } else {
           showError(r.message?.error || 'Unable to fetch employee/branch.');
@@ -830,7 +805,7 @@ frappe.ready(function () {
     `;
 
     btn.className = 'attendance-popup-btn success';
-    btn.onclick = () => window.location.reload();
+    btn.onclick = () => window.location.href = "/app/admin-dashboard";
 
     popupEl.classList.remove('error');
     popupEl.classList.remove('info');
@@ -887,7 +862,7 @@ frappe.ready(function () {
 
     btn.className = 'attendance-popup-btn info';
     btn.textContent = 'OK';
-    btn.onclick = () => window.location.reload();
+    btn.onclick = () => window.location.href = "/app/admin-dashboard";
 
     popupEl.classList.remove('error');
     popupEl.classList.add('info');

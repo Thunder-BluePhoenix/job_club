@@ -1,0 +1,69 @@
+{
+    "allow_comments": 0,
+    "allow_delete": 0,
+    "allow_edit": 1,
+    "allow_incomplete": 0,
+    "allow_multiple": 0,
+    "allow_print": 0,
+    "anonymous": 0,
+    "apply_document_permissions": 0,
+    "button_label": "Check Out",
+    "condition_json": "[]",
+    "doc_type": "Employee Attendance",
+    "docstatus": 0,
+    "doctype": "Web Form",
+    "is_standard": 1,
+    "login_required": 1,
+    "max_attachment_size": 0,
+    "module": "Job Club",
+    "name": "employee-check-out",
+    "published": 1,
+    "route": "employee-check-out",
+    "show_attachments": 0,
+    "show_list": 0,
+    "show_sidebar": 0,
+    "title": "Employee Check Out",
+    "web_form_fields": [
+        {
+            "allow_read_on_all_link_options": 0,
+            "fieldname": "employee",
+            "fieldtype": "Link",
+            "hidden": 1,
+            "label": "Employee",
+            "options": "Employee",
+            "read_only": 1,
+            "reqd": 0,
+            "show_in_filter": 0
+        },
+        {
+            "allow_read_on_all_link_options": 0,
+            "fieldname": "date",
+            "fieldtype": "Date",
+            "hidden": 1,
+            "label": "Date",
+            "read_only": 1,
+            "reqd": 0,
+            "show_in_filter": 0
+        },
+        {
+            "allow_read_on_all_link_options": 0,
+            "fieldname": "in_time",
+            "fieldtype": "Time",
+            "hidden": 1,
+            "label": "In Time",
+            "read_only": 1,
+            "reqd": 0,
+            "show_in_filter": 0
+        },
+        {
+            "allow_read_on_all_link_options": 0,
+            "fieldname": "out_time",
+            "fieldtype": "Time",
+            "hidden": 1,
+            "label": "Out Time",
+            "read_only": 0,
+            "reqd": 1,
+            "show_in_filter": 0
+        }
+    ]
+}

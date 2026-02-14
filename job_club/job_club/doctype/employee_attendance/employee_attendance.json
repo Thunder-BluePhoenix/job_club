@@ -1,199 +1,213 @@
 {
- "actions": [],
- "allow_import": 1,
- "autoname": "naming_series:",
- "creation": "2025-12-29 11:53:09.156474",
- "doctype": "DocType",
- "document_type": "Document",
- "engine": "InnoDB",
- "field_order": [
-  "auto_marked",
-  "employee",
-  "employee_name",
-  "employee_mobile_number",
-  "branch",
-  "leave_application",
-  "column_break_3",
-  "date",
-  "time",
-  "status",
-  "latitude",
-  "longitude",
-  "distance",
-  "naming_series",
-  "amended_from"
- ],
- "fields": [
-  {
-   "default": "0",
-   "fieldname": "auto_marked",
-   "fieldtype": "Check",
-   "label": "Auto Marked"
-  },
-  {
-   "fieldname": "naming_series",
-   "fieldtype": "Select",
-   "label": "Series",
-   "options": "EMP-ATT-.YYYY.-"
-  },
-  {
-   "fieldname": "column_break_3",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "branch",
-   "fieldtype": "Link",
-   "label": "Branch",
-   "options": "Branch",
-   "reqd": 1
-  },
-  {
-   "fieldname": "date",
-   "fieldtype": "Date",
-   "label": "Date",
-   "reqd": 1,
-   "search_index": 1
-  },
-  {
-   "fieldname": "time",
-   "fieldtype": "Time",
-   "label": "Time",
-   "reqd": 1
-  },
-  {
-   "default": "Present",
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Status",
-   "options": "Present\nAbsent\nLeave\nOutside Zone",
-   "reqd": 1
-  },
-  {
-   "fieldname": "latitude",
-   "fieldtype": "Float",
-   "hidden": 1,
-   "label": "Latitude"
-  },
-  {
-   "fieldname": "longitude",
-   "fieldtype": "Float",
-   "hidden": 1,
-   "label": "Longitude"
-  },
-  {
-   "fieldname": "distance",
-   "fieldtype": "Float",
-   "hidden": 1,
-   "label": "Distance"
-  },
-  {
-   "fieldname": "leave_application",
-   "fieldtype": "Link",
-   "label": "Leave Application",
-   "options": "Student Leave Application",
-   "read_only": 1
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Employee Attendance",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Employee Attendance",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
-  },
-  {
-   "fieldname": "employee",
-   "fieldtype": "Link",
-   "in_global_search": 1,
-   "in_standard_filter": 1,
-   "label": "Employee",
-   "options": "Employee",
-   "reqd": 1,
-   "search_index": 1
-  },
-  {
-   "fetch_from": "student.student_name",
-   "fieldname": "employee_name",
-   "fieldtype": "Read Only",
-   "in_global_search": 1,
-   "label": "Employee Name"
-  },
-  {
-   "fetch_from": "student.student_mobile_number",
-   "fieldname": "employee_mobile_number",
-   "fieldtype": "Read Only",
-   "label": "Employee Mobile Number",
-   "options": "Phone"
-  }
- ],
- "index_web_pages_for_search": 1,
- "is_submittable": 1,
- "links": [],
- "modified": "2025-12-29 14:32:09.562181",
- "modified_by": "Administrator",
- "module": "Job Club",
- "name": "Employee Attendance",
- "naming_rule": "By \"Naming Series\" field",
- "owner": "Administrator",
- "permissions": [
-  {
-   "cancel": 1,
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Academics User",
-   "share": 1,
-   "submit": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Employee",
-   "share": 1,
-   "submit": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Instructor",
-   "share": 1,
-   "submit": 1,
-   "write": 1
-  }
- ],
- "row_format": "Dynamic",
- "sort_field": "modified",
- "sort_order": "DESC",
- "states": [],
- "title_field": "employee_name"
+    "actions": [],
+    "allow_import": 1,
+    "autoname": "naming_series:",
+    "creation": "2025-12-29 11:53:09.156474",
+    "doctype": "DocType",
+    "document_type": "Document",
+    "engine": "InnoDB",
+    "field_order": [
+        "auto_marked",
+        "employee",
+        "employee_name",
+        "employee_mobile_number",
+        "branch",
+        "leave_application",
+        "column_break_3",
+        "date",
+        "time",
+        "in_time",
+        "out_time",
+        "status",
+        "latitude",
+        "longitude",
+        "distance",
+        "naming_series",
+        "amended_from"
+    ],
+    "fields": [
+        {
+            "default": "0",
+            "fieldname": "auto_marked",
+            "fieldtype": "Check",
+            "label": "Auto Marked"
+        },
+        {
+            "fieldname": "naming_series",
+            "fieldtype": "Select",
+            "label": "Series",
+            "options": "EMP-ATT-.YYYY.-"
+        },
+        {
+            "fieldname": "column_break_3",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "branch",
+            "fieldtype": "Link",
+            "label": "Branch",
+            "options": "Branch",
+            "reqd": 1
+        },
+        {
+            "fieldname": "date",
+            "fieldtype": "Date",
+            "label": "Date",
+            "reqd": 1,
+            "search_index": 1
+        },
+        {
+            "fieldname": "time",
+            "fieldtype": "Time",
+            "label": "Time",
+            "reqd": 1
+        },
+        {
+            "fieldname": "in_time",
+            "fieldtype": "Time",
+            "label": "In Time",
+            "reqd": 0
+        },
+        {
+            "fieldname": "out_time",
+            "fieldtype": "Time",
+            "label": "Out Time",
+            "reqd": 0
+        },
+        {
+            "default": "Present",
+            "fieldname": "status",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "in_standard_filter": 1,
+            "label": "Status",
+            "options": "Present\nAbsent\nLeave\nWork From Home\nOutside Zone",
+            "reqd": 1
+        },
+        {
+            "fieldname": "latitude",
+            "fieldtype": "Float",
+            "hidden": 1,
+            "label": "Latitude"
+        },
+        {
+            "fieldname": "longitude",
+            "fieldtype": "Float",
+            "hidden": 1,
+            "label": "Longitude"
+        },
+        {
+            "fieldname": "distance",
+            "fieldtype": "Float",
+            "hidden": 1,
+            "label": "Distance"
+        },
+        {
+            "fieldname": "leave_application",
+            "fieldtype": "Link",
+            "label": "Leave Application",
+            "options": "Employee Leave Application",
+            "read_only": 1
+        },
+        {
+            "fieldname": "amended_from",
+            "fieldtype": "Link",
+            "label": "Amended From",
+            "no_copy": 1,
+            "options": "Employee Attendance",
+            "print_hide": 1,
+            "read_only": 1,
+            "search_index": 1
+        },
+        {
+            "fieldname": "amended_from",
+            "fieldtype": "Link",
+            "label": "Amended From",
+            "no_copy": 1,
+            "options": "Employee Attendance",
+            "print_hide": 1,
+            "read_only": 1,
+            "search_index": 1
+        },
+        {
+            "fieldname": "employee",
+            "fieldtype": "Link",
+            "in_global_search": 1,
+            "in_standard_filter": 1,
+            "label": "Employee",
+            "options": "Employee",
+            "reqd": 1,
+            "search_index": 1
+        },
+        {
+            "fetch_from": "employee.employee_name",
+            "fieldname": "employee_name",
+            "fieldtype": "Read Only",
+            "in_global_search": 1,
+            "label": "Employee Name"
+        },
+        {
+            "fetch_from": "employee.cell_number",
+            "fieldname": "employee_mobile_number",
+            "fieldtype": "Read Only",
+            "label": "Employee Mobile Number",
+            "options": "Phone"
+        }
+    ],
+    "index_web_pages_for_search": 1,
+    "is_submittable": 1,
+    "links": [],
+    "modified": "2025-12-29 14:32:09.562181",
+    "modified_by": "Administrator",
+    "module": "Job Club",
+    "name": "Employee Attendance",
+    "naming_rule": "By \"Naming Series\" field",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "cancel": 1,
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Academics User",
+            "share": 1,
+            "submit": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Employee",
+            "share": 1,
+            "submit": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Instructor",
+            "share": 1,
+            "submit": 1,
+            "write": 1
+        }
+    ],
+    "row_format": "Dynamic",
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "states": [],
+    "title_field": "employee_name"
 }

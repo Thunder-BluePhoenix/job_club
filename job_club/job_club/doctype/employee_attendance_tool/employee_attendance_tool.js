@@ -143,6 +143,7 @@ job_club.EmployeesEditor = class EmployeesEditor {
 											<option value="Present" ${status == "Present" ? "selected" : ""}>Present</option>
 											<option value="Absent" ${status == "Absent" ? "selected" : ""}>Absent</option>
 											<option value="Leave" ${status == "Leave" ? "selected" : ""}>Leave</option>
+											<option value="Work From Home" ${status == "Work From Home" ? "selected" : ""}>WFH</option>
 										</select>
 										<input type="text" class="form-control remarks" data-day="${d}" 
 											style="font-size:11px; padding:4px; border-radius:6px; text-align:center; width:100%; max-width:70px; margin:0 auto;" 
@@ -192,7 +193,7 @@ job_club.EmployeesEditor = class EmployeesEditor {
 
 		save_button.on("click", function () {
 			$(save_button).attr("disabled", true);
-			let employees_present = [], employees_absent = [], employees_leave = [];
+			let employees_present = [], employees_absent = [], employees_leave = [], employees_wfh = [];
 
 			$(me.wrapper).find('tr[data-employee]').each(function (_, row) {
 				let $row = $(row);
@@ -209,6 +210,7 @@ job_club.EmployeesEditor = class EmployeesEditor {
 						if (status == "Present") employees_present.push(entry);
 						if (status == "Absent") employees_absent.push(entry);
 						if (status == "Leave") employees_leave.push(entry);
+						if (status == "Work From Home") employees_wfh.push(entry);
 					}
 				});
 			});
@@ -221,6 +223,7 @@ job_club.EmployeesEditor = class EmployeesEditor {
 					employees_present: JSON.stringify(employees_present),
 					employees_absent: JSON.stringify(employees_absent),
 					employees_leave: JSON.stringify(employees_leave),
+					employees_wfh: JSON.stringify(employees_wfh),
 					department: frm.doc.department,
 					branch: frm.doc.branch || null,
 					date: frappe.datetime.get_today()
@@ -252,6 +255,10 @@ job_club.EmployeesEditor = class EmployeesEditor {
 					<span style="font-size:14px; font-weight:600; color:#333;">Leave</span>
 				</div>
 				<div style="display:flex; align-items:center; gap:8px;">
+					<div style="width:30px; height:30px; background:#8b5cf6; border-radius:4px; border:1px solid #ddd;"></div>
+					<span style="font-size:14px; font-weight:600; color:#333;">WFH</span>
+				</div>
+				<div style="display:flex; align-items:center; gap:8px;">
 					<div style="width:30px; height:30px; background:#fbbf24; border-radius:4px; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; font-size:18px;">🏖️</div>
 					<span style="font-size:14px; font-weight:600; color:#333;">Holiday</span>
 				</div>
@@ -265,6 +272,7 @@ job_club.EmployeesEditor = class EmployeesEditor {
 		if (status == "Present") return "#2f8b1e80";   // green
 		if (status == "Absent") return "#a24a4ab3";    // red
 		if (status == "Leave") return "#9dc0dd";     // blue
+		if (status == "Work From Home") return "#8b5cf6"; // purple
 		return "#fafafa"; // default neutral
 	}
 

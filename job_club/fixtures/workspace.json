@@ -1,0 +1,410 @@
+[
+    {
+        "charts": [],
+        "content": "[{\"id\":\"DeKgi_wZU-\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Branch\",\"col\":3}},{\"id\":\"Xc3GXoQzkW\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Interview Application\",\"col\":3}},{\"id\":\"OZCzQ1RJ2h\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Admission Inquiry\",\"col\":3}},{\"id\":\"i3HHPlvB35\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Recruitment Drive\",\"col\":3}},{\"id\":\"y_i-paKIGI\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Course\",\"col\":3}},{\"id\":\"Bzr9KtOWKH\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Instructor\",\"col\":3}},{\"id\":\"BRyngtndYe\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Student\",\"col\":3}},{\"id\":\"V-fQJmX6wM\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Student Batch\",\"col\":3}},{\"id\":\"KLEfx4F3xh\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Employee Daily Attendance Report\",\"col\":12}}]",
+        "custom_blocks": [
+            {
+                "custom_block_name": "Employee Daily Attendance Report",
+                "label": "Employee Daily Attendance Report",
+                "parent": "Admin Dashboard",
+                "parentfield": "custom_blocks",
+                "parenttype": "Workspace"
+            }
+        ],
+        "docstatus": 0,
+        "doctype": "Workspace",
+        "for_user": "",
+        "hide_custom": 0,
+        "icon": "dashboard",
+        "indicator_color": "",
+        "is_hidden": 0,
+        "label": "Admin Dashboard",
+        "links": [],
+        "modified": "2026-02-14 18:11:59.485699",
+        "module": null,
+        "name": "Admin Dashboard",
+        "number_cards": [
+            {
+                "label": "Branch",
+                "number_card_name": "Branch",
+                "parent": "Admin Dashboard",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            },
+            {
+                "label": "Interview Application",
+                "number_card_name": "Interview",
+                "parent": "Admin Dashboard",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            },
+            {
+                "label": "Admission Inquiry",
+                "number_card_name": "Admission Inquiry",
+                "parent": "Admin Dashboard",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            },
+            {
+                "label": "Recruitment Drive",
+                "number_card_name": "Recruitment Drive",
+                "parent": "Admin Dashboard",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            },
+            {
+                "label": "Course",
+                "number_card_name": "Course",
+                "parent": "Admin Dashboard",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            },
+            {
+                "label": "Instructor",
+                "number_card_name": "Instructor",
+                "parent": "Admin Dashboard",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            },
+            {
+                "label": "Student",
+                "number_card_name": "Student",
+                "parent": "Admin Dashboard",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            },
+            {
+                "label": "Student Batch",
+                "number_card_name": "Student Batch",
+                "parent": "Admin Dashboard",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            }
+        ],
+        "parent_page": "",
+        "public": 1,
+        "quick_lists": [],
+        "restrict_to_domain": null,
+        "roles": [],
+        "sequence_id": 1.0,
+        "shortcuts": [],
+        "title": "Admin Dashboard"
+    },
+    {
+        "charts": [],
+        "content": "[{\"id\":\"ODyrL7deIy\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Admission Inquiry\",\"col\":4}},{\"id\":\"6mlLUj0zTT\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Student\",\"col\":4}},{\"id\":\"TTTjg7_gGe\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Student Batch\",\"col\":4}},{\"id\":\"FLDrHoDh-2\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Inquiry Form QR\",\"col\":6}},{\"id\":\"bwOHgX4AVF\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Student Admission Form QR\",\"col\":6}}]",
+        "custom_blocks": [
+            {
+                "custom_block_name": "Inquiry Form QR",
+                "label": "Inquiry Form QR",
+                "parent": "Admission Management",
+                "parentfield": "custom_blocks",
+                "parenttype": "Workspace"
+            },
+            {
+                "custom_block_name": "Student Admission Form QR",
+                "label": "Student Admission Form QR",
+                "parent": "Admission Management",
+                "parentfield": "custom_blocks",
+                "parenttype": "Workspace"
+            }
+        ],
+        "docstatus": 0,
+        "doctype": "Workspace",
+        "for_user": "",
+        "hide_custom": 0,
+        "icon": "assign",
+        "indicator_color": "",
+        "is_hidden": 0,
+        "label": "Admission Management",
+        "links": [],
+        "modified": "2026-02-14 16:20:43.865346",
+        "module": "",
+        "name": "Admission Management",
+        "number_cards": [
+            {
+                "label": "Admission Inquiry",
+                "number_card_name": "Admission Inquiry",
+                "parent": "Admission Management",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            },
+            {
+                "label": "Student",
+                "number_card_name": "Student",
+                "parent": "Admission Management",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            },
+            {
+                "label": "Student Batch",
+                "number_card_name": "Student Batch",
+                "parent": "Admission Management",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            }
+        ],
+        "parent_page": "",
+        "public": 1,
+        "quick_lists": [],
+        "restrict_to_domain": null,
+        "roles": [],
+        "sequence_id": 1.1,
+        "shortcuts": [],
+        "title": "Admission Management"
+    },
+    {
+        "charts": [],
+        "content": "[{\"id\":\"Mk1QvKSRob\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Fees\",\"col\":4}},{\"id\":\"Odvk0JbFYR\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Fee Structure\",\"col\":4}},{\"id\":\"MUNPSBTbOi\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Fee Category\",\"col\":4}}]",
+        "custom_blocks": [],
+        "docstatus": 0,
+        "doctype": "Workspace",
+        "for_user": "",
+        "hide_custom": 0,
+        "icon": "expenses",
+        "indicator_color": "",
+        "is_hidden": 0,
+        "label": "Fees Management",
+        "links": [],
+        "modified": "2026-02-14 16:22:02.727823",
+        "module": "",
+        "name": "Fees Management",
+        "number_cards": [
+            {
+                "label": "Fees",
+                "number_card_name": "Fees",
+                "parent": "Fees Management",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            },
+            {
+                "label": "Fee Structure",
+                "number_card_name": "Fee Structure",
+                "parent": "Fees Management",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            },
+            {
+                "label": "Fee Category",
+                "number_card_name": "Fee Category",
+                "parent": "Fees Management",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            }
+        ],
+        "parent_page": "",
+        "public": 1,
+        "quick_lists": [],
+        "restrict_to_domain": null,
+        "roles": [],
+        "sequence_id": 1.2,
+        "shortcuts": [],
+        "title": "Fees Management"
+    },
+    {
+        "charts": [],
+        "content": "[{\"id\":\"Q41fZB2lxj\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Attendance Tool Card\",\"col\":12}},{\"id\":\"WLYLFLvQn7\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Employee Attendance Dashboard\",\"col\":12}}]",
+        "custom_blocks": [
+            {
+                "custom_block_name": "Attendance Tool Card",
+                "label": "Attendance Tool Card",
+                "parent": "Attendance Management",
+                "parentfield": "custom_blocks",
+                "parenttype": "Workspace"
+            },
+            {
+                "custom_block_name": "Employee Attendance Dashboard",
+                "label": "Employee Attendance Dashboard",
+                "parent": "Attendance Management",
+                "parentfield": "custom_blocks",
+                "parenttype": "Workspace"
+            }
+        ],
+        "docstatus": 0,
+        "doctype": "Workspace",
+        "for_user": "",
+        "hide_custom": 0,
+        "icon": "share",
+        "indicator_color": "",
+        "is_hidden": 0,
+        "label": "Attendance Management",
+        "links": [],
+        "modified": "2026-02-14 16:22:37.750571",
+        "module": "",
+        "name": "Attendance Management",
+        "number_cards": [],
+        "parent_page": "",
+        "public": 1,
+        "quick_lists": [],
+        "restrict_to_domain": null,
+        "roles": [],
+        "sequence_id": 1.2,
+        "shortcuts": [],
+        "title": "Attendance Management"
+    },
+    {
+        "charts": [],
+        "content": "[{\"id\":\"aJxtTU4noV\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Course\",\"col\":4}},{\"id\":\"6OJkkjFNwQ\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Course Enrollment\",\"col\":4}}]",
+        "custom_blocks": [],
+        "docstatus": 0,
+        "doctype": "Workspace",
+        "for_user": "",
+        "hide_custom": 0,
+        "icon": "workflow",
+        "indicator_color": "",
+        "is_hidden": 0,
+        "label": "Courses",
+        "links": [],
+        "modified": "2026-02-14 16:23:25.868674",
+        "module": "",
+        "name": "Courses",
+        "number_cards": [
+            {
+                "label": "Course",
+                "number_card_name": "Course",
+                "parent": "Courses",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            },
+            {
+                "label": "Course Enrollment",
+                "number_card_name": "Course Enrollment",
+                "parent": "Courses",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            }
+        ],
+        "parent_page": "",
+        "public": 1,
+        "quick_lists": [],
+        "restrict_to_domain": null,
+        "roles": [],
+        "sequence_id": 1.3,
+        "shortcuts": [],
+        "title": "Courses"
+    },
+    {
+        "charts": [],
+        "content": "[{\"id\":\"Ur8IG812CY\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Branch\",\"col\":4}}]",
+        "custom_blocks": [],
+        "docstatus": 0,
+        "doctype": "Workspace",
+        "for_user": "",
+        "hide_custom": 0,
+        "icon": "organization",
+        "indicator_color": "",
+        "is_hidden": 0,
+        "label": "Branches",
+        "links": [],
+        "modified": "2026-02-14 16:23:48.657347",
+        "module": "",
+        "name": "Branches",
+        "number_cards": [
+            {
+                "label": "Branch",
+                "number_card_name": "Branch",
+                "parent": "Branches",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            }
+        ],
+        "parent_page": "",
+        "public": 1,
+        "quick_lists": [],
+        "restrict_to_domain": null,
+        "roles": [],
+        "sequence_id": 1.3,
+        "shortcuts": [],
+        "title": "Branches"
+    },
+    {
+        "charts": [],
+        "content": "[{\"id\":\"18Ot9t7xrj\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Recruitment Drive\",\"col\":4}},{\"id\":\"DofJ8juf6j\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Interview Application\",\"col\":4}}]",
+        "custom_blocks": [],
+        "docstatus": 0,
+        "doctype": "Workspace",
+        "for_user": "",
+        "hide_custom": 0,
+        "icon": "customer",
+        "indicator_color": "",
+        "is_hidden": 0,
+        "label": "Recruitment",
+        "links": [],
+        "modified": "2026-02-14 16:24:42.748260",
+        "module": "",
+        "name": "Recruitment",
+        "number_cards": [
+            {
+                "label": "Recruitment Drive",
+                "number_card_name": "Recruitment Drive",
+                "parent": "Recruitment",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            },
+            {
+                "label": "Interview Application",
+                "number_card_name": "Interview",
+                "parent": "Recruitment",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            }
+        ],
+        "parent_page": "",
+        "public": 1,
+        "quick_lists": [],
+        "restrict_to_domain": null,
+        "roles": [],
+        "sequence_id": 1.3,
+        "shortcuts": [],
+        "title": "Recruitment"
+    },
+    {
+        "charts": [],
+        "content": "[{\"id\":\"xFZgcTqeyy\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"User\",\"col\":4}},{\"id\":\"sWnx8W8uhR\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Employee\",\"col\":4}},{\"id\":\"jw7DV02L0P\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Permission Manager Card\",\"col\":4}}]",
+        "custom_blocks": [
+            {
+                "custom_block_name": "Permission Manager Card",
+                "label": "Permission Manager Card",
+                "parent": "User & Permissions",
+                "parentfield": "custom_blocks",
+                "parenttype": "Workspace"
+            }
+        ],
+        "docstatus": 0,
+        "doctype": "Workspace",
+        "for_user": "",
+        "hide_custom": 0,
+        "icon": "share-people",
+        "indicator_color": "",
+        "is_hidden": 0,
+        "label": "User & Permissions",
+        "links": [],
+        "modified": "2026-02-14 16:25:34.750935",
+        "module": "",
+        "name": "User & Permissions",
+        "number_cards": [
+            {
+                "label": "User",
+                "number_card_name": "User",
+                "parent": "User & Permissions",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            },
+            {
+                "label": "Employee",
+                "number_card_name": "Employee",
+                "parent": "User & Permissions",
+                "parentfield": "number_cards",
+                "parenttype": "Workspace"
+            }
+        ],
+        "parent_page": "",
+        "public": 1,
+        "quick_lists": [],
+        "restrict_to_domain": null,
+        "roles": [],
+        "sequence_id": 1.3,
+        "shortcuts": [],
+        "title": "User & Permissions"
+    }
+]

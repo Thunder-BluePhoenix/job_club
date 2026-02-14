@@ -9,6 +9,7 @@ def mark_employee_attendance_tool(
     employees_present=None, 
     employees_absent=None, 
     employees_leave=None,
+    employees_wfh=None,
     department=None,
     branch=None,
     date=None
@@ -21,6 +22,7 @@ def mark_employee_attendance_tool(
         employees_present: JSON string of present employees
         employees_absent: JSON string of absent employees
         employees_leave: JSON string of employees on leave
+        employees_wfh: JSON string of employees working from home
         department: Department name
         branch: Branch name (optional)
         date: Attendance date
@@ -37,6 +39,7 @@ def mark_employee_attendance_tool(
     present = json.loads(employees_present) if employees_present else []
     absent = json.loads(employees_absent) if employees_absent else []
     leave = json.loads(employees_leave) if employees_leave else []
+    wfh = json.loads(employees_wfh) if employees_wfh else []
     
     count = 0
     
@@ -88,6 +91,23 @@ def mark_employee_attendance_tool(
         except Exception as e:
             frappe.log_error(
                 f"Error marking leave for {emp.get('employee')}: {str(e)}",
+                "Employee Attendance Tool Error"
+            )
+
+    # Process WFH employees
+    for emp in wfh:
+        try:
+            count += create_or_update_attendance(
+                employee=emp.get('employee'),
+                employee_name=emp.get('employee_name'),
+                date=date,
+                status='Work From Home',
+                remarks=emp.get('remarks', ''),
+                branch=branch
+            )
+        except Exception as e:
+            frappe.log_error(
+                f"Error marking WFH for {emp.get('employee')}: {str(e)}",
                 "Employee Attendance Tool Error"
             )
     
@@ -204,6 +224,7 @@ def get_employee_attendance_summary(department=None, branch=None, from_date=None
     present_count = len([a for a in attendance_records if a.status == "Present"])
     absent_count = len([a for a in attendance_records if a.status == "Absent"])
     leave_count = len([a for a in attendance_records if a.status == "Leave"])
+    wfh_count = len([a for a in attendance_records if a.status == "Work From Home"])
     
     # Calculate unique employees
     unique_employees = len(set([a.employee for a in attendance_records]))
@@ -213,6 +234,7 @@ def get_employee_attendance_summary(department=None, branch=None, from_date=None
         "present_count": present_count,
         "absent_count": absent_count,
         "leave_count": leave_count,
+        "wfh_count": wfh_count,
         "unique_employees": unique_employees,
         "attendance_percentage": round((present_count / total_records * 100), 2) if total_records > 0 else 0
     }

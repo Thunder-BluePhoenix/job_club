@@ -1,0 +1,41 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2026-02-14 16:05:24.836746",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "json": "{\"filters\":[],\"fields\":[[\"name\",\"Employee Attendance\"],[\"docstatus\",\"Employee Attendance\"],[\"date\",\"Employee Attendance\"],[\"employee\",\"Employee Attendance\"],[\"employee_name\",\"Employee Attendance\"],[\"branch\",\"Employee Attendance\"],[\"in_time\",\"Employee Attendance\"],[\"out_time\",\"Employee Attendance\"],[\"status\",\"Employee Attendance\"]],\"order_by\":\"`tabEmployee Attendance`.`modified` desc\",\"page_length\":20,\"column_widths\":{\"name\":120,\"date\":120,\"employee\":120,\"employee_name\":120,\"branch\":120,\"in_time\":120,\"out_time\":120,\"status\":120},\"group_by\":null}",
+ "letter_head": null,
+ "modified": "2026-02-14 16:06:41.874209",
+ "modified_by": "Administrator",
+ "module": "Job Club",
+ "name": "Employee Daily Attendance Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Employee Attendance",
+ "report_name": "Employee Daily Attendance Report",
+ "report_type": "Report Builder",
+ "roles": [
+  {
+   "role": "Academics User"
+  },
+  {
+   "role": "Employee"
+  },
+  {
+   "role": "Instructor"
+  },
+  {
+   "role": "Administrator"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
+ "timeout": 0
+}
