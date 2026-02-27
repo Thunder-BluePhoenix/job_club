@@ -20,7 +20,7 @@
   "is_hidden": 0,
   "label": "Admin Dashboard",
   "links": [],
-  "modified": "2026-02-14 18:11:59.485699",
+  "modified": "2026-02-15 14:21:33.058587",
   "module": null,
   "name": "Admin Dashboard",
   "number_cards": [
@@ -118,7 +118,7 @@
   "is_hidden": 0,
   "label": "Admission Management",
   "links": [],
-  "modified": "2026-02-14 16:20:43.865346",
+  "modified": "2026-02-15 14:21:33.190201",
   "module": "",
   "name": "Admission Management",
   "number_cards": [
@@ -149,7 +149,7 @@
   "quick_lists": [],
   "restrict_to_domain": null,
   "roles": [],
-  "sequence_id": 1.1,
+  "sequence_id": 2.0,
   "shortcuts": [],
   "title": "Admission Management"
  },
@@ -166,7 +166,7 @@
   "is_hidden": 0,
   "label": "Fees Management",
   "links": [],
-  "modified": "2026-02-14 16:22:02.727823",
+  "modified": "2026-02-15 14:21:33.259175",
   "module": "",
   "name": "Fees Management",
   "number_cards": [
@@ -197,7 +197,7 @@
   "quick_lists": [],
   "restrict_to_domain": null,
   "roles": [],
-  "sequence_id": 1.2,
+  "sequence_id": 3.0,
   "shortcuts": [],
   "title": "Fees Management"
  },
@@ -229,7 +229,7 @@
   "is_hidden": 0,
   "label": "Attendance Management",
   "links": [],
-  "modified": "2026-02-14 20:24:19.256074",
+  "modified": "2026-02-15 14:21:33.325498",
   "module": "",
   "name": "Attendance Management",
   "number_cards": [
@@ -253,7 +253,7 @@
   "quick_lists": [],
   "restrict_to_domain": null,
   "roles": [],
-  "sequence_id": 1.2,
+  "sequence_id": 4.0,
   "shortcuts": [],
   "title": "Attendance Management"
  },
@@ -270,7 +270,7 @@
   "is_hidden": 0,
   "label": "Courses",
   "links": [],
-  "modified": "2026-02-14 16:23:25.868674",
+  "modified": "2026-02-15 14:21:33.402935",
   "module": "",
   "name": "Courses",
   "number_cards": [
@@ -294,7 +294,7 @@
   "quick_lists": [],
   "restrict_to_domain": null,
   "roles": [],
-  "sequence_id": 1.3,
+  "sequence_id": 5.0,
   "shortcuts": [],
   "title": "Courses"
  },
@@ -311,7 +311,7 @@
   "is_hidden": 0,
   "label": "Branches",
   "links": [],
-  "modified": "2026-02-14 16:23:48.657347",
+  "modified": "2026-02-15 14:21:33.439636",
   "module": "",
   "name": "Branches",
   "number_cards": [
@@ -328,7 +328,7 @@
   "quick_lists": [],
   "restrict_to_domain": null,
   "roles": [],
-  "sequence_id": 1.3,
+  "sequence_id": 6.0,
   "shortcuts": [],
   "title": "Branches"
  },
@@ -345,7 +345,7 @@
   "is_hidden": 0,
   "label": "Recruitment",
   "links": [],
-  "modified": "2026-02-14 16:24:42.748260",
+  "modified": "2026-02-15 14:21:33.480920",
   "module": "",
   "name": "Recruitment",
   "number_cards": [
@@ -369,7 +369,7 @@
   "quick_lists": [],
   "restrict_to_domain": null,
   "roles": [],
-  "sequence_id": 1.3,
+  "sequence_id": 7.0,
   "shortcuts": [],
   "title": "Recruitment"
  },
@@ -394,7 +394,7 @@
   "is_hidden": 0,
   "label": "User & Permissions",
   "links": [],
-  "modified": "2026-02-14 16:25:34.750935",
+  "modified": "2026-02-15 14:21:33.528856",
   "module": "",
   "name": "User & Permissions",
   "number_cards": [
@@ -418,7 +418,7 @@
   "quick_lists": [],
   "restrict_to_domain": null,
   "roles": [],
-  "sequence_id": 1.3,
+  "sequence_id": 8.0,
   "shortcuts": [],
   "title": "User & Permissions"
  }
