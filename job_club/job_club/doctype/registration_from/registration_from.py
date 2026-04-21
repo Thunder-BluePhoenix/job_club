@@ -401,9 +401,11 @@ def pre_validate_registration(data):
             )
 
     # --- Duplicate Email for same drive ---
+    # NOTE: Check against Registration From (source of truth), NOT Interview.
+    # Interview records may not exist yet if the system is mid-processing.
     if data.get("email_id") and data.get("recruitment_drive"):
         exists = frappe.db.exists(
-            "Interview",
+            "Registration From",
             {"email_id": data.email_id, "recruitment_drive": data.recruitment_drive},
         )
         if exists:
@@ -428,8 +430,8 @@ def check_duplicate(fieldname, value, drive):
     if fieldname not in ["email_id"]:
         return {"status": "error", "message": "Invalid field"}
 
-    # Check if email exists for the same drive
-    if frappe.db.exists("Interview", {fieldname: value, "recruitment_drive": drive}):
+    # Check against Registration From (source of truth), NOT Interview.
+    if frappe.db.exists("Registration From", {fieldname: value, "recruitment_drive": drive}):
         return {
             "status": "error",
             "message": f"This {fieldname.replace('_', ' ')} is already registered for this drive.",
