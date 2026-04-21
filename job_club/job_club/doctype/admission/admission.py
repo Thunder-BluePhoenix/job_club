@@ -31,7 +31,7 @@ class Admission(Document):
             # Auto set Admission Date
             admission.form_submission_date = now_datetime()
 
-            admission.save()
+            admission.save(ignore_permissions=True)
 
 @frappe.whitelist(allow_guest=True)
 def pre_validate_admission(data):

@@ -42,7 +42,7 @@ class RegistrationFrom(Document):
                 "Interview Creation Error",
             )
 
-        interview.save()
+        interview.save(ignore_permissions=True)
 
     def before_insert(self):
         """Generate branch-wise, drive-wise token before saving"""
@@ -296,7 +296,12 @@ def get_registration_token(docname):
 @frappe.whitelist(allow_guest=True)
 def get_candidate_info(token):
     """Fetch candidate info by token number"""
-    doc = frappe.get_doc("Interview", {"token_number": token})
+    doc = frappe.db.get_value(
+        "Interview",
+        {"token_number": token},
+        ["full_name", "email_id", "mobile_number", "token_number"],
+        as_dict=True
+    )
     if not doc:
         return {"error": "Candidate not found"}
 
